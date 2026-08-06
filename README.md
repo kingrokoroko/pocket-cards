@@ -4,6 +4,8 @@
 Android Chrome で「アプリをインストール」するとホーム画面のアイコンから起動でき、
 Service Worker により**電波の無い場所でも全カードが開く**。
 
+**公開URL: <https://kingrokoroko.github.io/pocket-cards/>**
+
 ## 構成
 
 ```
