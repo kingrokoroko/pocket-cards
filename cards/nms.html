@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>悪性症候群（NMS）治療ポケットカード</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b;
+      --surface: #191f29;
+      --surface-2: #1f2732;
+      --ink: #e7ecf3;
+      --ink-2: #aeb9ca;
+      --ink-3: #7d8aa0;
+      --line: #2a323f;
+      --line-strong: #38424f;
+      --accent: #3fb3bd;
+      --accent-soft: #123037;
+      --mild: #56c188;
+      --mild-soft: #16311f;
+      --mod: #e0a94a;
+      --mod-soft: #33290f;
+      --sev: #e8776a;
+      --sev-soft: #38191a;
+      --warn-bg: #2c220f;
+      --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Header */
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  :root[data-theme="dark"] .sec-num, .sec-num { color: #fff; }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .9rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  /* Escalation ladder */
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 92px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: 1rem; line-height: 1.15; }
+  .rung.mild .rung-tag { background: var(--mild); }
+  .rung.mod  .rung-tag { background: var(--mod); }
+  .rung.sev  .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .9rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+  .plus { color: var(--accent); font-weight: 700; }
+
+  /* Drug table */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .86rem; min-width: 520px; }
+  thead th {
+    text-align: left; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 14px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  td .dose { font-family: var(--mono); font-size: .82rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.mild { background: var(--mild-soft); color: var(--mild); }
+  .pill.mod { background: var(--mod-soft); color: var(--mod); }
+  .pill.sev { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .87rem; color: var(--ink-2);
+  }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 620px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .82rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 6px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>悪性症候群（NMS）治療</h1>
+    <div class="subtitle">Neuroleptic Malignant Syndrome ／ 救急・集中治療 ／ 更新 2026-07-19</div>
+  </header>
+
+  <p class="lede">
+    治療の柱は <strong>①原因薬剤の除去 ②支持療法 ③重症度に応じた薬物療法 ④難治例へのECT</strong>。
+    <strong>確立治療は「原因薬中止＋支持療法」のみ</strong>で、薬物療法はいずれも RCT がなく症例集積レベル。
+  </p>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>原因薬剤の除去 <span style="font-size:.8rem;color:var(--ink-3);font-weight:400;">（最優先）</span></h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>抗精神病薬・制吐薬（メトクロプラミド等）由来</strong> → 原因薬を<strong>即時中止</strong>。</li>
+        <li><strong>抗パーキンソン病薬の急な中止型</strong>（parkinsonism-hyperpyrexia syndrome）→ 逆に<strong>中止したドパミン作動薬を再開</strong>することが治療。DBS 不具合ならその是正。</li>
+        <li>リチウム・抗コリン薬など併用薬も見直す。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>支持療法 <span style="font-size:.8rem;color:var(--accent);font-weight:700;">★治療の基盤</span></h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">体温・全身管理</p>
+        <ul class="clean">
+          <li><strong>積極的冷却</strong>（冷却ブランケット・輸液冷却）。高体温の遷延は予後悪化。</li>
+          <li><strong>ICU</strong> で呼吸・循環モニタリング。</li>
+          <li>血圧変動には短時間作用性薬剤で対応。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">腎保護・代謝</p>
+        <ul class="clean">
+          <li><strong>大量輸液</strong>で横紋筋融解による <strong>AKI を予防</strong>、尿量確保。</li>
+          <li>高K血症・代謝性アシドーシス・脱水の補正。</li>
+          <li>誤嚥・VTE・DIC・心不全・呼吸不全を予防／早期対応。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>薬物療法 ― 重症度で段階的に</h2>
+    <div class="ladder">
+      <div class="rung mild">
+        <div class="rung-tag"><span class="sev-label">軽症</span><span class="sev-name">Mild</span></div>
+        <div class="rung-body">原因薬中止 ＋ 支持療法 <span class="plus">＋</span> <b>ベンゾジアゼピン</b>（ロラゼパム）</div>
+      </div>
+      <div class="rung mod">
+        <div class="rung-tag"><span class="sev-label">中等症</span><span class="sev-name">Moderate</span></div>
+        <div class="rung-body">上記 <span class="plus">＋</span> <b>ブロモクリプチン</b>（またはアマンタジン）</div>
+      </div>
+      <div class="rung sev">
+        <div class="rung-tag"><span class="sev-label">重症</span><span class="sev-name">Severe</span></div>
+        <div class="rung-body">高熱・高度筋強剛・著明なCK上昇/AKI → 上記 <span class="plus">＋</span> <b>ダントロレン</b> 併用</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>薬剤</th><th>用量</th><th>適応</th><th>機序・注意</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ロラゼパム</td>
+              <td><span class="dose tnum">1〜2 mg</span> を 4〜6 時間毎（難治例で増量）</td>
+              <td><span class="pill mild">軽症 1st</span></td>
+              <td>緊張病鑑別困難例では診断的意義も（反応性）。</td>
+            </tr>
+            <tr>
+              <td>ブロモクリプチン</td>
+              <td><span class="dose tnum">2.5 mg</span> を 8〜12 時間毎 経口/経管（最大 <span class="tnum">45 mg/日</span>）</td>
+              <td><span class="pill mod">中等〜重症</span></td>
+              <td>D2 作動でドパミン遮断を代償。<strong>精神症状再燃・低血圧に注意</strong>、急な中止で再燃しうるため漸減。</td>
+            </tr>
+            <tr>
+              <td>アマンタジン</td>
+              <td><span class="dose tnum">200〜400 mg/日</span> 分2〜3</td>
+              <td><span class="pill mod">代替</span></td>
+              <td>ドパミン遊離促進＋NMDA 拮抗。腎機能で用量調節。</td>
+            </tr>
+            <tr>
+              <td>ダントロレン</td>
+              <td><span class="dose tnum">1〜2.5 mg/kg</span> iv → <span class="dose tnum">1 mg/kg</span> 6h毎（最大 <span class="tnum">10 mg/kg/日</span>）</td>
+              <td><span class="pill sev">重症</span></td>
+              <td>骨格筋を直接弛緩。<strong>肝毒性・呼吸抑制に注意</strong>。高熱・高度筋強剛・横紋筋融解例に。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>電気けいれん療法（ECT）</h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>適応：</strong>薬物療法無効の難治例、基礎に精神病性うつ病・緊張病、<strong>致死性緊張病を除外できない例</strong>。</li>
+        <li><strong>エビデンス：</strong>症例集積レベル（RCTなし）。難治例の寛解率は約 70% 台と報告。</li>
+        <li><strong>注意：</strong>BZD は ECT の発作閾値を上げるため、施行前後で投与調整。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>フォロー・再投与（rechallenge）</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">経過・予後</p>
+        <ul class="clean">
+          <li>合併症監視：AKI・誤嚥性肺炎・VTE・DIC・心不全・呼吸不全。</li>
+          <li>近年の死亡率 約 <span class="tnum">5〜11%</span>、多くは <span class="tnum">2〜14 日</span>で回復。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">再投与のタイミング</p>
+        <ul class="clean">
+          <li>症状消失後 <strong>最低 2 週間</strong>休薬 → <strong>低力価薬を低用量から漸増</strong>。</li>
+          <li>2週間の閾値のエビデンスは弱い。<strong>性急な再開はより重篤な再発</strong>を招きうる。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">△</span>
+      <div><strong>鑑別の最重要はセロトニン症候群</strong> ― 急速発症・腱反射亢進/クローヌス・散瞳・下痢。ほか悪性高熱症・致死性緊張病・抗コリン薬中毒・髄膜炎/脳炎を除外。</div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの要点</h3>
+    <p><b>確立治療は「原因薬中止＋支持療法」のみ。</b> ダントロレン・ブロモクリプチン・アマンタジン・BZD・ECT は<b>すべて RCT 不在</b>。治療エビデンスの実体は<b>対照群のない公表症例報告のプール解析</b>（出版バイアス・適応交絡が強い）。</p>
+    <p>Strawn 2007（PMID 17541044）は総説で、独自解析ではない。一次データの Reulbach 2007（PMID 17222339, N=271）はむしろ<b>支持療法単独が回復最短（9.2日）・死亡率最低（2.0%）、ダントロレン併用が最長（19.0日）</b>で「ダントロレンは treatment of choice と言い難い」とする。死亡率低下の報告は Sakkas 1991（PMID 1685592, 未治療21%→ダントロレン8.6%/ブロモクリプチン7.8%）。※巷で流布する「回復日数15/10/9日」は出所不明・使用非推奨。</p>
+    <p>診断基準：Gurrera 2011（PMID 21733489, Delphi コンセンサス）／Levenson 1985（PMID 2863986）。</p>
+  </div>
+
+  <footer>
+    情報提供目的の要約であり、医学的助言・処方ではありません。<br>
+    実際の薬剤選択・用量は施設プロトコルと指導医の確認のもとで判断してください。
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

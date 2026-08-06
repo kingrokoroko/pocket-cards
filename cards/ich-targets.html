@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>脳出血 術後管理 目標値カード</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --gl: #2f6fb5;      /* ガイドライン明記 */
+    --gl-soft: #e0ebf7;
+    --rct: #2f8f5b;     /* RCT実測値 */
+    --rct-soft: #e3f3ea;
+    --ext: #b9791a;     /* 他病態からの外挿 */
+    --ext-soft: #f6ecd8;
+    --cus: #c0392b;     /* 慣習・専門家意見 */
+    --cus-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --gl: #6ba6e8; --gl-soft: #14263a;
+      --rct: #56c188; --rct-soft: #16311f;
+      --ext: #e0a94a; --ext-soft: #33290f;
+      --cus: #e8776a; --cus-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --gl: #6ba6e8; --gl-soft: #14263a;
+    --rct: #56c188; --rct-soft: #16311f;
+    --ext: #e0a94a; --ext-soft: #33290f;
+    --cus: #e8776a; --cus-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --gl: #2f6fb5; --gl-soft: #e0ebf7;
+    --rct: #2f8f5b; --rct-soft: #e3f3ea;
+    --ext: #b9791a; --ext-soft: #f6ecd8;
+    --cus: #c0392b; --cus-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow { font-size: .72rem; letter-spacing: .16em; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(1.35rem, 4vw, 2rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+  .theme-btn {
+    margin-left: auto; font: inherit; font-size: .74rem; cursor: pointer;
+    background: var(--surface); color: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px;
+  }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 16px;
+    font-size: .9rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  /* 凡例 */
+  .legend {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin: 0 0 26px;
+  }
+  @media (max-width: 720px) { .legend { grid-template-columns: repeat(2, 1fr); } }
+  .lg {
+    border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px;
+    background: var(--surface); font-size: .75rem; color: var(--ink-3); line-height: 1.45;
+  }
+  .lg b { display: block; font-size: .8rem; margin-bottom: 2px; }
+  .lg.gl { border-left: 4px solid var(--gl); } .lg.gl b { color: var(--gl); }
+  .lg.rct { border-left: 4px solid var(--rct); } .lg.rct b { color: var(--rct); }
+  .lg.ext { border-left: 4px solid var(--ext); } .lg.ext b { color: var(--ext); }
+  .lg.cus { border-left: 4px solid var(--cus); } .lg.cus b { color: var(--cus); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .pad { padding: 15px 17px; }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  .val { font-family: var(--mono); font-size: .88rem; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .val.big { font-size: .95rem; }
+  .sub { display: block; font-size: .76rem; color: var(--ink-3); font-family: var(--sans); font-weight: 400; margin-top: 2px; }
+  .nowrap { white-space: nowrap; }
+
+  .tag {
+    display: inline-block; font-size: .66rem; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .tag.gl { background: var(--gl-soft); color: var(--gl); }
+  .tag.rct { background: var(--rct-soft); color: var(--rct); }
+  .tag.ext { background: var(--ext-soft); color: var(--ext); }
+  .tag.cus { background: var(--cus-soft); color: var(--cus); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2); margin-top: 12px;
+  }
+  .callout .mk { flex: none; font-weight: 800; color: var(--ext); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .87rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .8rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 6px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; background: #fff; color: #000; }
+    .card, .callout, .lg { box-shadow: none; }
+    section { break-inside: avoid; }
+    .theme-btn { display: none; }
+  }
+</style>
+
+<style>
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>脳出血 術後管理 目標値</h1>
+    <button class="theme-btn" id="themeBtn" type="button">配色切替</button>
+    <div class="subtitle">Intracerebral Hemorrhage ／ ICU 数値クイックリファレンス ／ 更新 2026-08-05 ／ 管理の考え方は「脳出血術後管理ポケットカード」を参照</div>
+  </header>
+
+  <p class="lede">
+    <strong>色は数値の根拠の強さを表す。</strong>ICH 術後の目標値は、ガイドラインが数字を明記しているものが少なく、
+    <strong>大半が TBI/SAH からの外挿か、単なる慣習</strong>である。赤（慣習）の値を「基準」として他科に主張しないこと。
+  </p>
+
+  <div class="legend">
+    <div class="lg gl"><b>GL 明記</b>ガイドラインが数値付きで推奨。COR/LOE を併記</div>
+    <div class="lg rct"><b>RCT</b>RCT で実際に用いられた／検証された値</div>
+    <div class="lg ext"><b>外挿</b>TBI・SAH・一般内科からの外挿。ICH の根拠ではない</div>
+    <div class="lg cus"><b>慣習</b>ガイドラインに記載なし。専門家意見・施設プロトコル</div>
+  </div>
+
+  <!-- ═══════ 1. 循環・脳灌流 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>循環・脳灌流</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">収縮期血圧</td>
+              <td><span class="val big">SBP 140 mmHg を目標に降圧<br>→ 130–150 mmHg で維持</span>
+                  <span class="sub">対象は発症時 SBP 150–220 mmHg の軽〜中等症</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 2b / LOE B-R</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">降圧の下限</td>
+              <td><span class="val">SBP &lt;130 mmHg まで急に下げない</span>
+                  <span class="sub">SBP &gt;150 からの急速降圧は有害の可能性</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 3: Harm / LOE B-R</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">SBP &gt;220 のとき</td>
+              <td><span class="val">独立した推奨は存在しない</span>
+                  <span class="sub">ガイドラインは knowledge gap と明記。150–220 に準じるのが実務</span></td>
+              <td><span class="tag cus">慣習</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">ICP</td>
+              <td><span class="val big">&lt;22 mmHg</span>
+                  <span class="sub">これを超えたら治療介入</span></td>
+              <td><span class="tag ext">外挿</span> BTF 第4版（<b>TBI</b> 対象, Level IIB）。ICH 特異的な目標を定めた RCT はない</td>
+            </tr>
+            <tr>
+              <td class="nowrap">CPP</td>
+              <td><span class="val big">60–70 mmHg</span>
+                  <span class="sub">自己調節能の状態で個別化。60 が下限か至適かは不明瞭</span></td>
+              <td><span class="tag ext">外挿</span> BTF 第4版（<b>TBI</b> 対象, Level IIB）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">昇圧薬</td>
+              <td><span class="val">① ICP を下げる → ② 容量・心拍出量 → ③ ノルアドレナリン</span>
+                  <span class="sub">CPP 不足をいきなり昇圧で埋めない</span></td>
+              <td><span class="tag cus">慣習</span> 生理学的根拠＋専門家合意。薬剤間比較の RCT なし</td>
+            </tr>
+            <tr>
+              <td class="nowrap">輸液バランス</td>
+              <td><span class="val">euvolemia を維持</span>
+                  <span class="sub">水制限も大量自由水も避ける。SVV &lt;10%、CVP &lt;5 mmHg の持続を避ける等</span></td>
+              <td><span class="tag ext">外挿</span> 主に SAH（血管攣縮予防）領域の指標。ICH の RCT なし</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 2. 呼吸 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>呼吸</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">PaCO₂（通常）</td>
+              <td><span class="val big">35–45 mmHg</span>
+                  <span class="sub">normocapnia を保つ。狭めに取るなら 35–40</span></td>
+              <td><span class="tag ext">外挿</span> BTF 第4版（TBI）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">PaCO₂（ICP 危機時）</td>
+              <td><span class="val">一時的に 30–35 mmHg</span>
+                  <span class="sub">ヘルニア徴候時の救済のみ。ICP 安定後は速やかに戻す</span></td>
+              <td><span class="tag ext">外挿</span> BTF／SIBICC</td>
+            </tr>
+            <tr>
+              <td class="nowrap">過換気の禁止域</td>
+              <td><span class="val">PaCO₂ ≤25 mmHg の予防的過換気は行わない</span>
+                  <span class="sub">とくに発症 24 時間以内。脳血流低下による虚血</span></td>
+              <td><span class="tag ext">外挿</span> BTF 第4版（TBI）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">SpO₂ / PaO₂</td>
+              <td><span class="val">SpO₂ ≥94%／PaO₂ &lt;60 mmHg を避ける</span>
+                  <span class="sub">高酸素も転帰不良と関連（観察研究）。SpO₂ 100% で漫然と続けない</span></td>
+              <td><span class="tag ext">外挿</span> SIBICC＋観察研究。上限の数値目標は合意なし</td>
+            </tr>
+            <tr>
+              <td class="nowrap">一回換気量</td>
+              <td><span class="val">6–8 mL/kg 予測体重</span></td>
+              <td><span class="tag ext">外挿</span> ARDSnet からの外挿</td>
+            </tr>
+            <tr>
+              <td class="nowrap">プラトー圧／DP</td>
+              <td><span class="val">プラトー ≤27–30 cmH₂O／driving pressure &lt;15 cmH₂O</span></td>
+              <td><span class="tag ext">外挿</span> 脳損傷特異的な介入 RCT はない</td>
+            </tr>
+            <tr>
+              <td class="nowrap">PEEP</td>
+              <td><span class="val">一律の上限値は存在しない</span>
+                  <span class="sub">ICP への影響は研究間で不一致。肺のリクルータビリティと循環代償能で個別化し、上げるなら ICP/CPP を見ながら</span></td>
+              <td><span class="tag cus">慣習</span> 観察研究で結果が割れている</td>
+            </tr>
+            <tr>
+              <td class="nowrap">抜管の指標</td>
+              <td><span class="val">数値基準は確立していない</span>
+                  <span class="sub">SBT のモダリティ・時間は抜管失敗を予測しない。<b>咳嗽力</b>が唯一一貫した予測因子（cough peak flow ≤60 L/min は失敗の独立予測因子）。「GCS ≥8」の単独カットオフは不可</span></td>
+              <td><span class="tag cus">慣習</span> ENIO ほか観察研究</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 3. 電解質・浸透圧 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>電解質・浸透圧 <span class="sec-note">※ mEq/L と mmol/L は 1価イオンでは同値</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標値・上限</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">浸透圧療法中の<br>血清 Na <b>上限</b></td>
+              <td><span class="val big">155–160 mEq/L</span>
+                  <span class="sub">これを超えると AKI リスク。<b>「目標 Na」ではなく上限</b>である点に注意</span></td>
+              <td><span class="tag gl">GL 明記</span> NCS 2020 脳浮腫GL<br><b>条件付き推奨 / エビデンスの質 very low</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">浸透圧療法中の<br>血清 Cl <b>上限</b></td>
+              <td><span class="val big">110–115 mEq/L</span>
+                  <span class="sub">高Cl性代謝性アシドーシス・AKI の指標として Na と同時に追う</span></td>
+              <td><span class="tag gl">GL 明記</span> NCS 2020<br><b>条件付き推奨 / very low</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">高張食塩水の<br>「目標 Na」</td>
+              <td><span class="val">ガイドライン上の目標値は存在しない</span>
+                  <span class="sub">NCS 2020 は <b>Na 目標ベースではなく「症状ベースのボーラス投与」</b>を推奨（SAH に対し条件付き）。数値を追いかける管理ではない</span></td>
+              <td><span class="tag gl">GL 明記</span> NCS 2020（＝「目標値なし」が推奨内容）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">血漿浸透圧</td>
+              <td><span class="val">320 mOsm/kg という上限に強い根拠はない</span>
+                  <span class="sub">NCS 2020 自身が明記：高血糖でも上がるため単独指標として不適切。320 超過が AKI 発症率に影響しないとの報告もある</span></td>
+              <td><span class="tag cus">慣習</span> ガイドラインが慣習値を否定している側</td>
+            </tr>
+            <tr>
+              <td class="nowrap">マンニトール使用時<br>osmol gap</td>
+              <td><span class="val big">&lt;55 mOsm/kg なら AKI は稀</span>
+                  <span class="sub">≥55 が血清マンニトール濃度と最もよく相関。15–20 はクリアランス不完全のサイン。浸透圧そのものより特異的</span></td>
+              <td><span class="tag ext">外挿</span> NCS 2020 が<b>引用する知見</b>であり、独立した数値推奨ではない</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>浸透圧療法の Na は「狙う値」ではなく「越えてはいけない値」。</strong>NCS 2020 が推奨しているのは症状ベースのボーラス投与であって、Na 150 台を目標に持続投与することではない。上限（Na 155–160 / Cl 110–115）に当たったら、まず投与量を見直す。</div>
+    </div>
+
+    <h3 class="mini-h" style="margin:22px 0 9px;">低ナトリウム血症</h3>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>数値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">急性・症候性の初期治療</td>
+              <td><span class="val big">3% NaCl 150 mL を 20 分で</span>
+                  <span class="sub">血清 Na を <b>5 mmol/L 上昇</b>させ症状の改善を図る。不十分なら反復可</span></td>
+              <td><span class="tag gl">GL 明記</span> 欧州低Na血症GL 2014（ESE/ESICM/ERBP）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">補正速度の上限<br>（通常リスク）</td>
+              <td><span class="val big">24 時間で 10–12 mEq/L 以内<br>48 時間で 18 mEq/L 以内</span></td>
+              <td><span class="tag gl">GL 明記</span> Verbalis 2013 米国専門家パネル</td>
+            </tr>
+            <tr>
+              <td class="nowrap">補正速度の上限<br>（ODS 高リスク）</td>
+              <td><span class="val big">24 時間で 8 mEq/L 以内</span>
+                  <span class="sub">目標は 4–6 mEq/L/24h</span></td>
+              <td><span class="tag gl">GL 明記</span> Verbalis 2013<br><b>高リスク＝ Na ≤105・アルコール依存・低K血症・低栄養・進行肝疾患</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">SIADH と CSWS の鑑別</td>
+              <td><span class="val">決め手は<b>体液量</b>（CSWS＝血管内容量減少、SIADH＝正常〜軽度過剰）</span>
+                  <span class="sub">尿中 Na は両者とも高値（&gt;20–40 mEq/L）で<b>鑑別不能</b>。尿浸透圧・血清尿酸も特異度低い。<b>FEurate &gt;10% の持続</b>は CSWS を示唆（SIADH は Na 補正後に正常化）</span></td>
+              <td><span class="tag cus">慣習</span> 統一されたカットオフを持つガイドラインは存在しない</td>
+            </tr>
+            <tr>
+              <td class="nowrap">介入閾値</td>
+              <td><span class="val">明確な統一基準なし</span>
+                  <span class="sub">&lt;135 を低Na血症、症候性は &lt;125–130 で介入というのが一般的。NCS 2020 は「低Na血症を回避すべき」と述べるのみで数値なし</span></td>
+              <td><span class="tag cus">慣習</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">高Na血症の是正速度</td>
+              <td><span class="val">24 時間で 10–12 mEq/L 以内で下げる</span>
+                  <span class="sub">急速な是正は脳浮腫を招く</span></td>
+              <td><span class="tag ext">外挿</span> 一般内科の原則。神経集中治療の GL に規定なし</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3 class="mini-h" style="margin:22px 0 9px;">K・Mg・Ca・P</h3>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>よく使われる目標</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">カリウム</td>
+              <td><span class="val big">K ≥4.0 mEq/L</span>
+                  <span class="sub">不整脈・QT 延長の予防</span></td>
+              <td><span class="tag cus">慣習</span> <b>ガイドライン上の数値推奨は存在しない</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">マグネシウム</td>
+              <td><span class="val big">Mg ≥2.0 mg/dL（≈0.82 mmol/L）</span>
+                  <span class="sub">低Mg はけいれん閾値を下げるという機序的根拠</span></td>
+              <td><span class="tag cus">慣習</span> <b>ガイドライン上の数値推奨は存在しない</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">Ca・P</td>
+              <td><span class="val">神経集中治療に特異的な目標値なし</span>
+                  <span class="sub">一般 ICU の基準に準じる</span></td>
+              <td><span class="tag cus">慣習</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">Mg の「大量投与」</td>
+              <td><span class="val">脳保護目的の Mg 静注に根拠はない</span>
+                  <span class="sub">SAH の第3相 RCT はいずれも<b>陰性</b>：IMASH（良好転帰 64% vs 63%, OR 1.0 [0.7–1.6]）／MASH-2（不良転帰 26.2% vs 25.3%, RR 1.03 [0.85–1.25]）。<b>ICH での RCT は存在しない</b></span></td>
+              <td><span class="tag rct">RCT</span> 陰性結果としての根拠は強い</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>K 4.0 / Mg 2.0 は「よく使われる」だけで、ガイドラインの数値ではない。</strong>欠乏の補正は妥当だが、<strong>正常域の患者に脳保護目的で Mg を上乗せする根拠はない</strong>（SAH で 2 本の第3相 RCT が陰性）。</div>
+    </div>
+  </section>
+
+  <!-- ═══════ 4. 血糖・体温 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>血糖・体温</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">血糖（バンドル目標）</td>
+              <td><span class="val big">非糖尿病 110–140 mg/dL（6.1–7.8 mmol/L）<br>糖尿病 140–180 mg/dL（7.8–10.0 mmol/L）</span></td>
+              <td><span class="tag rct">RCT</span> INTERACT3 のケアバンドル構成要素（共通OR 0.86, p=0.015）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">低血糖</td>
+              <td><span class="val">&lt;40–60 mg/dL（&lt;2.2–3.3 mmol/L）は治療する</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 1 / LOE C-LD</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">高血糖</td>
+              <td><span class="val">&gt;180–200 mg/dL（&gt;10.0–11.1 mmol/L）は治療する</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 2a / LOE C-LD</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">厳格血糖管理</td>
+              <td><span class="val">80–130 mg/dL を狙わない</span>
+                  <span class="sub">機能予後を改善せず重症低血糖が増える</span></td>
+              <td><span class="tag gl">GL 明記</span> <b>COR 3: No Benefit</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">体温</td>
+              <td><span class="val big">≤37.5℃</span>
+                  <span class="sub">AHA/ASA 2022 は<b>数値目標を定めていない</b>（発熱の定義自体が 37.7–38.3℃ と文献間でばらつくため）。解熱治療は COR 2b / C-LD</span></td>
+              <td><span class="tag rct">RCT</span> ≤37.5℃ は INTERACT3 バンドルの値</td>
+            </tr>
+            <tr>
+              <td class="nowrap">治療的低体温</td>
+              <td><span class="val">&lt;35℃ の有効性は不確実</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 2b / LOE C-LD</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 5. 血液・凝固 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>血液・凝固</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">Hb 輸血閾値</td>
+              <td><span class="val big">Hb &lt;9 g/dL で輸血</span>
+                  <span class="sub"><b>Hb 7 まで待たない</b>。TRAIN（急性脳損傷 820 例、ICH 約 18%）で liberal（&lt;9）が restrictive（&lt;7）より 180 日不良転帰を減少：62.6% vs 72.6%、補正RR 0.86（95%CI 0.79–0.94), p=0.002。脳虚血イベントも 8.8% vs 13.5%（RR 0.65, 0.44–0.97）</span></td>
+              <td><span class="tag rct">RCT</span> TRAIN 2024。ただし下記の注意書きを必ず読む</td>
+            </tr>
+            <tr>
+              <td class="nowrap">血小板数</td>
+              <td><span class="val">&gt;100,000/µL を維持（EVD 留置・手術時）</span></td>
+              <td><span class="tag cus">慣習</span> RCT なし。NCS 2016 EVD 合意声明も検証されていないと明記</td>
+            </tr>
+            <tr>
+              <td class="nowrap">フィブリノゲン</td>
+              <td><span class="val">&gt;150 mg/dL（1.5 g/L）</span></td>
+              <td><span class="tag cus">慣習</span> 一般周術期からの外挿。ICH 特異的 RCT なし</td>
+            </tr>
+            <tr>
+              <td class="nowrap">INR / APTT</td>
+              <td><span class="val">EVD 留置時 INR &lt;1.4 が慣習</span>
+                  <span class="sub">NCS 2016 EVD 合意声明は「INR/PTT の閾値は<b>標準化・検証されたことがない</b>」と明記</span></td>
+              <td><span class="tag cus">慣習</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">ワルファリン内服例</td>
+              <td><span class="val">INR ≥2.0 → 4F-PCC ＋ビタミンK静注</span>
+                  <span class="sub">FFP は劣る。PCC 単独では効果が切れるのでビタミンK を必ず併用</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 1 / LOE B-R</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">抗血小板薬内服例</td>
+              <td><span class="val">血小板輸血をしない</span>
+                  <span class="sub">緊急開頭を要する例のみ考慮可（COR 2b / C-LD）</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 3: Harm / LOE B-R</b>（PATCH）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>Hb 9 g/dL は「ICH で証明された値」ではない。</strong>TRAIN の対象は TBI・SAH・ICH の混合で、ICH は約 18%。ICH だけを取り出した二次解析（n=144）では、<strong>180 日機能予後は 71.8% vs 84.7%、RR 0.85（95%CI 0.71–1.01), p=0.06 で有意差なし</strong>。有意だったのは 28 日死亡＋臓器不全の<strong>複合</strong>転帰のみ（71.8% vs 87.7%、RR 0.82 [0.69–0.97], p=0.02）。さらに TBI 単独の HEMOTION（Hb ≤10 vs ≤7）は<strong>有意差なし</strong>（68.4% vs 73.5%、補正絶対差 5.4%［95%CI −2.9〜13.7］）。<strong>疾患ごとに結論が違う領域</strong>であり、Hb 9 は「妥当な選択肢」であって確立した基準ではない。</div>
+    </div>
+  </section>
+
+  <!-- ═══════ 6. 外科・ドレーン ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>外科・ドレーン関連の数値</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>数値</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">小脳出血の手術適応</td>
+              <td><span class="val big">血腫量 ≥15 mL（≒径 3 cm）</span>
+                  <span class="sub">または神経学的悪化／脳幹圧迫／水頭症。<b>EVD 単独は不十分</b>（上方ヘルニアを助長）</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 1 / LOE B-NR</b>（ICH 外科で最も強い推奨）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">低侵襲除去の到達目標</td>
+              <td><span class="val big">残存血腫 ≤15 mL</span>
+                  <span class="sub">達成群で良好転帰 +10.5%（p=0.03）。術後 CT は「除去できたか」でなく「何 mL 残ったか」で読む</span></td>
+              <td><span class="tag rct">RCT</span> MISTIE III の事後 to-goal 解析（試験全体は陰性）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">ENRICH の適応条件</td>
+              <td><span class="val">発症 24 時間以内／30–80 mL／GCS 5–14／<b>lobar</b></span>
+                  <span class="sub">深部（前方被殻）は無益性で登録中止、<b>視床・テント下は試験対象外</b></span></td>
+              <td><span class="tag rct">RCT</span> ENRICH 2024</td>
+            </tr>
+            <tr>
+              <td class="nowrap">術後 CT</td>
+              <td><span class="val">術後 6 時間以内＋神経学的増悪時</span>
+                  <span class="sub">術後頭蓋内出血の約半数が 6 時間以内。<b>推奨クラス付きの規定はない</b></span></td>
+              <td><span class="tag cus">慣習</span> 観察研究＋施設プロトコル</td>
+            </tr>
+            <tr>
+              <td class="nowrap">EVD 設定圧</td>
+              <td><span class="val">標準値は存在しない</span>
+                  <span class="sub">施設プロトコルに従う。排液停止＝改善ではなく、閉塞と ICP 上昇を必ず鑑別</span></td>
+              <td><span class="tag cus">慣習</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">VTE 予防の開始</td>
+              <td><span class="val">IPC は<b>診断当日</b>から／薬理学的予防は <b>24–48 時間</b>から</span>
+                  <span class="sub">薬理学的予防の前に血腫の安定を画像で確認するのが実務（GL 推奨条項自体にはこの文言はない）</span></td>
+              <td><span class="tag gl">GL 明記</span> IPC <b>COR 1 / B-R</b>／薬理学的 <b>COR 2b / C-LD</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 7. 用量早見 ═══════ -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>用量早見 <span class="sec-note">※ 濃度・投与量は施設の採用製剤で必ず確認</span></h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">浸透圧療法</p>
+        <ul class="clean">
+          <li><strong>マンニトール</strong> 0.25–1 g/kg。投与 30 分で最大効果、持続 約3時間。腎不全では使用しない。</li>
+          <li><strong>グリセオール</strong> 200–500 mL/回、1日 1–2 回。投与 2 時間で最大効果、持続 約6時間。</li>
+          <li><strong>23.4% NaCl</strong> 30–60 mL ボーラス／<strong>23.5% NaCl</strong> 2 mL/kg。<span class="tag ext">外挿</span> NCS 2020 が<b>引用する使用例</b>であり、ガイドラインの推奨用量ではない。</li>
+          <li><strong>3% NaCl</strong> ボーラス／持続いずれも可。<strong>NCS 2020 に速度（mL/h）の推奨はない</strong>＝施設プロトコル。</li>
+          <li><strong>急な中止でリバウンド</strong>。漸減する（投与間隔を延ばす）。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">中和・止血</p>
+        <ul class="clean">
+          <li><strong>4F-PCC</strong> INR に応じ 25–50 IU/kg ＋ <strong>ビタミンK 静注</strong>。</li>
+          <li><strong>アンデキサネット</strong>（Xa 阻害薬）。代替は 4F-PCC 50 U/kg。<b>血栓イベントが 10.3% vs 5.6% と増える</b>点を織り込む。</li>
+          <li><strong>イダルシズマブ 5 g</strong>（ダビガトラン）。</li>
+          <li><strong>トラネキサム酸</strong>はルーチン投与しない（TICH-2 で 90 日転帰は aOR 0.88［0.76–1.03］と陰性）。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>この表の限界</h3>
+    <p><b>ICH 術後に特化した目標値の RCT はほぼ存在しない。</b>青（GL 明記）でも、その根拠となった RCT（INTERACT2・ATACH-2・TICH-2）は<b>いずれも早期手術予定例を除外</b>している。ICP・CPP・PaCO₂・PaO₂ は TBI（Brain Trauma Foundation 第4版）からの外挿、輸液管理は SAH からの外挿である。</p>
+    <p><b>赤（慣習）の値は「間違い」ではなく「検証されていない」。</b>K 4.0・Mg 2.0・血小板 10万・フィブリノゲン 150・INR 1.4・EVD 設定圧・血漿浸透圧 320 は、いずれもガイドラインに数値の記載がない。他科と交渉するときにエビデンスとして持ち出さないこと。</p>
+    <p><b>日本脳卒中治療ガイドライン 2021〔改訂 2025〕</b>は書籍のみの公開で本文を照合できていない。院内資料に転記する際は原典で確認すること。</p>
+    <p><b>主要出典</b>: AHA/ASA 2022 ICH ガイドライン (PMID 35579034) / NCS 2020 脳浮腫ガイドライン (32227294) / 欧州低Na血症ガイドライン 2014 (24569125) / Verbalis 2013 (24074529) / TRAIN (39382241) / TRAIN の ICH 二次解析 Faso 2025 (40525290) / HEMOTION (38869931) / INTERACT3 (37245517) / MISTIE III (30739747) / ENRICH (38598795) / IMASH (20378868) / MASH-2 (22633825) / BTF 第4版 (27654000) / SIBICC (31659383) / NCS EVD 合意声明 2016 (26738503)</p>
+  </div>
+
+  <footer>
+    脳出血 術後管理 目標値カード ／ 2026-08-05 作成<br>
+    臨床判断の補助を目的とした要約であり、個々の症例の最終判断は施設プロトコルと主治医の責任において行うこと。
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'ich-targets-card-theme';
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var next;
+    if (cur === 'light') next = 'dark';
+    else if (cur === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

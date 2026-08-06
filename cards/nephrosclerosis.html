@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>高血圧性腎硬化症の降圧薬 ― ICUでの内服導入</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  /* 機序チェーン */
+  .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .chain .step {
+    flex: 1 1 130px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 10px 12px; font-size: .82rem; color: var(--ink-2);
+  }
+  .chain .step b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 2px; }
+  .chain .step.end { background: var(--accent-soft); border-color: var(--accent); }
+
+  /* 段階ラダー */
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 96px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 76px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .98rem; line-height: 1.15; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 640px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  /* 模式図 */
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 74px 1fr; gap: 10px; }
+  .kv dt, .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>高血圧性腎硬化症の降圧薬 ― ICUでの内服導入</h1>
+    <div class="subtitle">Hypertensive nephrosclerosis ／ 救急・集中治療 ／ 作成 2026-08-01</div>
+  </header>
+
+  <p class="lede">
+    第一選択を決めるのは「腎硬化症だから」ではなく <strong>①蛋白尿があるか ②体液過剰か ③持参薬に止めてはいけない薬があるか</strong> の3点。
+    腎硬化症の高血圧は <strong>食塩感受性・容量依存型（低レニン傾向）</strong>が主体で、<strong>降圧効果と腎保護効果は別の軸</strong>で考える。
+  </p>
+
+  <!-- 1. 病態 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>なぜ利尿薬・MRAが効き、RAS阻害薬単剤では下がりきらないのか</h2>
+
+    <div class="card pad">
+      <p class="mini-h">低レニン・容量依存型になる経路</p>
+      <div class="chain">
+        <div class="step"><b>ネフロン数減少</b>糸球体硬化・尿細管間質線維化</div>
+        <div class="step"><b>Na排泄能低下</b>圧-利尿曲線が右方シフト＝食塩感受性</div>
+        <div class="step"><b>細胞外液量増加</b>volume-dependent hypertension</div>
+        <div class="step end"><b>レニン分泌抑制</b>輸入細動脈圧受容体＋緻密斑Na負荷↑</div>
+      </div>
+      <ul class="clean" style="margin-top:13px;">
+        <li><strong>だから利尿薬が効く</strong>：上流の「容量」そのものを抜くため、病態に直接作用する。CLICKでeGFR&lt;30でもクロルタリドンが24時間SBPを<span class="tnum">−10.5 mmHg</span>（95%CI −14.6〜−6.4）下げた。</li>
+        <li><strong>だからRAS阻害薬"単剤"の降圧幅は小さい</strong>：ブロックすべきRASがそもそも回っていない。PATHWAY-2機序サブスタディで、<strong>ベースライン血漿レニンが低いほどスピロノラクトンの降圧が大きい</strong>（レニン単独 r²=0.116, p=0.00024／ARR r²=0.138, p&lt;0.0001）。黒人でのACE阻害薬単剤はメタ解析で白人よりSBP低下が <span class="tnum">4.64 mmHg</span>（95%CI 3.53–5.75）小さい。</li>
+        <li><strong>だから食塩制限・利尿薬を足すとRAS阻害薬が"効くようになる"</strong>：容量を絞ればレニン依存性が顕在化する。Slagman BMJ 2011では、ACE阻害薬にARBを上乗せするより<strong>中等度食塩制限を足すほうが蛋白尿を減らした</strong>。</li>
+      </ul>
+    </div>
+
+    <div class="figure" style="margin-top:12px;">
+      <p class="mini-h">模式図①　圧-利尿曲線（pressure-natriuresis）の右方シフト</p>
+      <svg viewBox="0 0 600 330" role="img" aria-label="腎硬化症では圧-利尿曲線が右方シフトし、同じNa排泄に高い血圧を要する">
+        <defs>
+          <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="ah1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--mild)"/>
+          </marker>
+        </defs>
+
+        <!-- 軸 -->
+        <line x1="70" y1="270" x2="578" y2="270" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="70" y1="270" x2="70" y2="28" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="324" y="302" text-anchor="middle" font-size="12" fill="var(--ink-3)">平均動脈圧（mmHg）</text>
+        <text x="24" y="150" text-anchor="middle" font-size="12" fill="var(--ink-3)" transform="rotate(-90 24 150)">尿中Na排泄量</text>
+
+        <!-- 目盛 -->
+        <g font-size="11" fill="var(--ink-3)" text-anchor="middle">
+          <line x1="152" y1="270" x2="152" y2="275" stroke="var(--line-strong)"/><text x="152" y="288">80</text>
+          <line x1="233" y1="270" x2="233" y2="275" stroke="var(--line-strong)"/><text x="233" y="288">100</text>
+          <line x1="315" y1="270" x2="315" y2="275" stroke="var(--line-strong)"/><text x="315" y="288">120</text>
+          <line x1="397" y1="270" x2="397" y2="275" stroke="var(--line-strong)"/><text x="397" y="288">140</text>
+          <line x1="478" y1="270" x2="478" y2="275" stroke="var(--line-strong)"/><text x="478" y="288">160</text>
+        </g>
+
+        <!-- Na摂取量ライン -->
+        <line x1="70" y1="150" x2="578" y2="150" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="576" y="142" text-anchor="end" font-size="11" fill="var(--ink-3)">Na摂取量（定常状態では排泄＝摂取）</text>
+
+        <!-- 正常曲線 -->
+        <path d="M 110,266 C 195,265 218,220 233,160 C 248,100 278,52 358,44" fill="none" stroke="var(--mild)" stroke-width="2.6"/>
+        <text x="352" y="70" font-size="12" fill="var(--mild)" font-weight="700">正常腎</text>
+
+        <!-- 腎硬化症曲線 -->
+        <path d="M 110,268 C 250,266 322,246 397,186 C 452,141 505,112 574,100" fill="none" stroke="var(--sev)" stroke-width="2.6"/>
+        <text x="500" y="86" font-size="12" fill="var(--sev)" font-weight="700" text-anchor="middle">腎硬化症</text>
+        <text x="500" y="70" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">ネフロン数↓・線維化</text>
+
+        <!-- 交点 -->
+        <circle cx="240" cy="150" r="4.5" fill="var(--mild)"/>
+        <line x1="240" y1="150" x2="240" y2="270" stroke="var(--mild)" stroke-width="1" stroke-dasharray="3 3"/>
+        <circle cx="436" cy="150" r="4.5" fill="var(--sev)"/>
+        <line x1="436" y1="150" x2="436" y2="270" stroke="var(--sev)" stroke-width="1" stroke-dasharray="3 3"/>
+
+        <!-- 右方シフト矢印 -->
+        <line x1="262" y1="212" x2="410" y2="212" stroke="var(--accent)" stroke-width="1.8" marker-end="url(#ah1)"/>
+        <text x="336" y="204" text-anchor="middle" font-size="11.5" fill="var(--accent)" font-weight="700">右方シフト</text>
+
+        <!-- 利尿薬・食塩制限の矢印 -->
+        <line x1="424" y1="122" x2="330" y2="122" stroke="var(--mild)" stroke-width="1.8" marker-end="url(#ah1b)"/>
+        <text x="378" y="113" text-anchor="middle" font-size="11.5" fill="var(--mild)" font-weight="700">利尿薬・食塩制限</text>
+
+        <!-- 平衡血圧の注釈 -->
+        <text x="240" y="255" text-anchor="middle" font-size="11" fill="var(--mild)" font-weight="700">≈100</text>
+        <text x="436" y="255" text-anchor="middle" font-size="11" fill="var(--sev)" font-weight="700">≈150</text>
+      </svg>
+      <p class="fig-cap">
+        腎硬化症では同じNa摂取量を排泄するのに<b>より高い平均動脈圧が必要</b>になる（曲線が右へ移動）。これが食塩感受性・容量依存型高血圧の実体で、
+        <b>利尿薬と食塩制限は曲線そのものを左へ戻す＝上流の異常に直接効く</b>。一方、上流の容量が過剰な状態ではレニン分泌が抑制されているため、RAS阻害薬単剤の降圧幅は小さくなる。
+      </p>
+    </div>
+
+    <div class="figure" style="margin-top:12px;">
+      <p class="mini-h">模式図②　RAASのどこに効くか ─ 全身RASと腎内RASの乖離</p>
+      <svg viewBox="0 0 600 366" role="img" aria-label="RAASカスケード上の各降圧薬の作用点と腎内RASの独立性">
+        <defs>
+          <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+        <g font-size="12" text-anchor="middle">
+
+          <!-- Row A：容量 -->
+          <rect x="20" y="24" width="200" height="40" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"/>
+          <text x="120" y="49" fill="var(--ink)" font-weight="700">細胞外液量↑・Na貯留</text>
+
+          <rect x="252" y="24" width="150" height="40" rx="9" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.4"/>
+          <text x="327" y="49" fill="var(--mild)" font-weight="700">利尿薬・食塩制限</text>
+          <!-- 抑制記号（⊣） -->
+          <line x1="250" y1="44" x2="226" y2="44" stroke="var(--mild)" stroke-width="2"/>
+          <line x1="226" y1="36" x2="226" y2="52" stroke="var(--mild)" stroke-width="2.6"/>
+
+          <!-- 容量 → レニン抑制 -->
+          <line x1="120" y1="64" x2="120" y2="90" stroke="var(--ink-3)" stroke-width="1.6"/>
+          <line x1="108" y1="90" x2="132" y2="90" stroke="var(--ink-3)" stroke-width="2.6"/>
+          <text x="136" y="85" font-size="10.5" fill="var(--ink-3)" text-anchor="start">レニン分泌↓</text>
+
+          <!-- Row C：全身RASカスケード -->
+          <rect x="20" y="98" width="118" height="44" rx="9" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <text x="79" y="118" fill="var(--ink-2)" font-weight="700">レニン</text>
+          <text x="79" y="134" font-size="10.5" fill="var(--sev)" font-weight="700">腎硬化症では低値</text>
+
+          <line x1="140" y1="120" x2="166" y2="120" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ah2)"/>
+          <rect x="168" y="98" width="88" height="44" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+          <text x="212" y="126" fill="var(--ink-2)">アンジオI</text>
+
+          <line x1="258" y1="120" x2="284" y2="120" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ah2)"/>
+          <text x="271" y="88" font-size="11.5" fill="var(--accent)" font-weight="700">ACEi</text>
+          <line x1="271" y1="94" x2="271" y2="112" stroke="var(--accent)" stroke-width="1.6"/>
+          <line x1="263" y1="112" x2="279" y2="112" stroke="var(--accent)" stroke-width="2.4"/>
+
+          <rect x="286" y="98" width="88" height="44" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+          <text x="330" y="126" fill="var(--ink-2)">アンジオII</text>
+
+          <line x1="376" y1="120" x2="402" y2="120" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ah2)"/>
+          <text x="389" y="88" font-size="11.5" fill="var(--accent)" font-weight="700">ARB</text>
+          <line x1="389" y1="94" x2="389" y2="112" stroke="var(--accent)" stroke-width="1.6"/>
+          <line x1="381" y1="112" x2="397" y2="112" stroke="var(--accent)" stroke-width="2.4"/>
+
+          <rect x="404" y="98" width="88" height="44" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+          <text x="448" y="126" fill="var(--ink-2)">血管収縮</text>
+
+          <text x="576" y="126" font-size="10.5" fill="var(--ink-3)" text-anchor="end">＝全身RAS</text>
+
+          <!-- AngII → アルドステロン -->
+          <line x1="330" y1="142" x2="330" y2="170" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ah2)"/>
+          <rect x="240" y="172" width="200" height="40" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+          <text x="340" y="197" fill="var(--ink-2)">アルドステロン → MR活性化</text>
+
+          <text x="176" y="196" font-size="11.5" fill="var(--accent)" font-weight="700">MRA</text>
+          <line x1="200" y1="192" x2="228" y2="192" stroke="var(--accent)" stroke-width="1.6"/>
+          <line x1="228" y1="184" x2="228" y2="200" stroke="var(--accent)" stroke-width="2.4"/>
+
+          <!-- → Na再吸収 -->
+          <line x1="340" y1="212" x2="340" y2="236" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ah2)"/>
+          <rect x="230" y="238" width="230" height="38" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+          <text x="345" y="262" fill="var(--ink)">Na再吸収↑・線維化・蛋白尿</text>
+
+          <!-- 腎内RAS -->
+          <rect x="20" y="292" width="560" height="62" rx="10" fill="var(--warn-bg)" stroke="var(--warn-line)" stroke-width="1.4" stroke-dasharray="6 4"/>
+          <text x="300" y="314" font-size="11.5" fill="var(--ink)" font-weight="700">腎内RAS：糸球体障害 → AGTが尿細管腔へ濾過 → 局所AngII産生↑</text>
+          <text x="300" y="333" font-size="11" fill="var(--ink-2)">全身レニンとは独立に回る。尿中AGT高値でeGFR低下 HR 3.52</text>
+          <text x="300" y="349" font-size="11" fill="var(--accent)" font-weight="700">→ RAS阻害薬はここにも効く＝降圧が乏しくても腎保護は成立する</text>
+        </g>
+      </svg>
+      <p class="fig-cap">
+        腎硬化症では<b>上流のレニンが抑制されている</b>ため、ACEi/ARBで遮断しても降圧幅が伸びにくい。効き目が出るのは<b>容量側（利尿薬）とMR側（MRA）</b>。
+        一方、腎局所のRASは全身レニンと独立に亢進しうるので、<b>「血圧が下がらない」＝「腎を守らない」ではない</b>。蛋白尿があれば降圧が乏しくてもRAS阻害薬は継続する。
+      </p>
+    </div>
+
+    <div class="grid2" style="margin-top:12px;">
+      <div class="card pad">
+        <p class="mini-h">低レニンなのになぜMRAが効くのか</p>
+        <ul class="clean">
+          <li><strong>容量に対して不適切なアルドステロン</strong>（体液量が増えているのに抑制されきらない）。</li>
+          <li><strong>アルドステロン・ブレイクスルー</strong>：ACEi/ARB長期投与中の <span class="tnum">30〜40%</span> でアルドステロンが再上昇する。</li>
+          <li><strong>アルドステロン非依存のMR活性化</strong>（Rac1経路など）＝血中濃度が高くなくてもMRシグナルは回りうる。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">低レニンなのになぜRAS阻害薬に"腎保護"はあるのか</p>
+        <ul class="clean">
+          <li><strong>全身のPRAと腎内RASは乖離する。</strong>血漿レニンが低くても、腎局所ではアンジオテンシノーゲンの尿細管腔への濾過→局所AngII産生が亢進しうる。</li>
+          <li>尿中アンジオテンシノーゲン &gt;3.0 nmol/gCr でその後のeGFR低下 <strong>HR 3.52</strong>（CKD 80例の前向きコホート）。</li>
+          <li>→ <strong>「血圧が下がらない」ことと「腎を守らない」ことは別</strong>。蛋白尿があればRAS阻害薬は降圧が乏しくても続ける。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">△</span>
+      <div>
+        <strong>「CKD＝低レニン」と単純化しない。</strong>腎血管性・虚血性腎症・一部の糸球体腎炎では明確に高レニンになる。実際 Kaiser の横断コホート（n=9,495）では<strong>PRA最高四分位でむしろCKD有病率が高かった</strong>（OR 2.2, 95%CI 1.9–2.6）。
+        また <strong>低レニン＋治療抵抗性＋CKD は原発性アルドステロン症のハイリスク</strong>（治療抵抗性高血圧でのPA有病率20〜30%）。ARRスクリーニングを検討する。
+        なお<strong>レニンを測って薬を選ぶ戦略はアウトカムで証明されていない</strong>（Preston JAMA 1998：年齢・人種のほうがレニン値より予測良好 P&lt;.001 vs P=.05）。機序の理解に使い、測定を必須にはしない。
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 3つの分岐 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>内服を入れる前に決める3つの分岐</h2>
+    <div class="grid3">
+      <div class="card pad">
+        <p class="mini-h">① 蛋白尿</p>
+        <div class="kv">
+          <div><span class="k">測る</span><span class="v">スポット尿 UACR / UPCR</span></div>
+          <div><span class="k">≥300</span><span class="v"><b>RAS阻害薬が第一選択</b>（KDIGO 1B）</span></div>
+          <div><span class="k">30–300</span><span class="v">RAS阻害薬を提案（2C）</span></div>
+          <div><span class="k">&lt;30</span><span class="v"><b>RAS阻害薬を優先する根拠なし</b>。CCB・利尿薬と同列（practice point）</span></div>
+        </div>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">② 体液量</p>
+        <div class="kv">
+          <div><span class="k">みる</span><span class="v">浮腫・胸部Xp・IVC・体重推移・Na/尿量</span></div>
+          <div><span class="k">過剰</span><span class="v"><b>利尿薬を早い段階で</b>。ここを外すと何剤足しても下がらない</span></div>
+          <div><span class="k">不足</span><span class="v">RAS阻害薬・利尿薬とも保留。まず容量を戻す</span></div>
+        </div>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">③ 持参薬</p>
+        <div class="kv">
+          <div><span class="k">最優先</span><span class="v"><b>β遮断薬・クロニジン</b>＝止めたときに害が出る薬</span></div>
+          <div><span class="k">方針</span><span class="v">血行動態が許すかぎり<b>継続</b>。無理ならテーパー</span></div>
+          <div><span class="k">保留可</span><span class="v">RAS阻害薬・利尿薬（安定後に再開を必ず再評価）</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. クラス別 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>クラス別の使い分け <span class="sec-note">用量は成人の目安。ICU導入は下限から</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>クラス</th><th>ICUでの位置づけ</th><th>具体薬・開始量</th><th>効く病態／外す病態</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ca拮抗薬<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">DHP系</span></td>
+              <td><span class="pill go">ICUの主軸</span><br>透析性・腎機能に左右されず最も読みやすい</td>
+              <td><span class="dose tnum">アムロジピン 2.5–5 mg/日</span>（最大10）<br><span class="dose tnum">ニフェジピンCR 20–40 mg/日</span><br><span class="dose tnum">シルニジピン 5–10 mg/日</span></td>
+              <td>ほぼ全例で使える。<b>浮腫・反射性頻脈</b>。徐放製剤は粉砕不可。定常状態まで日単位</td>
+            </tr>
+            <tr>
+              <td>RAS阻害薬<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">ACEi / ARB</span></td>
+              <td><span class="pill mid">蛋白尿あれば軸</span><br>安定後に導入。降圧より腎保護が主目的</td>
+              <td><span class="dose tnum">エナラプリル 2.5 mg/日</span><br><span class="dose tnum">ロサルタン 25 mg/日</span><br><span class="dose tnum">テルミサルタン 20 mg/日</span>（胆汁排泄）</td>
+              <td>蛋白尿・心不全・心筋梗塞後。<b>ショック・脱水・造影剤直後・両側腎動脈狭窄・K≥5.0 では入れない</b></td>
+            </tr>
+            <tr>
+              <td>利尿薬<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">サイアザイド系/類似・ループ</span></td>
+              <td><span class="pill go">体液過剰なら必須</span><br>病態に直接効く</td>
+              <td><span class="dose tnum">トリクロルメチアジド 1–2 mg/日</span><br><span class="dose tnum">インダパミド 1–2 mg/日</span><br><span class="dose tnum">フロセミド 20–40 mg/日</span></td>
+              <td>食塩感受性・浮腫・うっ血。<b>低K/低Na/低Mg・高尿酸・高血糖・可逆性Cr上昇</b>。脱水では逆効果</td>
+            </tr>
+            <tr>
+              <td>MRA</td>
+              <td><span class="pill care">4剤目・急性期は避ける</span></td>
+              <td><span class="dose tnum">スピロノラクトン 12.5–25 mg/日</span><br><span class="dose tnum">エサキセレノン 1.25 mg/日</span><br><span class="dose tnum">フィネレノン 10 mg/日</span></td>
+              <td>治療抵抗性・低レニン・蛋白尿残存。<b>高K血症（FIDELIOで18.3%）・AKI</b>。eGFR低下例では慎重に</td>
+            </tr>
+            <tr>
+              <td>β遮断薬</td>
+              <td><span class="pill care">新規1stにしない／持参薬は継続</span></td>
+              <td><span class="dose tnum">カルベジロール 2.5–10 mg/日</span><br><span class="dose tnum">ビソプロロール 2.5 mg/日</span>（腎機能で減量）</td>
+              <td>頻脈・冠動脈疾患・心不全なら適応。<b>アテノロールは避ける</b>（腎排泄・透析性）</td>
+            </tr>
+            <tr>
+              <td>α遮断薬<br>中枢性</td>
+              <td><span class="pill stop">優先度は最低</span></td>
+              <td><span class="dose tnum">ドキサゾシン 1–4 mg/日</span><br><span class="dose tnum">クロニジン 75–150 µg/日</span></td>
+              <td>前立腺肥大・褐色細胞腫・治療抵抗性の追加薬のみ。<b>ALLHATで心不全 RR 2.04</b>。クロニジンは中止でリバウンド</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="figure" style="margin-top:14px;">
+      <p class="mini-h">模式図③　糸球体血行動態 ─ どの細動脈を拡げるかで意味が変わる</p>
+      <svg viewBox="0 0 600 290" role="img" aria-label="輸入細動脈と輸出細動脈に対するCa拮抗薬とRAS阻害薬の作用点">
+        <defs>
+          <marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+
+        <!-- 薬剤ラベル（上段） -->
+        <text x="140" y="30" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">DHP系Ca拮抗薬</text>
+        <text x="140" y="47" text-anchor="middle" font-size="11" fill="var(--ink-3)">アムロジピン等</text>
+        <line x1="140" y1="56" x2="140" y2="112" stroke="var(--accent)" stroke-width="1.8" marker-end="url(#ah3)"/>
+
+        <text x="462" y="30" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">RAS阻害薬</text>
+        <text x="462" y="47" text-anchor="middle" font-size="11" fill="var(--ink-3)">ACEi・ARB</text>
+        <line x1="462" y1="56" x2="462" y2="112" stroke="var(--accent)" stroke-width="1.8" marker-end="url(#ah3)"/>
+
+        <!-- 輸入細動脈（太い） -->
+        <line x1="30" y1="140" x2="242" y2="140" stroke="var(--accent)" stroke-width="20" stroke-linecap="round" opacity=".55"/>
+        <text x="136" y="180" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">輸入細動脈</text>
+
+        <!-- 糸球体 -->
+        <circle cx="300" cy="140" r="44" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="2.4"/>
+        <path d="M 272,126 q 14,-16 28,0 q 14,16 28,0 M 272,146 q 14,-16 28,0 q 14,16 28,0 M 272,164 q 14,-16 28,0 q 14,16 28,0"
+              fill="none" stroke="var(--ink-3)" stroke-width="1.8"/>
+        <text x="300" y="212" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">糸球体内圧</text>
+
+        <!-- 輸出細動脈（細い） -->
+        <line x1="358" y1="140" x2="570" y2="140" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" opacity=".55"/>
+        <text x="464" y="180" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">輸出細動脈</text>
+
+        <!-- 説明（下段） -->
+        <text x="136" y="240" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">全身血圧は下がるが</text>
+        <text x="136" y="258" text-anchor="middle" font-size="11.5" fill="var(--sev)" font-weight="700">糸球体内圧は下がりにくい</text>
+
+        <text x="464" y="240" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">糸球体内圧↓ → GFR一過性↓</text>
+        <text x="464" y="258" text-anchor="middle" font-size="11.5" fill="var(--mild)" font-weight="700">＝Cr上昇は「効いている」サイン</text>
+
+        <text x="300" y="282" text-anchor="middle" font-size="11" fill="var(--ink-3)">L/N型CCB（シルニジピン等）は輸入・輸出の両方を拡張する</text>
+      </svg>
+      <p class="fig-cap">
+        DHP系CCBは<b>輸入細動脈を優位に拡張</b>するため全身血圧が下がっても糸球体高血圧が残りやすい。RAS阻害薬は<b>輸出細動脈を拡張</b>して糸球体内圧を下げるので、
+        <b>開始直後のCr上昇は薬理作用そのもの</b>（30%以内なら継続）。ただし<b>30%は「中止の境界」であって安全域ではない</b>——10–19%の上昇でも死亡IRR 1.15。
+      </p>
+
+      <div class="grid2" style="margin-top:12px;">
+        <div class="card pad">
+          <p class="mini-h">Crが上がり「すぎる」のは GFR が AngII 依存のとき</p>
+          <ul class="clean">
+            <li><strong>両側腎動脈狭窄／単腎の腎動脈狭窄</strong>——灌流圧そのものが足りず、<strong>輸出細動脈の収縮だけでGFRを保っている</strong></li>
+            <li><strong>循環血液量減少・脱水・利尿薬過量</strong></li>
+            <li><strong>低心拍出の心不全</strong>、<strong>敗血症・ショック</strong>、<strong>造影剤使用の直後</strong></li>
+            <li>→ <strong>ICUで導入を「血行動態が安定するまで待つ」理由がこれ</strong>。支えを外すタイミングとして最悪になる</li>
+          </ul>
+        </div>
+        <div class="card pad">
+          <p class="mini-h">経過のみかたと再検</p>
+          <ul class="clean">
+            <li><strong>2〜4週で頭打ちになるなら継続</strong>。頭打ちにならず上がり続けるなら中止して原因検索。</li>
+            <li><strong>可逆性が鍵</strong>：中止してCrが戻れば血行動態性（機能性）。戻らなければ尿細管障害を疑う。</li>
+            <li><strong>Cr上昇と高K血症はセットで起きる</strong>——アルドステロン低下＋遠位尿細管へのNa到達量減少でK排泄の駆動力が落ちる。<strong>再検は必ずCrとKの両方</strong>。</li>
+            <li>ICUでは<strong>開始48時間以内</strong>と<strong>1〜2週</strong>で再検。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:12px;">
+        <span class="mk">△</span>
+        <div>
+          <strong>Triple whammy（ACEi/ARB ＋ 利尿薬 ＋ NSAIDs）</strong>——<strong>輸入細動脈はプロスタグランジンによる拡張で守られている</strong>ので、NSAIDsでその防御を外すと<strong>入口と出口が同時に緩む</strong>。AKIの典型的な作り方。ICUでは<strong>鎮痛にNSAIDsが入っていないかを必ず確認</strong>する。
+        </div>
+      </div>
+    </div>
+
+    <!-- クラス別の深掘り -->
+    <div class="grid2" style="margin-top:14px;">
+      <div class="card pad">
+        <p class="mini-h">Ca拮抗薬 <span class="tag">ICUで最初に選ぶ</span></p>
+        <ul class="clean">
+          <li><strong>アムロジピンが第一候補</strong>：蛋白結合率98%・肝代謝で<strong>透析で除去されない</strong>。AKI・RRT中でも濃度が安定し、用量調整も不要。</li>
+          <li><strong>RAS阻害薬の2剤目はCCB</strong>。ACCOMPLISHで腎複合エンドポイントが 2.0% vs HCTZ 3.7%、<strong>HR 0.52</strong>（0.41–0.65）。ただしサイアザイドの可逆的eGFR dipがイベントに数えられた過大評価の疑いは残る。</li>
+          <li><strong>半減期30–50時間＝定常状態まで約1週間</strong>。静注から切り替えた翌日に「効かない」と即断して増量を重ねない。</li>
+          <li>DHP系は輸入細動脈優位に拡張するため<strong>糸球体内圧が下がりにくい</strong>のが理論的弱点。<strong>L/N型（シルニジピン等）</strong>は輸出細動脈も拡張し、CARTERで降圧同等ながらUPCRを有意に低下させた。ただし<strong>オープンラベル・サロゲート＝慢性期の選択肢</strong>で、急性期の判断材料にはしない。</li>
+          <li>頻脈が問題ならジルチアゼム（非DHP）だが、陰性変力・伝導抑制と相互作用（CYP3A4）に注意。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">RAS阻害薬 <span class="tag">蛋白尿があるなら軸</span></p>
+        <ul class="clean">
+          <li><strong>ACEi と ARB の使い分け</strong>：腎保護のエビデンス量はACEi（AASKはramipril）。空咳・血管性浮腫があればARB。<strong>併用（dual blockade）はしない</strong>（高K・AKI増加）。</li>
+          <li><strong>薬物動態で選ぶ</strong>：エナラプリル・リシノプリルは腎排泄で蓄積・透析性あり。<strong>テルミサルタンは胆汁排泄</strong>で腎機能低下時も扱いやすい。ARBは概して透析非除去。</li>
+          <li><strong>入れるタイミング</strong>：昇圧薬off、活動性出血なし、造影剤直後でない、AKIが増悪していない、K&lt;5.0。</li>
+          <li><strong>Cr上昇の許容</strong>：30%以内なら継続、超えたら中止し腎動脈狭窄・脱水・NSAIDsを検索。ただしSchmidt BMJ 2017では<strong>10–19%の上昇でも死亡IRR 1.15</strong>（1.09–1.22）＝<strong>30%は安全域ではなく中止の境界</strong>。10%上がった時点で原因を探す。</li>
+          <li><strong>eGFR&lt;30でも中止しない</strong>：STOP-ACEiで中止群と継続群の3年後eGFRに差なし（12.6 vs 13.3, p=0.42）＝<strong>止めても腎機能は良くならない</strong>。急性期に保留したら<strong>退院処方で再開可否を必ず再評価</strong>。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">利尿薬 <span class="tag">病態そのものに効く</span></p>
+        <ul class="clean">
+          <li><strong>eGFR&lt;30でもサイアザイド類似薬は効く</strong>。CLICK（CKD G4, n=160）で24時間SBP群間差 <span class="tnum">−10.5 mmHg</span>、UACRも群間で<span class="tnum">50パーセントポイント</span>低下。<strong>「eGFR&lt;30ならループへ」という切替基準に根拠はない</strong>。</li>
+          <li><strong>サイアザイド vs ループの選択</strong>：<b>血圧が主目的＝サイアザイド系/類似薬</b>、<b>うっ血・浮腫が主目的＝ループ</b>。両者は排他ではなく、難治例では併用（sequential nephron blockade）も選択肢だが電解質喪失が加速する。</li>
+          <li><strong>導入初期のeGFR低下は血行動態性で可逆</strong>（CLICKでは中止後に回復）。<strong>腎障害の進行と誤読して中止しない</strong>。</li>
+          <li>ICUで入れるなら<strong>K・Na・Mg・Cr・尿酸を頻回に</strong>。ループ併用例で腎機能変化がより大きい。</li>
+          <li>食塩制限が併走していないと利尿薬の効果は削がれる。<strong>経腸栄養のNa量まで確認する</strong>。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">MRA <span class="tag">4剤目。急性期には足さない</span></p>
+        <ul class="clean">
+          <li><strong>降圧目的</strong>：PATHWAY-2で家庭SBP <span class="tnum">−8.70 mmHg</span>（vs placebo）、doxazosin・bisoprololに優越＝<strong>4剤目はMRA</strong>。低レニン・容量依存の腎硬化症の病態にも合致。</li>
+          <li><strong>腎保護目的</strong>：非糖尿病CKDではFIND-CKDが初のRCT（eGFR slope差 0.7 mL/min/1.73m²/年、複合 HR 0.77）。ただし<strong>UACR≥200 mg/gに限定</strong>＝<strong>蛋白尿のない腎硬化症には外挿できない</strong>。FIDELIO/FIGAROは糖尿病限定。</li>
+          <li><strong>降圧のMRAと腎保護のMRAは目的もエビデンスも別物</strong>として扱う。</li>
+          <li><strong>高K血症がFIDELIOで18.3%</strong>（プラセボ9.0%）。RAS阻害薬併用＋eGFR低下＋AKIが重なるICUではさらに上がる。<strong>急性期に足す薬ではない</strong>。</li>
+          <li>ステロイド型（スピロノラクトン）は女性化乳房・月経異常。<strong>エサキセレノン・フィネレノンは選択性が高く</strong>これらが問題になりにくい。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">β遮断薬 <span class="tag">"新規導入"と"継続"を分けて考える</span></p>
+        <ul class="clean">
+          <li><strong>新規の第一選択にはしない</strong>：AASKで ramipril vs metoprolol の腎複合エンドポイントが <strong>22%減</strong>（95%CI 1–38%, p=0.04）。</li>
+          <li><strong>しかし持参薬なら継続する</strong>。急な中止は受容体アップレギュレーションによる交感神経過感受性＝頻脈・虚血・血圧上昇を招く。</li>
+          <li><strong>POISEの教訓を誤読しない</strong>：死亡 HR 1.33・脳卒中 HR 2.17 が示すのは「<strong>周術期に高用量で新規に始めるな</strong>」であって「慢性内服を止めてよい」ではない。</li>
+          <li><strong>選ぶならカルベジロール</strong>：高蛋白結合率で透析非除去。GEMINIで微量アルブミン尿への進展 <span class="tnum">6.4% vs メトプロロール10.3%</span>（OR 0.60, 0.36–0.97, p=0.04）、HbA1cの悪化もなし。<span style="color:var(--ink-3);">※ただし透析患者の後ろ向きコホートではcarvedilolで予後不良という逆向きの報告もあり、機序的優位が予後に直結するとは限らない。</span></li>
+          <li><strong>アテノロールは避ける</strong>：腎排泄でESRDでは半減期が6時間→約73時間に延長、かつ透析で除去されるため投与タイミングの管理が煩雑。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">α遮断薬・中枢性 <span class="tag">使いどころは限定</span></p>
+        <ul class="clean">
+          <li><strong>ドキサゾシンを第一選択にしない</strong>：ALLHATでクロルタリドン比、<strong>うっ血性心不全 RR 2.04</strong>（1.79–2.32, p&lt;0.001／4年時 8.13% vs 4.45%）で当該群が早期中止。<strong>体液貯留傾向の強い腎硬化症では特に不利</strong>。</li>
+          <li>使うのは<strong>前立腺肥大の合併・褐色細胞腫（この場合はむしろ必須で、α遮断が十分効いてからβ遮断薬）・多剤でも下がらない追加薬</strong>のとき。</li>
+          <li><strong>クロニジンは持参薬にあれば要注意</strong>：中止後<strong>24–36時間</strong>でリバウンド高血圧・頻脈。高用量・長期例、β遮断薬併用例でより顕著。継続かテーパー（2–4日）。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 導入順序 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>ICUでの導入順序</h2>
+    <div class="ladder">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">Step 0</span><span class="sev-name">入室時</span></div>
+        <div class="rung-body"><b>持参薬のβ遮断薬・クロニジンの継続可否を最初に決める</b>。止めたときに起きる害が最も予測可能。同時に UACR/UPCR・体液量・K・Cr を確認。</div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">Step 1</span><span class="sev-name">まず入れる</span></div>
+        <div class="rung-body"><b>Ca拮抗薬（アムロジピン 2.5–5 mg/日）</b>。腎機能・透析性に左右されず、血行動態が読みやすい。経管ならOD錠を選ぶ。</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">Step 2</span><span class="sev-name">体液を見て</span></div>
+        <div class="rung-body">体液過剰があれば<b>利尿薬を追加</b>（サイアザイド系/類似薬、うっ血が強ければループ）。腎硬化症ではここが効く。電解質を頻回フォロー。</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">Step 3</span><span class="sev-name">安定したら</span></div>
+        <div class="rung-body">昇圧薬off・AKI回復・K&lt;5.0 を確認して<b>RAS阻害薬を導入／再開</b>。蛋白尿があるほど優先度が上がる。<b>開始48時間以内と1–2週でCr・Kを再検</b>。</div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">Step 4</span><span class="sev-name">それでも</span></div>
+        <div class="rung-body">3剤でも不十分なら<b>MRA</b>。ICUでは急がない。ここまで来たら<b>原発性アルドステロン症・腎動脈狭窄・睡眠時無呼吸・薬剤性（NSAIDs・ステロイド）・疼痛/せん妄/離脱</b>の二次性要因を洗い直す。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 落とし穴 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>ICU特有の落とし穴</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">静注からの切り替え</p>
+        <ul class="clean">
+          <li>目標域に<strong>4–6時間安定</strong>して到達してから内服を開始し、<strong>ニカルジピンをオーバーラップさせて漸減</strong>。</li>
+          <li><strong>静注→内服の等価用量換算表は存在しない</strong>（確立エビデンスなし）。アムロジピンは定常状態まで日単位かかるため、切り替え直後の空白でリバウンドしやすい。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">経管投与</p>
+        <ul class="clean">
+          <li><strong>ニフェジピンCRは粉砕・簡易懸濁不可</strong>（徐放構造の破壊で急激な血圧低下）。</li>
+          <li><strong>アムロジピンOD錠は簡易懸濁可</strong>。経管が要りそうなら最初からこちらを選ぶ。</li>
+          <li>ARB配合剤は製剤ごとに崩壊性が異なる。<strong>院内の可否一覧で個別確認</strong>（この領域は一次研究ではなく薬剤部資料・成書レベル）。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">AKI・腎代替療法中</p>
+        <ul class="clean">
+          <li><strong>透析で除去されず扱いやすい</strong>：アムロジピン・カルベジロール・ARB全般（いずれも高蛋白結合率）。</li>
+          <li><strong>透析性が高く投与タイミング管理が要る</strong>：アテノロール・リシノプリル・エナラプリル。</li>
+          <li>RRT中は除水そのものが降圧因子。<strong>透析日の内服タイミングを処方時に決めておく</strong>。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">降圧目標・速度</p>
+        <ul class="clean">
+          <li>腎硬化症では<strong>腎血流の自己調節曲線が高圧側にシフト</strong>している。ICUの数日で正常化を狙わない。</li>
+          <li>ATACH-2で強化降圧群の<strong>腎有害事象が 9.0% vs 4.0%</strong>（p=0.002）。<strong>下げ過ぎがAKIを作る</strong>。</li>
+          <li>AASKでは<strong>より厳格な降圧目標（MAP≤92）の腎保護上の上乗せ効果は示されなかった</strong>。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">△</span>
+      <div><strong>周術期・ICUでRAS阻害薬を一律中止する根拠はない。</strong>Stop-or-Not（n=2,222 RCT）で継続22% vs 中止22%（RR 1.02, p=0.85）。ただし<strong>対象は待機手術の安定例</strong>で、ショック・活動性出血・重症ICU患者は含まれない。<strong>「不安定な間は保留、安定したら戻す」</strong>と読むのが正しい使い方。</div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの要点と限界</h3>
+    <p><b>腎硬化症そのものを対象にした大規模RCTはAASKのみ。</b>ramiprilの優越性が明確なのは<b>蛋白尿あり群</b>（GFR低下36%抑制、複合48%減 95%CI 20–66%）で、<b>蛋白尿なし群での優越性は統計的に確定していない</b>（原著も "may offer benefit" という控えめな表現）。KDIGOの推奨強度（A3=1B／A2=2C／A1=practice point）はこの非対称をそのまま反映している。</p>
+    <p><b>エビデンスが弱い／存在しない領域</b>：①蛋白尿陰性腎硬化症の第一選択（RAS阻害薬を優先する直接エビデンスなし）②急性期の降圧速度「25%ルール」（この数値を検証したRCTは存在せず専門家意見）③重症ICU患者でのRAS阻害薬中止の是非（直接検証した研究なし）④AKI/RRT患者での降圧薬選択（薬物動態の原則論でRCTなし）⑤レニンガイド治療（アウトカム改善のRCTなし）。</p>
+    <p><b>主要文献</b>：AASK（Agodoa JAMA 2001, PMID 11386927／Wright JAMA 2002, PMID 12435255）／STOP-ACEi（NEJM 2022, PMID 36326117）／Schmidt（BMJ 2017, PMID 28279964）／ACCOMPLISH腎（Lancet 2010, PMID 20170948）／CLICK（NEJM 2021, PMID 34739197）／PATHWAY-2（Lancet 2015, PMID 26414968／機序 Lancet Diabetes Endocrinol 2018, PMID 29655877）／FIND-CKD（NEJM 2026, PMID 42246672）／FIDELIO-DKD（NEJM 2020, PMID 33264825）／CARTER（Kidney Int 2007, PMID 17943080）／ALLHAT doxazosin（JAMA 2000, <b>PMID 10789664</b>）／GEMINI（JAMA 2004, <b>PMID 15536109</b>）／POISE（Lancet 2008, PMID 18479744）／Stop-or-Not（JAMA 2024, PMID 39212270）／ATACH-2（NEJM 2016, PMID 27276234）／尿中AGT（JASN 2007, PMID 17409316）／黒人ACEi反応性メタ解析（BMC Nephrol 2013, PMID 24067062）／Preston（JAMA 1998, PMID 9777817）。</p>
+    <p style="color:var(--ink-3);">※CARTERのUPCR定量値は原著本文（有料）未確認。各文献ノートは Obsidian の <b>文献／高血圧性腎硬化症（CKD・降圧薬選択）</b> および <b>文献／周術期・ICU降圧管理</b> に登録済み。</p>
+  </div>
+
+  <footer>
+    情報提供目的の要約であり、医学的助言・処方ではありません。<br>
+    実際の薬剤選択・用量は施設プロトコルと指導医の確認のもとで判断してください。
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

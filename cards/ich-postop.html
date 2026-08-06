@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>脳出血 術後管理ポケットカード</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 2rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .theme-btn {
+    margin-left: auto; font: inherit; font-size: .74rem; cursor: pointer;
+    background: var(--surface); color: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px;
+  }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .9rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+  ul.clean ul { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  ul.clean ul li { padding-left: 15px; font-size: .85rem; }
+  ul.clean ul li::before { width: 4px; height: 4px; background: var(--ink-3); left: 3px; top: .68em; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 96px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 480px) { .rung { grid-template-columns: 74px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .66rem; letter-spacing: .08em; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.15; }
+  .rung.mild .rung-tag { background: var(--mild); }
+  .rung.mod  .rung-tag { background: var(--mod); }
+  .rung.sev  .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .89rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 540px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  .nowrap { white-space: nowrap; }
+  td .dose { font-family: var(--mono); font-size: .81rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.mild { background: var(--mild-soft); color: var(--mild); }
+  .pill.mod { background: var(--mod-soft); color: var(--mod); }
+  .pill.sev { background: var(--sev-soft); color: var(--sev); }
+  .pill.acc { background: var(--accent-soft); color: var(--accent); }
+  .pill.gray { background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .87rem; color: var(--ink-2); margin-top: 12px;
+  }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+
+  /* 時系列バー */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-row { display: grid; grid-template-columns: 96px 1fr; gap: 0; border-bottom: 1px solid var(--line); }
+  .tl-row:last-child { border-bottom: none; }
+  @media (max-width: 480px) { .tl-row { grid-template-columns: 72px 1fr; } }
+  .tl-when {
+    padding: 12px 10px 12px 15px; font-size: .78rem; font-weight: 700; color: var(--accent);
+    border-right: 1px solid var(--line); font-variant-numeric: tabular-nums;
+  }
+  .tl-what { padding: 12px 15px; font-size: .87rem; color: var(--ink-2); }
+  .tl-what b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .82rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 6px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; background: #fff; color: #000; }
+    .card, .rung, .callout { box-shadow: none; }
+    section { break-inside: avoid; }
+    .theme-btn { display: none; }
+  }
+</style>
+
+<style>
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>脳出血 術後管理</h1>
+    <button class="theme-btn" id="themeBtn" type="button">配色切替</button>
+    <div class="subtitle">Intracerebral Hemorrhage ／ 血腫除去・減圧開頭・脳室ドレナージ後の ICU 管理 ／ 更新 2026-07-31</div>
+  </header>
+
+  <p class="lede">
+    術後管理の柱は <strong>①再出血を作らない（血圧・凝固） ②ICP と浮腫を制御する ③二次障害を防ぐ全身管理 ④早すぎる予後判断をしない</strong>。
+    重要な前提として、<strong>INTERACT2・ATACH-2・TICH-2 はいずれも「早期手術予定例」を除外</strong>しており、
+    ここに挙げた降圧目標や内科管理は <strong>非手術例のエビデンスからの外挿</strong>である。術後に特化した RCT はほぼ存在しない。
+  </p>
+
+  <!-- ───────── 0. 術直後 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">0</span>術直後 48 時間のタイムライン</h2>
+    <div class="card">
+      <div class="timeline">
+        <div class="tl-row">
+          <div class="tl-when">帰室直後</div>
+          <div class="tl-what"><b>基準値の確定</b>：GCS・瞳孔・四肢麻痺を「この患者のベースライン」として記録。以後はここからの差分で判断する。動脈ライン、降圧薬の持続静注、ドレーン排液量・性状、ICP/CPP（留置例）。</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-when">〜6 時間</div>
+          <div class="tl-what"><b>術後 CT</b>。術後頭蓋内出血の約半数はこの時間帯に起こる（観察研究）。<span class="pill gray">推奨クラス付きの規定はなく施設プロトコル</span> 神経学的増悪があれば時間を問わず即 CT。</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-when">24 時間</div>
+          <div class="tl-what">血腫の安定を画像で確認 → <b>薬理学的 VTE 予防の開始判断</b>（24〜48 時間, COR 2b/C-LD）。抜管可否の評価開始。</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-when">〜48 時間</div>
+          <div class="tl-what"><b>新規 DNAR・治療撤退は入院 2 日目の終わりまで延期</b>（COR 2a, LOE B-NR）。この時期の予後判断は自己成就的予言になる。</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-when">3〜5 日</div>
+          <div class="tl-what"><b>浮腫の増悪期</b>。意識・正中偏位の再評価。二次的減圧の要否を判断する山場。</div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-when">7〜14 日</div>
+          <div class="tl-what"><b>血腫周囲浮腫（PHE）のピーク</b>（観察研究）。遅発性 PHE 拡大は 90 日転帰不良の独立予測因子。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 1. 血圧 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>血圧管理 <span class="sec-note">再出血予防の主戦場</span></h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">目標（AHA/ASA 2022）</p>
+        <ul class="clean">
+          <li>SBP <strong>150〜220 mmHg</strong> の軽〜中等症 → <strong>SBP 140 を目標に下げ、130〜150 で維持</strong>　<span class="pill acc">COR 2b / B-R</span></li>
+          <li>SBP &gt;150 から<strong>急激に &lt;130 まで下げるのは有害の可能性</strong>　<span class="pill sev">COR 3: Harm / B-R</span></li>
+          <li><strong>SBP &gt;220 に対する独立した推奨は存在しない</strong>（ガイドラインは knowledge gap として記載）。</li>
+          <li>ICP モニタ留置例では SBP 単独でなく <strong>CPP 50〜70 mmHg</strong> を併せて見る（TBI からの外挿）。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">やり方</p>
+        <ul class="clean">
+          <li><strong>持続静注で「なめらかに」</strong>。ニカルジピン／クレビジピン。ボーラスの反復でピークと谷を作らない。</li>
+          <li><strong>血圧変動（BPV）そのものが不良転帰と関連</strong>（INTERACT2 事後解析＝観察研究レベル）。目標値の達成より<strong>逸脱時間を減らす</strong>ことを意識する。</li>
+          <li>疼痛・不穏・膀胱充満・低酸素・ICP 亢進など<strong>「上がる理由」を先に潰す</strong>。降圧薬の増量は最後。</li>
+          <li>術後例の至適目標を検証した RCT はない。施設の術後プロトコル（多くは SBP &lt;140）に従う。<span class="pill gray">専門家意見</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 2. 凝固・抗血栓薬 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>凝固・抗血栓薬の中和</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>内服薬</th><th>中和</th><th>エビデンス</th><th>注意</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">ワルファリン</td>
+              <td><span class="dose">4F-PCC</span>（INR に応じ 25〜50 IU/kg）<br>＋ <span class="dose">ビタミンK 静注</span>。FFP は劣る</td>
+              <td><span class="pill mild">COR 1 / B-R</span><br>INCH: PCC 30 IU/kg vs FFP 20 mL/kg で 3 時間以内の INR 是正 <b>67% vs 9%</b></td>
+              <td>PCC 単独では効果が切れる。<strong>ビタミンK を必ず併用</strong>。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">Xa 阻害薬<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-3)">(アピキサバン等)</span></td>
+              <td><span class="dose">アンデキサネット アルファ</span><br>代替: <span class="dose">4F-PCC 50 U/kg</span></td>
+              <td>ANNEXA-I: 止血成功 <b>67% vs 53%</b>（補正差 13.4%, 95%CI 4.6–22.2, p=0.003）</td>
+              <td><strong>血栓イベント 10.3% vs 5.6% と増加</strong>。30 日 mRS 0–3 は <b>28.0% vs 31.0%</b> で<strong>機能予後の改善は示されていない</strong>。止血の勝利＝予後の勝利ではない。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">ダビガトラン</td>
+              <td><span class="dose">イダルシズマブ 5 g</span></td>
+              <td><span class="pill mod">COR 2a / B-NR</span></td>
+              <td>透析も選択肢。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">抗血小板薬</td>
+              <td><strong>血小板輸血はしない</strong></td>
+              <td>PATCH: 3 か月死亡/依存が <b>補正OR 2.05（95%CI 1.18–3.56), p=0.01</b> と悪化　<span class="pill sev">COR 3: Harm / B-R</span></td>
+              <td><strong>緊急開頭手術を要する例のみ</strong>考慮してよい（COR 2b / C-LD）。「出血だからとりあえず血小板」は害。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">全例</td>
+              <td>トラネキサム酸</td>
+              <td>TICH-2: 90 日機能転帰 <b>補正OR 0.88（0.76–1.03), p=0.11</b> で陰性（血腫拡大・7 日死亡は減少）　<span class="pill mod">COR 2b / B-R</span></td>
+              <td>ルーチン投与を支持する根拠はない。TICH-3 は進行中で<strong>結果未公表</strong>。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="mk">!</span>
+      <div>血小板 <strong>≥80〜100×10³/µL</strong>、フィブリノゲン <strong>&gt;150 mg/dL</strong> という周術期の目標値は<strong>慣習・専門家意見</strong>であり、自発性 ICH で検証した RCT はない。Hb の輸血閾値も同様にエビデンスは乏しい。</div>
+    </div>
+  </section>
+
+  <!-- ───────── 3. ICP・浮腫 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>ICP・脳浮腫</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">モニタリング</p>
+        <ul class="clean">
+          <li>中等度〜重症 ICH／IVH で<strong>意識レベル低下</strong>があれば ICP モニタを考慮　<span class="pill mod">COR 2b / B-NR</span></li>
+          <li><strong>水頭症が意識障害の原因</strong>なら脳室ドレナージを行う　<span class="pill mild">COR 1 / B-NR</span></li>
+          <li>目標 <strong>ICP &lt;20〜22 mmHg / CPP 50〜70 mmHg</strong> は TBI 領域からの外挿。ICH で検証した RCT はない。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">浸透圧療法</p>
+        <ul class="clean">
+          <li>NCS 2020 は <strong>マンニトールより高張食塩水を推奨</strong>（弱い推奨・エビデンスの質は低〜中、TBI/SAH からの外挿）。</li>
+          <li>マンニトール <span class="dose">0.25〜1 g/kg</span> ／ 高張食塩水はボーラスまたは持続。<strong>症状ベースで打つ</strong>（Na の数値を追いかけない）。</li>
+          <li><strong>合併症の型が違う</strong>：マンニトール＝AKI（神経外科 ICU 単施設コホート n=3964 で 13.6%）、高張食塩水＝高Cl性代謝性アシドーシス。</li>
+          <li><strong>急な中止でリバウンド</strong>。漸減する。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card pad" style="margin-top:12px;">
+      <p class="mini-h">呼吸・体位・体温</p>
+      <ul class="clean">
+        <li><strong>予防的過換気はしない</strong>。ヘルニア徴候時の一時的救済に限り PaCO₂ 32〜35 mmHg。恒常的な低炭酸ガス血症は脳虚血を招く。</li>
+        <li>頭位挙上 30°、頸部正中、静脈還流の妨げ（気管チューブ固定帯・頸静脈カテーテル）を確認。</li>
+        <li>発熱：AHA/ASA 2022 に<strong>具体的な目標体温の数値はない</strong>。解熱治療は <span class="pill mod">COR 2b / C-LD</span>、治療的低体温（&lt;35℃）も <span class="pill mod">COR 2b / C-LD</span> で有効性は不確実。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── 4. EVD / IVH ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>脳室ドレナージ・脳室内出血</h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>EVD + アルテプラーゼ髄注（CLEAR III）</strong>：180 日 mRS 0–3 は <b>48% vs 45%、RR 1.06（95%CI 0.88–1.28), p=0.554</b> で<strong>機能予後の改善なし</strong>。一方 180 日死亡率は <b>18% vs 29%</b> と有意に低下し、生存者の mRS 5 は <b>17% vs 9%</b> と増加。<strong>「死亡が重度障害に置き換わる」トレードオフ</strong>として家族に説明する。
+          <ul><li>ガイドライン上も機能転帰改善は <span class="pill mod">COR 2b / B-R</span>（死亡率低減は COR 2a / B-R）。</li></ul>
+        </li>
+        <li><strong>感染対策</strong>：抗菌薬含浸カテーテルで CSF 感染 <b>3.6% vs 13.7%（OR 0.25, 95%CI 0.12–0.52）</b>＝メタ解析レベルで有効。含浸カテーテル使用下では全身予防抗菌薬の上乗せ効果は乏しい。CLEAR III 本体でも脳室炎は <b>7% vs 12%（RR 0.55, 95%CI 0.31–0.97), p=0.048</b>。</li>
+        <li>閉塞・排液量・波形を定期確認。<strong>排液が止まった＝良くなった、ではない</strong>（閉塞と ICP 上昇を必ず鑑別）。</li>
+        <li><strong>シャント移行は約 18%</strong>（CLEAR III）。weaning は漸減 vs 急速でシャント率に有意差なし（RR 0.85, 95%CI 0.49–1.46）。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── 5. 呼吸・鎮静・けいれん ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>呼吸・鎮静・けいれん</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">抜管・気管切開</p>
+        <ul class="clean">
+          <li><strong>神経症例では SBT のモダリティ・実施時間が抜管失敗を予測しない</strong>（ENIO の SBT 副次解析、抜管失敗 <b>21.1%</b>）。RSBI や「GCS ≥8」の単独カットオフを信用しない。</li>
+          <li>一貫して予測因子として残るのは<strong>咳嗽力</strong>。喀痰量・吸引回数・気道保護を見る。</li>
+          <li><strong>一律の早期気管切開は支持されない</strong>。SETPOINT2（挿管後中央値 4 日 vs 11 日）で 6 か月良好転帰 <b>43.5% vs 47.1%, p=0.73</b>。意識の回復速度と咳嗽で個別に判断する。</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">けいれん</p>
+        <ul class="clean">
+          <li><strong>発作歴のない患者への予防投与はしない</strong>　<span class="pill sev">COR 3: No Benefit / B-NR</span>。NCS 2024 も「回避を提案」（弱い推奨・エビデンスの質 very low）。</li>
+          <li>やむを得ず使うなら <strong>レベチラセタム</strong>をフェニトインより優先し <strong>7 日以内</strong>（NCS 2024, 弱い推奨）。</li>
+          <li>臨床的発作、または意識障害を伴う脳波上の発作は<strong>治療する</strong>（COR 1）。</li>
+          <li><strong>cEEG を回す閾値</strong>：病変の重症度で説明できない意識障害の遷延／<strong>開頭術後（OR 3.5）</strong>／<strong>lobar 出血（OR 7.0）</strong>。術後患者はそもそも NCSE の高リスク群。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 6. 全身管理 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>全身管理</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>やること</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">VTE 予防</td>
+              <td><strong>間欠的空気圧迫は診断当日から</strong>全例。<br>薬理学的予防（低用量 UFH / LMWH）は<strong>血腫の安定を画像で確認したうえで 24〜48 時間</strong>。</td>
+              <td>IPC <span class="pill mild">COR 1 / B-R</span>（CLOTS-3: 近位DVT 8.5% vs 12.1%, 6か月生存 HR 0.86, 95%CI 0.73–0.99）<br>薬理学的 <span class="pill mod">COR 2b / C-LD</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">血糖</td>
+              <td>低血糖（&lt;40〜60 mg/dL）は治療。高血糖（&gt;180〜200 mg/dL）も治療。<strong>厳格血糖管理はしない</strong>。</td>
+              <td>低血糖治療 <span class="pill mild">COR 1 / C-LD</span>／高血糖治療 <span class="pill mod">COR 2a / C-LD</span></td>
+            </tr>
+            <tr>
+              <td class="nowrap">Na</td>
+              <td>SIADH と CSWS を体液量で鑑別（CSWS は volume 減少）。<strong>慢性低Na の補正は 24 時間で 8〜10 mEq/L 以内</strong>。</td>
+              <td>ODS 予防（メタ解析）。高張食塩水使用中は目標 Na を決めて追う。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">嚥下・栄養</td>
+              <td><strong>経口開始前に全例で嚥下スクリーニング</strong>。困難なら経管で早期経腸栄養。</td>
+              <td>スクリーニングの 24 時間超の遅れは合併症増加と関連（観察研究）。肺炎は最多の院内感染（約 15%）。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">離床</td>
+              <td><strong>早期だが低用量・低頻度</strong>で。24 時間以内の高頻度・高用量離床は避ける。</td>
+              <td>AVERT: 超早期の高用量離床はむしろ 3 か月良好転帰（mRS 0–2）を <b>46% vs 50%、補正OR 0.73（95%CI 0.59–0.90), p=0.004</b> と<strong>減少</strong>させた（RCT, n=2104）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 7. 悪化時 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>術後に悪化したとき</h2>
+    <div class="ladder">
+      <div class="rung sev">
+        <div class="rung-tag"><span class="sev-label">まず</span><span class="sev-name">即 CT</span></div>
+        <div class="rung-body">GCS 2 点以上の低下・瞳孔不同・新規麻痺 → <b>ためらわず CT</b>。鑑別は <b>①再出血 ②浮腫の進行 ③水頭症 ④ドレーン閉塞 ⑤NCSE ⑥全身性（低Na・低血糖・薬剤・感染）</b>。CT が陰性なら残りを潰す（とくに<b>NCSE と代謝性</b>）。</div>
+      </div>
+      <div class="rung mod">
+        <div class="rung-tag"><span class="sev-label">再出血</span><span class="sev-name">再手術</span></div>
+        <div class="rung-body">明らかな血腫再増大＋対応する意識低下が典型的トリガー。<b>数値化された閾値を示す高品質 RCT はない</b>（STICH の rescue 基準も「神経学的悪化」という定性的表現）。凝固・血圧の再点検を同時に。</div>
+      </div>
+      <div class="rung mod">
+        <div class="rung-tag"><span class="sev-label">浮腫</span><span class="sev-name">減圧</span></div>
+        <div class="rung-body">昏睡・著明な正中偏位・難治性 ICP 上昇 → 減圧開頭を考慮（<b>COR 2b / C-LD</b>、死亡率低減目的。機能予後改善は不確実）。3〜5 日目が典型的な増悪期。</div>
+      </div>
+      <div class="rung mild">
+        <div class="rung-tag"><span class="sev-label">水頭症</span><span class="sev-name">EVD</span></div>
+        <div class="rung-body">脳室拡大の進行＋意識障害 → EVD 追加、遷延すればシャント（CLEAR III で約 18%）。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 8. 抗凝固の再開 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>抗凝固の再開</h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>心房細動</strong>：COCROACH（RCT の個別患者データメタ解析）で再開群は<strong>虚血性主要心血管イベント HR 0.27（95%CI 0.13–0.56）</strong>と大幅に減少、出血性イベントは <strong>HR 1.80（95%CI 0.77–4.21）で有意差なし</strong>（ただし CI が広く不確実性は残る）。<strong>「出血したから一生中止」は誤り</strong>。</li>
+        <li><strong>機械弁</strong>：早期（≤7 日）と遅延（&gt;7 日）で再出血率に有意差なしという観察研究のみ（7.8% vs 8.0%）。<strong>再開しない群が最も悪い</strong>（血栓塞栓・再出血とも 15.8%）。</li>
+        <li>再開時期は一般に<strong>発症後 4〜8 週</strong>が目安。重症度・出血源（アミロイドアンギオパチーは再発リスクが高い）・血栓リスクで個別化する。<span class="pill gray">術後例に限定した RCT はない</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── 9. 予後判断 ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>予後判断の落とし穴 <span class="sec-note">最も見落とされやすい項目</span></h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>新規 DNAR 指示・治療撤退は、事前指示がない限り少なくとも入院 2 日目の終わりまで延期する</strong>のが合理的　<span class="pill mild">COR 2a / B-NR</span>。早期の治療制限それ自体が死亡の独立予測因子（Zahuranec 2007）。</li>
+        <li><strong>DNAR と、他の内科的・外科的治療の制限は完全に別物</strong>。ガイドラインが明示している。DNAR を「全部やらない」の代用にしてはいけない。</li>
+        <li><strong>ICH スコアの限界</strong>：導出コホート自体に「予後不良と判断された患者は治療を制限された」というバイアスが混入している。スコアが示すのは生物学的予後ではなく<strong>「その施設で実際に提供された治療強度込みの予後」</strong>。抗凝固内服例では予測精度が不十分との報告もある。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── 10. 手術のエビデンス ───────── -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">10</span>参考：どんな手術をされた患者か</h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>試験 / 対象</th><th>結果</th><th>術後管理への含意</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">STICH I / II<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-3)">開頭血腫除去</span></td>
+              <td>I: 良好転帰 26% vs 24%, OR 0.89（0.66–1.19), p=0.414<br>II: 不良転帰 59% vs 62%, OR 0.86（0.62–1.20), p=0.367</td>
+              <td>いずれも<strong>有意差なし</strong>。開頭除去そのものに一律の便益はない。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">MISTIE III<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-3)">定位吸引＋線溶</span></td>
+              <td>全体は陰性（mRS 0–3 で 45% vs 41%, 補正リスク差 +4%, p=0.33）。<strong>残存血腫 ≤15 mL 達成群で良好転帰 +10.5%（p=0.03）</strong></td>
+              <td><strong>「除去したか」より「どこまで減らせたか」が予後を決める</strong>。術後 CT で残存量を評価し、未達なら追加介入を検討する。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">ENRICH 2024<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-3)">24h 以内・低侵襲</span></td>
+              <td>utility-weighted mRS 群間差 <b>0.084（95%CrI 0.005–0.163)</b>。<strong>lobar は 0.127（0.035–0.219）で明確な便益</strong>、<strong>前方被殻は便益なしで無益性により登録中止</strong>。30 日死亡 9.3% vs 18.0%</td>
+              <td>効果が示されたのは <strong>lobar・30〜80 mL・発症 24 時間以内</strong>に限られる。<strong>視床とテント下は試験対象外</strong>（有効とも無効とも言えない）。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">SWITCH 2024<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-3)">深部・減圧開頭のみ</span></td>
+              <td>180 日 mRS 5–6 が 44% vs 58%、<b>補正RR 0.77（95%CI 0.59–1.01), p=0.057</b> で<strong>有意差に届かず</strong>（資金難で早期中止＝検出力不足）</td>
+              <td>深部出血では「除去」より「減圧」が有望というシグナル。ただし<strong>血腫は残ったまま</strong>なので ICP と浮腫のモニタを継続する。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">小脳出血</td>
+              <td>神経学的悪化／脳幹圧迫／水頭症、または<strong>血腫量 ≥15 mL（≒径 3 cm）</strong>で<strong>即時血腫除去</strong>　<span class="pill mild">COR 1 / B-NR</span></td>
+              <td>ICH 外科で<strong>最も強い推奨</strong>。<strong>EVD 単独は上方ヘルニアを助長し不十分</strong>。後頭蓋窩は容積予備能が乏しく<strong>数時間で非線形に急落</strong>する。呼吸パターンの変化を血腫再増大の徴候として拾う。</td>
+            </tr>
+            <tr>
+              <td class="nowrap">二次性 ICH の検索</td>
+              <td>—</td>
+              <td>若年・非高血圧部位（lobar）・異型部位なら二次性（AVM／動脈瘤／腫瘍／静脈洞血栓症）を疑う。<strong>急性期は血腫に隠れて偽陰性</strong>になるため、疑いが残れば<strong>血腫消退後（目安 3 か月）に造影 MRI/MRA ± DSA を再検</strong>。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの但し書き</h3>
+    <p><b>術後患者に特化した RCT はほぼ存在しない。</b>本カードの内科管理は主に AHA/ASA 2022 ガイドライン（Stroke. 2022;53:e282-e361）に基づくが、その根拠となった INTERACT2・ATACH-2・TICH-2 はいずれも早期手術予定例を除外している。</p>
+    <p><b>目標 ICP / CPP、EVD 設定圧、周術期の血小板・フィブリノゲン目標、術後 CT のタイミング</b>は、ガイドラインに推奨クラス付きの規定がなく、TBI 領域からの外挿または施設プロトコルである。</p>
+    <p><b>日本脳卒中治療ガイドライン 2021〔改訂 2025〕</b>の脳出血の章（降圧目標・手術適応の推奨グレード）は本カード作成時点で原典を直接照合できていない（書籍のみで公開されておらず Minds でも本文非公開）。院内資料に転記する際は原典で確認すること。</p>
+    <p><b>主要試験</b>: INTERACT2 (PMID 23713578) / ATACH-2 (27276234) / INTERACT3 (37245517) / ANNEXA-I (38749032) / PATCH (27178479) / TICH-2 (29778325) / INCH (27302126) / COCROACH (37839434) / CLEAR III (28081952) / MISTIE III (30739747) / ENRICH (38598795) / SWITCH (38761811) / SETPOINT2 (35506515) / CLOTS-3 (23727163) / AVERT (25892679) / NCS 発作予防 2025 (39707127) / NCS 脳浮腫 2020 (32227294)</p>
+  </div>
+
+  <footer>
+    脳出血 術後管理ポケットカード ／ 2026-07-31 作成<br>
+    臨床判断の補助を目的とした要約であり、個々の症例の最終判断は施設プロトコルと主治医の責任において行うこと。
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'ich-postop-card-theme';
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var next;
+    if (cur === 'light') next = 'dark';
+    else if (cur === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
