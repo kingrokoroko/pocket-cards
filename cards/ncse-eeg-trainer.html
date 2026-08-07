@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCSE 脳波判読トレーナー</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#1a2233; --panel2:#222c42; --line:#2e3a54;
+    --text:#e8edf7; --muted:#93a0bb; --accent:#4da3ff;
+    --good:#31c48d; --warn:#f5b544; --bad:#f0616d; --info:#7c8bff;
+    --trace:#c9e8ff; --grid:#233049; --ecg:#f5b544;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI","Meiryo",system-ui,sans-serif; line-height:1.55;
+  }
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 18px 90px}
+  h1{font-size:1.5rem; margin:0 0 4px}
+  .sub{color:var(--muted); margin:0 0 20px; font-size:.9rem}
+  .grid{display:grid; grid-template-columns:300px 1fr; gap:20px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px}
+  .card h2{font-size:.95rem; margin:0 0 12px; color:var(--accent); letter-spacing:.02em}
+  .field{margin-bottom:12px}
+  .field label{display:block; font-size:.8rem; color:var(--muted); margin-bottom:5px}
+  select{
+    width:100%; background:var(--panel2); border:1px solid var(--line); color:var(--text);
+    border-radius:8px; padding:8px 10px; font-size:.95rem;
+  }
+  select:focus{outline:none; border-color:var(--accent)}
+  .btn{
+    display:block; width:100%; text-align:center; cursor:pointer; border:none;
+    background:var(--accent); color:#06101f; font-weight:650; font-size:.95rem;
+    border-radius:9px; padding:11px; margin-top:4px; transition:filter .1s;
+  }
+  .btn:hover{filter:brightness(1.08)}
+  .btn.sec{background:var(--panel2); color:var(--text); border:1px solid var(--line); font-weight:500}
+  .seg{display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap}
+  .seg button{
+    flex:1 1 40%; cursor:pointer; background:var(--panel2); color:var(--muted);
+    border:1px solid var(--line); border-radius:8px; padding:8px 6px; font-size:.82rem;
+  }
+  .seg button.on{background:rgba(77,163,255,.16); color:var(--accent); border-color:var(--accent)}
+  .chk{display:flex; align-items:center; gap:8px; font-size:.82rem; color:#c4cde0; margin:6px 0}
+  .chk input{accent-color:var(--accent); width:15px; height:15px}
+  .divider{height:1px; background:var(--line); margin:14px 0}
+  .eegbox{background:#0b101a; border:1px solid var(--line); border-radius:12px; padding:10px 6px 6px; overflow-x:auto}
+  .eegtools{display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:2px 8px 10px}
+  .tbtn{cursor:pointer; background:var(--panel2); color:var(--text); border:1px solid var(--line);
+    border-radius:8px; padding:6px 12px; font-size:.8rem}
+  .tbtn:hover{border-color:var(--accent)}
+  .tbtn.on{background:rgba(245,181,68,.16); color:var(--warn); border-color:var(--warn)}
+  .tchk{display:flex; align-items:center; gap:6px; font-size:.8rem; color:#c4cde0}
+  .tchk input{accent-color:var(--accent); width:14px; height:14px}
+  .measout{font-size:.8rem; color:var(--warn); font-family:"Consolas",monospace; margin-left:auto}
+  .eegmeta{display:flex; gap:16px; flex-wrap:wrap; font-size:.72rem; color:#6b7a97;
+    font-family:"Consolas",monospace; padding:0 8px 8px}
+  canvas{display:block; width:100%; height:auto; cursor:default}
+  canvas.measure{cursor:crosshair}
+  .qarea{margin-top:16px}
+  .qtitle{font-size:.95rem; color:var(--accent); margin:0 0 10px; font-weight:600}
+  .opts{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  @media(max-width:560px){.opts{grid-template-columns:1fr}}
+  .opt{
+    cursor:pointer; text-align:left; background:var(--panel2); color:var(--text);
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:.9rem;
+    transition:border-color .1s, background .1s;
+  }
+  .opt:hover{border-color:var(--accent)}
+  .opt b{display:block; font-size:.82rem; color:var(--muted); font-weight:600; margin-bottom:2px}
+  .opt.correct{border-color:var(--good); background:rgba(49,196,141,.12)}
+  .opt.wrong{border-color:var(--bad); background:rgba(240,97,109,.12)}
+  .opt.dim{opacity:.5}
+  .hint{font-size:.72rem; color:#67748f; margin-top:6px}
+  .grp{margin-bottom:12px}
+  .grp .glabel{font-size:.8rem; color:var(--muted); margin-bottom:6px}
+  .pillrow{display:flex; flex-wrap:wrap; gap:6px}
+  .pill{cursor:pointer; background:var(--panel2); color:var(--text); border:1px solid var(--line);
+    border-radius:8px; padding:6px 11px; font-size:.82rem}
+  .pill:hover{border-color:var(--accent)}
+  .pill.sel{background:rgba(77,163,255,.16); color:var(--accent); border-color:var(--accent)}
+  .pill.correct{border-color:var(--good); background:rgba(49,196,141,.16); color:var(--good)}
+  .pill.wrong{border-color:var(--bad); background:rgba(240,97,109,.16); color:var(--bad)}
+  .pill.miss{border-color:var(--good); border-style:dashed; color:var(--good)}
+  textarea{
+    width:100%; min-height:96px; background:var(--panel2); border:1px solid var(--line);
+    color:var(--text); border-radius:10px; padding:10px 12px; font-size:.92rem;
+    font-family:inherit; resize:vertical;
+  }
+  textarea:focus{outline:none; border-color:var(--accent)}
+  .answer{margin-top:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; display:none}
+  .answer.show{display:block}
+  .verdict{font-size:1.05rem; font-weight:700; margin:0 0 4px}
+  .verdict.normal{color:var(--good)} .verdict.enceph{color:var(--info)}
+  .verdict.iic{color:var(--warn)} .verdict.ncse{color:var(--bad)}
+  .verdict.artifact{color:#9aa7c2}
+  .badge.artifact{background:rgba(154,167,194,.15); color:#9aa7c2}
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:.85rem; margin:10px 0}
+  .kv dt{color:var(--muted)} .kv dd{margin:0; color:#dbe3f2}
+  .expl{font-size:.86rem; color:#c8d2e6; margin:10px 0 0}
+  .expl b{color:var(--text)}
+  .refbox{margin-top:12px; font-size:.75rem; color:#7f8ca8; border-top:1px solid var(--line); padding-top:10px}
+  .refbox b{color:var(--muted)}
+  .score{font-size:.82rem; color:var(--muted); text-align:center; margin-top:12px}
+  .score b{color:var(--text); font-variant-numeric:tabular-nums}
+  .badge{font-size:.68rem; padding:2px 8px; border-radius:20px; font-weight:600}
+  .badge.normal{background:rgba(49,196,141,.15); color:var(--good)}
+  .badge.enceph{background:rgba(124,139,255,.15); color:var(--info)}
+  .badge.iic{background:rgba(245,181,68,.15); color:var(--warn)}
+  .badge.ncse{background:rgba(240,97,109,.15); color:var(--bad)}
+  details{margin-top:14px; background:var(--panel2); border-radius:10px; padding:2px 14px}
+  summary{cursor:pointer; padding:10px 0; font-size:.85rem; color:var(--accent)}
+  details p{font-size:.82rem; color:#c4cde0; margin:6px 0 12px}
+  .statbox{font-size:.78rem; margin:6px 0 10px}
+  .statrow{display:grid; grid-template-columns:1fr auto auto; gap:8px; padding:3px 0; border-bottom:1px solid rgba(255,255,255,.05)}
+  .statrow .nm{color:#c4cde0}
+  .statrow .ac{font-variant-numeric:tabular-nums; color:var(--muted)}
+  .statrow .bar{width:52px; height:8px; align-self:center; background:var(--line); border-radius:6px; overflow:hidden}
+  .statrow .bar i{display:block; height:100%; background:var(--good)}
+  .statrow.weak .bar i{background:var(--bad)}
+  .statrow.weak .nm{color:var(--warn)}
+  .statempty{color:#67748f; font-size:.78rem; padding:4px 0}
+  .foot{margin-top:26px; font-size:.74rem; color:#5f6d8a}
+  code{background:var(--panel2); padding:1px 5px; border-radius:4px; font-size:.85em; font-family:"Consolas",monospace}
+  .bzdnote{background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--warn);
+    border-radius:8px; padding:10px 12px; font-size:.86rem; color:#dbe3f2; margin:10px 0}
+  .bzdnote b{color:var(--warn)}
+  .pointbox{background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:8px; padding:8px 12px; margin:12px 0 0; font-size:.82rem; color:#dbe3f2}
+  .pointbox>b{color:var(--accent)}
+  .pointbox ul{margin:6px 0 0; padding-left:18px}
+  .pointbox li{margin:3px 0}
+  .defbox{font-size:.82rem; color:#c4cde0; margin:6px 0 8px}
+  .defbox b{color:var(--text)}
+  .defbox ul{margin:6px 0; padding-left:18px}
+  .defbox li{margin:2px 0}
+
+  /* ---- product layer: brand, session, modal, result, share, mistakes ---- */
+  .brandrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .brandtag{font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent); background:rgba(77,163,255,.12); border:1px solid rgba(77,163,255,.35);
+    border-radius:20px; padding:3px 10px}
+  .helpbtn{margin-left:auto; cursor:pointer; background:var(--panel2); color:var(--muted);
+    border:1px solid var(--line); border-radius:20px; padding:4px 12px; font-size:.76rem}
+  .helpbtn:hover{border-color:var(--accent); color:var(--accent)}
+
+  .modeseg{display:flex; gap:6px; margin-bottom:8px}
+  .modeseg button{flex:1; cursor:pointer; background:var(--panel2); color:var(--muted);
+    border:1px solid var(--line); border-radius:8px; padding:7px 4px; font-size:.78rem}
+  .modeseg button.on{background:rgba(49,196,141,.15); color:var(--good); border-color:var(--good)}
+  .sessbar{display:none; margin-top:10px; background:var(--panel2); border:1px solid var(--line);
+    border-radius:10px; padding:9px 12px; font-size:.8rem}
+  .sessbar.on{display:block}
+  .sessbar .prog{height:7px; background:var(--line); border-radius:6px; overflow:hidden; margin-top:7px}
+  .sessbar .prog i{display:block; height:100%; background:var(--good); transition:width .25s}
+  .sessbar .row{display:flex; justify-content:space-between; align-items:center; color:#c4cde0}
+  .sessbar b{color:var(--text); font-variant-numeric:tabular-nums}
+  .rstbtn{cursor:pointer; background:none; border:none; color:#67748f; font-size:.72rem;
+    text-decoration:underline; padding:2px; margin-top:8px}
+  .rstbtn:hover{color:var(--bad)}
+
+  .overlay{position:fixed; inset:0; background:rgba(6,10,20,.78); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:20px}
+  .overlay.on{display:flex}
+  .modal{background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    max-width:560px; width:100%; max-height:88vh; overflow-y:auto; padding:24px}
+  .modal h2{margin:0 0 6px; font-size:1.2rem; color:var(--text)}
+  .modal .lead{color:var(--muted); font-size:.86rem; margin:0 0 16px}
+  .modal ol{margin:0 0 16px; padding-left:20px} .modal ol li{margin:8px 0; font-size:.9rem; color:#d5deef}
+  .modal ol li b{color:var(--accent)}
+  .modal .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+  .modal .actions .btn{margin-top:0; flex:1 1 auto}
+
+  .resulthead{text-align:center; margin-bottom:16px}
+  .resulthead .big{font-size:3rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.05}
+  .resulthead .big small{font-size:1.1rem; color:var(--muted); font-weight:500}
+  .resulthead .acc{font-size:1rem; margin-top:2px}
+  .resulthead .grade{display:inline-block; margin-top:8px; padding:4px 14px; border-radius:20px;
+    font-weight:700; font-size:.9rem}
+  .rbreak{font-size:.82rem; margin:4px 0 14px}
+  .rbreak .r{display:grid; grid-template-columns:1fr auto auto; gap:8px; padding:4px 0;
+    border-bottom:1px solid rgba(255,255,255,.05)}
+  .rbreak .r .nm{color:#c4cde0} .rbreak .r .ac{color:var(--muted); font-variant-numeric:tabular-nums}
+  .rbreak .r .bar{width:56px; height:8px; align-self:center; background:var(--line); border-radius:6px; overflow:hidden}
+  .rbreak .r .bar i{display:block; height:100%; background:var(--good)}
+  .rbreak .r.weak .bar i{background:var(--bad)} .rbreak .r.weak .nm{color:var(--warn)}
+
+  #mistakePanel .mk{background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--bad);
+    border-radius:8px; padding:8px 11px; margin:7px 0; font-size:.78rem}
+  #mistakePanel .mk .mh{display:flex; justify-content:space-between; gap:8px; color:#c4cde0}
+  #mistakePanel .mk .mh b{color:var(--text)} #mistakePanel .mk .tm{color:#67748f; font-size:.7rem; white-space:nowrap}
+  #mistakePanel .mk .mt{color:#aeb9d2; margin-top:3px}
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+<div class="wrap">
+  <div class="brandrow">
+    <span class="brandtag">波形判読トレーナー</span>
+    <button class="helpbtn" id="helpBtn">? 使い方・読み方ガイド</button>
+  </div>
+  <h1>NCSE 脳波判読トレーナー</h1>
+  <p class="sub">合成脳波で、非痙攣性てんかん重積(NCSE)のベッドサイド判読を練習。Salzburg基準とACNS重症脳波用語(2021)の判定ルールに沿って自動採点・解説します。波形は毎回ランダム生成 ― 何度でも新しい症例で練習できます。</p>
+
+  <div class="grid">
+    <!-- ===== CONTROLS ===== -->
+    <div class="card">
+      <h2>設定</h2>
+
+      <div class="field">
+        <label>練習の進め方</label>
+        <div class="modeseg" id="modeSeg">
+          <button data-mode="practice" class="on">練習（無限）</button>
+          <button data-mode="s10">10問セッション</button>
+          <button data-mode="s20">20問 試験</button>
+        </div>
+        <div class="sessbar" id="sessBar">
+          <div class="row"><span id="sessLabel">セッション</span><span><b id="sessQ">0</b> / <b id="sessTot">10</b>　正答 <b id="sessOk">0</b></span></div>
+          <div class="prog"><i id="sessProg" style="width:0%"></i></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>難易度・モード</label>
+        <div class="seg" id="levelSeg">
+          <button data-level="basic" class="on">初級</button>
+          <button data-level="mid">中級</button>
+          <button data-level="adv">上級</button>
+          <button data-level="bzd">臨床BZD</button>
+        </div>
+        <div class="hint" id="levelHint"></div>
+      </div>
+
+      <div class="field" id="catField">
+        <label>出題カテゴリ</label>
+        <div class="chk"><input type="checkbox" id="c_basic" checked><label for="c_basic" style="margin:0">正常・脳症（鑑別の土台）</label></div>
+        <div class="chk"><input type="checkbox" id="c_iic" checked><label for="c_iic" style="margin:0">IICパターン（GPDs/LPDs/RDA/三相波）</label></div>
+        <div class="chk"><input type="checkbox" id="c_ictal" checked><label for="c_ictal" style="margin:0">発作性（棘徐波・電気的発作）</label></div>
+        <div class="chk"><input type="checkbox" id="c_artifact" checked><label for="c_artifact" style="margin:0">アーチファクト鑑別（非脳性）</label></div>
+      </div>
+
+      <button class="btn" id="newBtn">新しい症例 ▶</button>
+
+      <div class="divider"></div>
+      <div class="field" style="margin:0">
+        <label>表示モンタージュ</label>
+        <select id="montageSel">
+          <option value="LB">縦連結双極 (double banana, 18ch)</option>
+          <option value="TB">横連結双極 (transverse, 14ch)</option>
+          <option value="AV">平均基準 (referential / AVG, 19ch)</option>
+        </select>
+        <div class="hint">同一症例を別モンタージュで見ると、位相逆転（焦点の局在）や分布の理解が深まります。</div>
+      </div>
+      <div class="score" id="score">通算正答 <b>0</b> / <b>0</b></div>
+      <div style="text-align:center"><button class="rstbtn" id="resetBtn">通算成績をリセット</button></div>
+
+      <details id="statPanel">
+        <summary>型別の成績（弱点トラッキング）</summary>
+        <div class="statbox" id="statBody"><div class="statempty">まだ記録がありません。数問解くと型別の正答率と弱点が表示されます。苦手な型は自動的に多めに再出題されます。</div></div>
+      </details>
+
+      <details id="mistakePanel">
+        <summary>間違いノート（誤答症例の復習）</summary>
+        <div id="mistakeBody"><div class="statempty">誤答した症例の学習ポイントがここに溜まります。あとで見返して弱点を潰しましょう。</div></div>
+      </details>
+
+      <details id="defPanel">
+        <summary>IIC・plus修飾・electrographic seizure・evolution の定義（ACNS 2021）</summary>
+        <div id="defBody"></div>
+      </details>
+
+      <details>
+        <summary>このアプリの使い方・限界</summary>
+        <p><b>使い方</b>：症例が出たら、時間軸(1目盛=1秒)を使って周期性放電/律動波の<b>周波数を数え</b>（📏 周波数計測ツールで実測できます）、放電の<b>形態・分布・時間的evolution</b>を評価してから判定を選ぶ。最下部の<b>ECGチャンネル</b>は、規則的な周期性放電とECGアーチファクトを見分ける決め手になります。</p>
+        <p><b>臨床BZDモード</b>：投与前脳波→ベンゾジアゼピン(BZD)静注→投与後脳波＋臨床反応を提示。<b>脳波の変化だけでなく臨床（意識）の改善を伴うか</b>でNCSEを確定/除外する練習です。</p>
+        <p><b>限界</b>：合成波形はアーチファクトや実波形の質感を完全再現しません。判読<b>ルール</b>(Salzburg基準・ACNS用語・IICの考え方)の習得が目的で、実データ教材の代替ではありません。</p>
+      </details>
+    </div>
+
+    <!-- ===== MAIN ===== -->
+    <div>
+      <div class="eegbox">
+        <div class="eegtools">
+          <button class="tbtn" id="measureBtn">📏 周波数計測</button>
+          <label class="tchk"><input type="checkbox" id="ecgToggle" checked> ECGチャンネル併記</label>
+          <span class="measout" id="measout"></span>
+        </div>
+        <div class="eegmeta" id="eegmeta"></div>
+        <canvas id="eeg" width="1120" height="600"></canvas>
+      </div>
+
+      <div class="qarea" id="qarea"></div>
+
+      <div class="answer" id="answer"></div>
+    </div>
+  </div>
+
+  <p class="foot">
+    ※ 教育・自己学習用。合成脳波は判読ルールの練習を目的とした近似で、実臨床の診断・治療判断は実波形・臨床経過・専門医の判読に基づいて行ってください。<br>
+    <b>判定枠組み・出典：</b>
+    Salzburg基準 — Beniczky S, et al. <i>Epilepsia</i> 2013;54(S6):28–29（提案）／Leitinger M, et al. <i>Epilepsy Behav</i> 2015;49:158–163（臨床適用, PMID 26092326）／Leitinger M, et al. <i>Lancet Neurol</i> 2016;15(10):1054–1062（診断精度 <b>感度97.7%・特異度89.6%</b>／検証コホート n=120, PMID 27571157）。
+    用語 — Hirsch LJ, et al. ACNS Standardized Critical Care EEG Terminology: 2021. <i>J Clin Neurophysiol</i> 2021;38(1):1–29（PMID 33475321）。
+    IIC — Chong DJ, Hirsch LJ. <i>J Clin Neurophysiol</i> 2005;22(2):79–91（PMID 15805807）。<br>
+    <b>数値の確度について：</b>一次文献で確定しているのは Salzburg基準の <code>&gt;2.5Hz</code> 閾値と、電気的発作の目安 <code>≥10秒持続</code> の2点。各パターンの「典型振幅μV・周波数帯域」は合成波形のための<b>コンセンサス的な近似目安</b>（単一の一次文献表に基づかない）であり、判読ルールの学習用と位置づけています。BZD試験の解釈（脳波だけでなく臨床反応を要する点）もコンセンサスに基づく教育的単純化です。
+  </p>
+</div>
+
+<!-- onboarding overlay -->
+<div class="overlay" id="onboard">
+  <div class="modal">
+    <span class="brandtag">波形判読トレーナー</span>
+    <h2 style="margin-top:10px">NCSE脳波トレーナーへようこそ</h2>
+    <p class="lead">合成脳波で「これはNCSEか？」を見て判断する練習をします。読み方の要点はこれだけ：</p>
+    <ol>
+      <li><b>周波数を数える</b> — 1目盛＝1秒。周期性放電/棘徐波が <b>&gt;2.5Hz</b> で持続すれば確定NCSE域。📏計測ツールで実測できます。</li>
+      <li><b>evolutionを見る</b> — ページ左端→右端で波形が「育つ（周波数・形態・分布が変化）」か。育てば発作。</li>
+      <li><b>分布を見る</b> — 全般性(G)か一側性(L)か。モンタージュを切り替えると位相逆転で焦点が分かります。</li>
+      <li><b>脳か非脳か</b> — 最下段の<b>ECGチャンネル</b>と一致＝心電図アーチファクト。規則的な放電の擬態に注意。</li>
+    </ol>
+    <p class="lead" style="margin-bottom:10px">まず「初級（4択）」で総合判定から。慣れたら中級（ACNS用語）・上級（自由記述）・臨床BZDへ。</p>
+    <div class="actions">
+      <button class="btn" id="onboardStart">はじめる ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- session result overlay -->
+<div class="overlay" id="resultOverlay">
+  <div class="modal" id="resultModal"></div>
+</div>
+
+<script>
+/* =========================================================================
+   NCSE EEG Trainer — synthetic multichannel EEG generator + reader trainer
+   19 electrodes (10-20) -> selectable montage (bipolar LB/TB or average ref).
+   Focal patterns produce natural phase reversals via per-electrode fields.
+   v2: ECG lane, montage switch, calibration bar, frequency-measure tool,
+       weakness tracking, and BZD (benzodiazepine trial) clinical mode.
+   ========================================================================= */
+
+const FS = 400, DUR = 10, N = FS * DUR;               // 400Hz, 10s page（spike尖鋭化のため高サンプリング）
+const $ = id => document.getElementById(id);
+
+/* ---- 10-20 electrode approx coordinates (x: L-,R+ ; y: front+,back-) ---- */
+const ELEC = {
+  Fp1:[-1,4], Fp2:[1,4],
+  F7:[-3,2], F3:[-1.5,2], Fz:[0,2], F4:[1.5,2], F8:[3,2],
+  T3:[-4,0], C3:[-2,0], Cz:[0,0], C4:[2,0], T4:[4,0],
+  T5:[-3,-2], P3:[-1.5,-2], Pz:[0,-2], P4:[1.5,-2], T6:[3,-2],
+  O1:[-1,-4], O2:[1,-4]
+};
+/* longitudinal bipolar "double banana" (18ch) */
+const MONTAGE_LB = [
+  ['Fp1','F7'],['F7','T3'],['T3','T5'],['T5','O1'],
+  ['Fp2','F8'],['F8','T4'],['T4','T6'],['T6','O2'],
+  ['Fp1','F3'],['F3','C3'],['C3','P3'],['P3','O1'],
+  ['Fp2','F4'],['F4','C4'],['C4','P4'],['P4','O2'],
+  ['Fz','Cz'],['Cz','Pz']
+];
+/* transverse bipolar (coronal chains, 14ch) */
+const MONTAGE_TB = [
+  ['Fp1','Fp2'],
+  ['F7','F3'],['F3','Fz'],['Fz','F4'],['F4','F8'],
+  ['T3','C3'],['C3','Cz'],['Cz','C4'],['C4','T4'],
+  ['T5','P3'],['P3','Pz'],['Pz','P4'],['P4','T6'],
+  ['O1','O2']
+];
+/* referential (average reference) electrode order, anterior -> posterior (19ch) */
+const AV_ORDER = ['Fp1','Fp2','F7','F3','Fz','F4','F8','T3','C3','Cz','C4','T4','T5','P3','Pz','P4','T6','O1','O2'];
+const MONTAGE_LABEL = {LB:'縦連結双極 (LB, 18ch)', TB:'横連結双極 (TB, 14ch)', AV:'平均基準 (AVG, 19ch)'};
+
+/* ---- small signal helpers (amplitudes in µV) ---- */
+const zeros = () => new Float64Array(N);
+const rnd = (a,b) => a + Math.random()*(b-a);
+const g = (x,s) => Math.exp(-(x*x)/(2*s*s));         // gaussian bump
+
+function addBand(out, fLo, fHi, amp, nComp){
+  for(let k=0;k<nComp;k++){
+    const f = rnd(fLo,fHi), ph = Math.random()*6.283, a = amp*rnd(0.6,1.4)/nComp;
+    for(let i=0;i<N;i++) out[i] += a*Math.sin(6.283*f*i/FS + ph);
+  }
+}
+function addNoise(out, amp){ for(let i=0;i<N;i++) out[i] += amp*(Math.random()*2-1); }
+
+/* ---- realistic background: 1/f (pink) base + AR(2) resonators + spatial correlation ----
+   ・AR(2)共鳴子＝白色雑音駆動の狭帯域過程。r→1で律動的、rを下げると広帯域＝多形性。
+     数本の正弦波和(addBand)より、自然に強弱するリズムと連続背景になる。
+   ・容積伝導を模した空間相関：少数の広域ソースを電極位置からの距離で混合し、
+     隣接電極の背景が相関するようにする（背景のみ。焦点性放電の位相逆転は別途 apply で乗るため潰さない）。 */
+const BG_K = 0.32;                                     // 旧sine amp → RMSスケール換算（相対パワーを踏襲）
+const BG_ANCHORS = [[-2,3],[2,3],[-2.5,-3],[2.5,-3],[0,0]]; // 広域ソースの代表位置（前後左右＋正中）
+// AR(2)狭帯域共鳴子（白色雑音駆動）。RMS≈1に正規化して返す。
+function ar2Source(f0, r){
+  const a = zeros(), th = 6.283*f0/FS, c1 = 2*r*Math.cos(th), c2 = -r*r;
+  let x1=0, x2=0;
+  for(let i=0;i<N;i++){ const x = c1*x1 + c2*x2 + (Math.random()*2-1); a[i]=x; x2=x1; x1=x; }
+  let s=0; for(let i=0;i<N;i++) s+=a[i]*a[i];
+  const inv = 1/(Math.sqrt(s/N)||1);
+  for(let i=0;i<N;i++) a[i]*=inv;
+  return a;
+}
+// 1/fピンクノイズ（Paul Kellet economy filter）。RMS≈1に正規化。
+function pinkSource(){
+  const a = zeros(); let b0=0,b1=0,b2=0;
+  for(let i=0;i<N;i++){
+    const w = Math.random()*2-1;
+    b0 = 0.99765*b0 + w*0.0990460;
+    b1 = 0.96300*b1 + w*0.2965164;
+    b2 = 0.57000*b2 + w*1.0526913;
+    a[i] = b0 + b1 + b2 + w*0.1848;
+  }
+  let s=0; for(let i=0;i<N;i++) s+=a[i]*a[i];
+  const inv = 1/(Math.sqrt(s/N)||1);
+  for(let i=0;i<N;i++) a[i]*=inv;
+  return a;
+}
+// 1バンドを全電極へ、容積伝導様の空間相関付きで加算する。
+//  各電極 = ampFn(e) * env(t) * ( √(1-rho)*局所ソース + √rho*広域ブレンド )
+//  広域ブレンド＝BG_ANCHORSのRMS≈1ソースを距離ガウス重みで混合（→隣接電極が相関）。
+//  局所ソースは電極ごと独立、rhoで共有割合を制御。env＝緩やかな振幅ゆらぎ(非定常性)。
+function addSpatialBand(sig, ampFn, makeSource, rho, wax){
+  const shared = BG_ANCHORS.map(()=>makeSource());
+  const kS = Math.sqrt(rho), kL = Math.sqrt(1-rho), sg2 = 2*3.2*3.2;
+  for(const e in ELEC){
+    const amp = ampFn(e); if(amp<=0) continue;
+    const [x,y] = ELEC[e];
+    const ws = BG_ANCHORS.map(([ax,ay])=>Math.exp(-(((x-ax)**2+(y-ay)**2))/sg2));
+    let wsum=0, wsq=0; for(const w of ws){ wsum+=w; wsq+=w*w; }
+    const sharedNorm = wsum/Math.sqrt(wsq||1);   // 加重平均をRMS≈1へ再正規化
+    const local = makeSource();
+    const fEnv = rnd(0.08,0.22), phEnv = Math.random()*6.283, depth = wax?0.3:0.12;
+    const a = sig[e];
+    for(let i=0;i<N;i++){
+      let sh=0; for(let k=0;k<BG_ANCHORS.length;k++) sh += ws[k]*shared[k][i];
+      sh = sh/wsum*sharedNorm;
+      const env = 1 + depth*Math.sin(6.283*fEnv*i/FS + phEnv);
+      a[i] += amp*env*(kL*local[i] + kS*sh);
+    }
+  }
+}
+/* ---- background per electrode ---- */
+function background(state){
+  const sig = {};
+  for(const e in ELEC) sig[e] = zeros();
+  if(state === 'awake'){
+    // 後頭部優位の反応性α（AR(2)狭帯域, 緩徐な強弱）＋θ/δ＋1/f
+    const post = e => ELEC[e][1] < -1;                          // O/P/T5/T6 region
+    addSpatialBand(sig, e=>BG_K*(post(e)?20:6), ()=>ar2Source(rnd(8.5,10.5),0.985), 0.55, true);
+    addSpatialBand(sig, e=>BG_K*3,             ()=>ar2Source(rnd(4,7),0.9),        0.45, false);
+    addSpatialBand(sig, e=>BG_K*3,             ()=>ar2Source(rnd(1,3.5),0.85),     0.5,  false);
+    addSpatialBand(sig, e=>1.2,                ()=>pinkSource(),                    0.4,  false);
+    for(const e in ELEC) addNoise(sig[e], 0.5);                 // 微小白色雑音（質感）
+  } else { /* 'slow' encephalopathic background（放電のS/Nを上げるためやや抑制を維持） */
+    // 多形性(polymorphic)δ/θ優位：δはr小＝広帯域で非律動・非周期に。αは僅少。
+    addSpatialBand(sig, e=>BG_K*13,  ()=>ar2Source(rnd(1,3.5),0.8),   0.55, false);
+    addSpatialBand(sig, e=>BG_K*8,   ()=>ar2Source(rnd(4,7),0.85),    0.5,  false);
+    addSpatialBand(sig, e=>BG_K*2.5, ()=>ar2Source(rnd(8.5,10.5),0.97),0.5, false);
+    addSpatialBand(sig, e=>1.2,      ()=>pinkSource(),                 0.45, false);
+    for(const e in ELEC) addNoise(sig[e], 0.5);
+  }
+  return sig;
+}
+
+/* ---- spatial fields (electrode -> weight, signed) ---- */
+function focalField(focus, sigma){
+  const [fx,fy] = ELEC[focus], w = {};
+  for(const e in ELEC){
+    const [x,y] = ELEC[e];
+    w[e] = Math.exp(-(((x-fx)**2)+((y-fy)**2))/(2*sigma*sigma));
+  }
+  return w;
+}
+function lateralField(side, sigma){ // side: 'L' or 'R'
+  // pick a temporo-central focus on that side
+  const focus = side==='L' ? (Math.random()<0.5?'T3':'C3') : (Math.random()<0.5?'T4':'C4');
+  return focalField(focus, sigma);
+}
+function generalizedField(frontalMax){
+  // Bipolar montages cancel spatially-uniform activity, so a real front-to-back
+  // gradient is needed for generalized patterns to be visible. Steeper if frontalMax.
+  const w = {}, exp = frontalMax ? 1.5 : 1.0;
+  for(const e in ELEC){
+    const y = ELEC[e][1];                        // 4(front) .. -4(back)
+    w[e] = 0.22 + 0.78*Math.pow((y+4)/8, exp);   // frontal ≈1.0, occipital ≈0.22
+  }
+  return w;
+}
+
+/* ---- temporal waveform templates (unit field weight) ---- */
+function rda(freq, amp){                              // rhythmic delta
+  const a = zeros(), ph = Math.random()*6.283;
+  for(let i=0;i<N;i++) a[i] = amp*Math.sin(6.283*freq*i/FS + ph);
+  return a;
+}
+function stampSharp(a, t0, amp){                      // spike + aftergoing slow wave
+  for(let i=0;i<N;i++){
+    const dt = i/FS - t0;
+    if(dt < -0.05 || dt > 0.4) continue;
+    a[i] += amp*g(dt,0.010) - 0.45*amp*g(dt-0.13,0.09);  // σ小＝より尖鋭、afterslowやや強調
+  }
+}
+function stampTriphasic(a, t0, amp){                  // blunt triphasic morphology（三相性を強調）
+  for(let i=0;i<N;i++){
+    const dt = i/FS - t0;
+    if(dt < -0.14 || dt > 0.34) continue;
+    a[i] += -0.6*amp*g(dt+0.05,0.03) + amp*g(dt,0.028) - 0.8*amp*g(dt-0.10,0.055);
+  }
+}
+function periodic(freq, amp, morph){                  // periodic discharges (GPDs/LPDs)
+  const a = zeros(), T = 1/freq, jitter = 0.02;
+  for(let k=0;;k++){
+    const t0 = 0.25 + k*T + rnd(-jitter,jitter);
+    if(t0 > DUR-0.2) break;
+    (morph==='tri' ? stampTriphasic : stampSharp)(a, t0, amp*rnd(0.85,1.15));
+  }
+  return a;
+}
+function spikeWave(freq, amp){                         // (poly)spike-and-wave train
+  const a = zeros(), T = 1/freq;
+  for(let k=0;;k++){
+    const t0 = 0.3 + k*T;
+    if(t0 > DUR-0.2) break;
+    for(let i=0;i<N;i++){
+      const dt = i/FS - t0;
+      if(dt < -0.035 || dt > T) continue;
+      a[i] += amp*g(dt,0.008) - 0.5*amp*g(dt-0.45*T, 0.16*T); // spike尖鋭化＋slow wave強調
+    }
+  }
+  return a;
+}
+function seizure(f0, f1, amp0, amp1){                  // evolving electrographic seizure
+  const a = zeros(); let phase = Math.random()*6.283;
+  for(let i=0;i<N;i++){
+    const t = i/FS, f = f0 + (f1-f0)*t/DUR, amp = amp0 + (amp1-amp0)*t/DUR;
+    phase += 6.283*f/FS;
+    const s = Math.sin(phase) + 0.4*Math.sin(2*phase) + 0.22*Math.sin(3*phase); // rhythmicな尖鋭波として強調
+    a[i] = amp*s;
+  }
+  return a;
+}
+
+/* ---- heart / ECG (shared timing so contamination is time-locked) ---- */
+function heartTimes(bpm){
+  const T = 60/bpm, times = [];
+  for(let k=0;;k++){ const t0 = 0.15 + k*T; if(t0 > DUR-0.05) break; times.push(t0); }
+  return times;
+}
+function qrsFromTimes(times, amp){                     // QRS complex at given R times
+  const a = zeros();
+  for(const t0 of times){
+    for(let i=0;i<N;i++){ const dt = i/FS - t0; if(dt < -0.03 || dt > 0.16) continue;
+      a[i] += amp*g(dt,0.009) - 0.22*amp*g(dt-0.045,0.022) + 0.14*amp*g(dt-0.10,0.03); } // R + small S + T
+  }
+  return a;
+}
+
+/* ---- artifact generators / fields (non-cerebral) ---- */
+function emgBurst(amp){                                // muscle: intermittent high-freq bursts (per electrode)
+  const a = zeros(), nB = 3 + Math.floor(Math.random()*4);
+  for(let b=0;b<nB;b++){ const t0 = rnd(0.3, DUR-1.0), dur = rnd(0.4,1.3);
+    for(let i=0;i<N;i++){ const t = i/FS; if(t < t0 || t > t0+dur) continue;
+      a[i] += amp*(Math.random()*2-1); } }
+  return a;
+}
+function moveRhythm(freq, amp){                        // mechanical/blink rhythmic sharp transients
+  const a = zeros(), T = 1/freq;
+  for(let k=0;;k++){ const t0 = 0.3 + k*T + rnd(-0.06,0.06); if(t0 > DUR-0.2) break;
+    stampSharp(a, t0, amp*rnd(0.6,1.4)); }
+  return a;
+}
+function ecgField(){ const w={}; for(const e in ELEC){ const [x,y]=ELEC[e];
+  w[e] = 0.45 + 0.32*((-y+4)/8) + 0.18*((-x+4)/8); } return w; }   // inferior + left bias
+function eyeField(){ const w={}; for(const e in ELEC){ const y = ELEC[e][1];
+  w[e] = y > 1 ? 0.25 + 0.75*Math.min(1,(y-1)/3) : 0.03; } w.Fp1=1; w.Fp2=1; return w; } // frontopolar, symmetric
+function randomField(){ const w={}; for(const e in ELEC) w[e] = rnd(0.2,1.0); return w; }  // non-physiological
+
+/* =========================================================================
+   Pattern catalog. Each builder returns { sig, truth }.
+   truth.judge ∈ {normal, enceph, iic, ncse, artifact}
+   ========================================================================= */
+const JUDGE_LABEL = {
+  normal:['正常','normal'], enceph:['非てんかん性（脳症・代謝性）','enceph'],
+  iic:['IIC（possible NCSE：確定不可・要追加評価）','iic'], ncse:['NCSE（確定）','ncse'],
+  artifact:['アーチファクト（非脳性）','artifact']
+};
+// パターンの日本語短縮名（成績パネル用）
+const TYPE_NAME = {
+  normal:'正常', diffuse_slow:'びまん性徐波化', triphasic:'三相波GPDs', grda:'GRDA', lrda:'LRDA',
+  gpds:'GPDs', lpds:'LPDs', lpds_plus:'LPDs+F', sw:'棘徐波', seizure:'電気的発作',
+  ecg_artifact:'ECGアーチ', muscle_artifact:'EMGアーチ', eye_artifact:'眼アーチ', move_artifact:'体動アーチ'
+};
+// 基礎解説（正誤に関わらず全問で表示。パターンidで参照）
+const BASICS = {
+  normal:'正常成人覚醒時の背景活動。後頭部優位律動(PDR)＝閉眼で出る8〜13Hzのα律動が後頭部優位に分布し、開眼で抑制される（反応性）。前頭→後頭で徐波が減り速波が増える「前後勾配」、左右対称性が保たれる。「てんかん性放電なし・周期性/律動性なし・非対称なし・反応性あり」を一つずつ確認するのが判読の出発点。',
+  diffuse_slow:'背景がびまん性に徐波化(θ〜δ優位)した状態。多形性(polymorphic＝波形・周期が不規則)で、周期性でも律動性でもないのが要点。意識障害・代謝性/低酸素性脳症・薬剤などで非特異的に生じ、重症度とは相関するが特定疾患は指さない。ここに規則的な周期性放電や律動波が「乗って」くるとIICへ移行する、という基準線を体に入れておく。',
+  triphasic:'三相波＝陰性-陽性-陰性の3相からなる鈍い波で、前頭優位・しばしば前頭→後頭の時間的ずれ(anteroposterior lag)を伴う。ACNS用語では「三相波形態のGPDs(全般性周期性放電)」に分類される。古典的に肝性・腎性・敗血症などの代謝性脳症で高頻度だが、てんかん性放電と形態が重複しうる。刺激で増減する反応性や、AED/代謝補正への反応で鑑別する。',
+  grda:'GRDA＝全般性律動性δ活動。δ帯域(<4Hz)の規則的な正弦波様の波が両側同期性・前頭優位(旧FIRDA)に反復する。「放電(discharge)」のような明瞭な区切りを持たず連続的に続く点がPD(周期性放電)との違い。ACNS 2021のIIC定義には含まれない（基準cはlateralized RDA限定でGRDAを除外、基準a/bはPD/SWのみ）ため、単独では非てんかん性（代謝性脳症・頭蓋内圧亢進等）として扱う。鋭波化(+S)やevolutionを伴うと発作寄りに変わる。',
+  lrda:'LRDA＝一側性律動性δ活動。GRDAと同じ律動δだが片側半球に優位で、分布はmain term1＝Lateralized。てんかん性放電ではないが、LRDAはLPDsと並んで急性期発作との関連が強く「発作が近い」サインとして扱う。振幅や位相逆転で焦点側(側方性)を同定する。',
+  gpds:'GPDs＝全般性周期性放電。ほぼ一定の周期(cycle length)で反復する放電が両側性・広汎に出る(周期性＝同形の波が規則的間隔で3回以上)。周波数・出現頻度(prevalence)・plus修飾(+F/+R)で発作性リスクが変わる。低酸素脳症・敗血症等で高頻度。≤2.5Hz単独ではSalzburg基準でNCSE確定に至らずIIC。',
+  lpds:'LPDs(旧PLEDs)＝一側性周期性放電。片側半球に周期性の鋭波/棘波が反復し、分布はLateralized。急性期の器質病変(脳梗塞・脳炎・腫瘍等)に伴い、あらゆるIICパターンの中でNCSE・臨床発作との関連が最も強い「警告パターン」。双極モンタージュでは位相逆転で焦点(側方性)を同定する。',
+  lpds_plus:'LPDsに速波(+F)や律動波(+R)が重畳したもの。plus修飾はより発作寄り(ictalに近い)ことを示すサインで、周波数が2.5Hz付近の境界例と重なるとpossible NCSEに位置づけられる。ベンゾジアゼピン試験(診断的治療)への臨床・脳波反応が、NCSE確定/除外の分かれ目になる典型シナリオ。',
+  sw:'棘徐波複合＝棘波(spike<70ms)または鋭波(sharp70–200ms)に徐波が続く、明瞭なてんかん性放電が反復するパターン。判読で最重要なのは「1秒グリッドで周波数を数える」こと。既知てんかん性脳症がなければ、>2.5Hzで持続すればそれ単独でNCSE確定、≤2.5Hzならevolution・微細な臨床発作徴候・AED反応のいずれかが加わって初めてNCSEと判定する。',
+  seizure:'電気的発作＝律動性放電が時間とともに周波数・振幅・波形・空間分布のいずれかで連続的に変化(evolution)する所見。実務的にはこのevolutionが≥10秒持続すれば発作とみなす。ページ左端と右端で波形が「育つ/変わる」かを見るのが最短。evolutionを捉えれば周波数閾値によらず発作＝NCSEに該当する。',
+  ecg_artifact:'心電図(ECG)アーチファクト。心拍に一致した鋭く短い偏位が脳波に混入する。見分け方：①ほぼ完全に規則的で周波数が心拍数域(≈60–100/分＝1〜1.7Hz)、②同時記録のECGチャンネルとタイムロックする、③脳の電場に従わず広く一様に出る(非生理的分布)、④棘徐波のような後続徐波を伴わない。規則的なので≤2.5HzのGPDs/周期性放電と紛らわしい。ECGチャンネルを重ねて確認するのが定石。',
+  muscle_artifact:'筋電図(EMG)アーチファクト。側頭筋・前頭筋などの筋活動が混入する。見分け方：①非常に速い(>20〜30Hz)棘状の活動、②各電極で独立(脳の電場のように隣接電極間で相関しない)、③咬みしめ・体動・不穏で増え、弛緩・鎮静・筋弛緩薬で消える、④主に側頭・前頭部。速いためfast activityや発作の速波成分と紛らわしいが、周波数が脳波帯域を超える点が鍵。',
+  eye_artifact:'眼由来アーチファクト。眼球は角膜(＋)-網膜(−)の電気双極子で、動くと前頭極(Fp1/Fp2)に大きな電位が出る。見分け方：①前頭極で最大、後方へ急減、②左右が同極性(同相)＝脳の焦点性放電と違い両側対称、③眼電図(EOG)や瞬目/眼球運動と一致、④位相逆転は「眼」に生じる。律動的な眼瞼フラッターは前頭部律動δ(FIRDA/GRDA)と紛らわしい。',
+  move_artifact:'体動・機械的リズム(振戦、胸郭理学療法、患者を叩く等)によるアーチファクト。見分け方：①分布が解剖学的・生理学的に不自然(隣接電極の勾配が脳の電場と合わない)、②形態が鋭く不規則、③ベッドサイドの機械的動作・処置とタイミングが一致、④ビデオ・体動記録と対応する。規則的だと周期性放電/律動波と紛らわしいので、臨床状況と必ず照合する。'
+};
+/* ---- ACNS 2021 formal definitions (verified vs Hirsch 2021, J Clin Neurophysiol 38(1):1-29) ---- */
+const EVOLUTION_DEF =
+  `<div class="defbox"><b>Evolution（evolving）— electrographic seizureの中核所見</b><br>`+
+  `周波数・形態・分布のいずれか<b>1カテゴリ内</b>で、<b>少なくとも2回連続</b>の明確な変化（3軸をまたいで合算はしない）。`+
+  `<ul>`+
+  `<li><b>周波数</b>：同方向へ <b>≥0.5Hz</b> ずつ2回（例 2→2.5→3Hz）</li>`+
+  `<li><b>形態</b>：新規morphologyへ2回連続で変化</li>`+
+  `<li><b>分布/局在</b>：<b>≥2つ</b>の標準10-20電極位置へ順次拡大/縮小（into / out of）</li>`+
+  `</ul>`+
+  `各状態は <b>≥3サイクル</b> 持続が必要（例 1Hzなら3秒）。※周期性/律動性そのものの成立要件は別に <b>6サイクル</b>。`+
+  `この evolution が <b>≥10秒</b>、または <b>&gt;2.5Hzのてんかん性放電が≥10秒</b>持続 → <b>electrographic seizure（NCSE相当）</b>。`+
+  `status は ≥10分 または 60分中≥20%。</div>`;
+const IIC_DEF =
+  `<div class="defbox"><b>Ictal-Interictal Continuum（IIC）</b>：electrographic seizure/statusに該当<b>せず</b>、かつ次のいずれか。`+
+  `<ul>`+
+  `<li><b>a.</b> PD または SW が <b>&gt;1.0〜≤2.5Hz</b> で <b>≥10秒</b>（中程度の周波数。これ単独でIIC）</li>`+
+  `<li><b>b.</b> PD または SW が <b>≥0.5〜≤1.0Hz</b> で ≥10秒、<b>かつ plus修飾 または fluctuation</b>（低周波数）</li>`+
+  `<li><b>c.</b> <b>lateralized RDA</b>（LRDA/BIRDA/UIRDA/MfRDA。<b>GRDAは除く</b>）が <b>&gt;1.0Hz</b> で ≥10秒、<b>かつ plus修飾 または fluctuation</b></li>`+
+  `</ul>`+
+  `IICは診断名ではなく「発作性への寄与を否定も肯定もできない連続体」。ACNS原文も「発展途上の概念で広いコンセンサスはない」と明記。`+
+  `<span style="color:#7f8ca8">（本文の閉区間を採用。早見表は開区間で書かれ本文と食い違うが本文が正本）</span></div>`;
+const PLUS_DEF =
+  `<div class="defbox"><b>plus修飾（+F / +R / +S）— PDとRDAにのみ付与</b>`+
+  `<ul>`+
+  `<li><b>+F</b>（重畳する速波, θ帯域以上。律動性でなくてもよい）：<b>PD・RDA 両方</b>に付与可</li>`+
+  `<li><b>+R</b>（重畳する律動性/準律動性δ）：<b>PD のみ</b></li>`+
+  `<li><b>+S</b>（重畳する鋭波/棘波・鋭形波形。≥10秒に1回以上、ただしSWパターンとしてではなく）：<b>RDA のみ</b></li>`+
+  `<li><b>SW（棘徐波）・背景・正常には plus修飾は付かない</b></li>`+
+  `</ul>`+
+  `plus修飾は「より ictal-appearing（発作寄り）」を示し、急性発作リスク上昇と関連。PDに律動性δが重畳した現象は命名規則上 <b>PD+R</b> に一元化する（RDA+Rは体系上作られない）。</div>`;
+// 各解説の下に共通表示する判定ポイント
+const IIC_POINT =
+  `<div class="pointbox"><b>ポイント（周波数と持続の判定ルール）</b>`+
+  `<ul>`+
+  `<li>いずれのパターンも <b>10秒以上の持続</b> が判定の前提。</li>`+
+  `<li><b>PD・SW</b>：<b>&gt;1.0〜2.5Hz（中程度）</b>は10秒以上で <b>IIC</b>／<b>0.5〜1.0Hz（低周波数）</b>は <b>plus修飾 または fluctuating</b> を伴えば <b>IIC</b>。</li>`+
+  `<li><b>lateralized RDA（LRDA等・GRDA除く）</b>：<b>&gt;1.0Hz</b>・10秒以上＋<b>plus修飾/fluctuating</b> で <b>IIC</b>。</li>`+
+  `<li><b>&gt;2.5Hzのてんかん性放電の持続</b>、または <b>明瞭なevolution</b>（周波数/形態/分布）が10秒以上 → <b>electrographic seizure＝NCSE</b>。</li>`+
+  `</ul></div>`;
+
+const MT1_LABEL = {G:'Generalized（全般性 G）', L:'Lateralized（一側性 L）', BI:'Bilateral independent（BI）', Mf:'Multifocal（Mf）', none:'該当なし'};
+const MT2_LABEL = {PD:'Periodic Discharges（PD）', RDA:'Rhythmic Delta Activity（RDA）', SW:'Spike-and-Wave（SW）', EZ:'電気的発作（evolution）', none:'該当なし'};
+const MOD_LABEL = {none:'なし', '+F':'+F（速波重畳）', '+R':'+R（律動δ/θ重畳）', '+S':'+S（鋭波/棘波重畳）', '+FR':'+FR', '+FS':'+FS'};
+// mods array -> display token ('' / '+F' / '+R' / '+S' / '+FR' / '+FS')。+RはPDのみ・+SはRDAのみ
+function modStr(mods){
+  if(!mods||!mods.length) return '';
+  const f=mods.includes('+F'), r=mods.includes('+R'), s=mods.includes('+S');
+  if(f&&r) return '+FR';   // PD
+  if(f&&s) return '+FS';   // RDA
+  if(r) return '+R'; if(s) return '+S'; if(f) return '+F';
+  return '';
+}
+
+function apply(sig, wave, field){
+  for(const e in ELEC){ const w = field[e]; const a = sig[e];
+    for(let i=0;i<N;i++) a[i] += w*wave[i]; }
+}
+// +S overlay: superimposed sharp waves/spikes on the parent pattern (RDAのみに適用)
+function sharpOverlay(amp){
+  const a = zeros(), n = 7 + Math.floor(Math.random()*6);   // ~7-12 sharps over 10s（≥10秒に1回以上を満たす）
+  for(let k=0;k<n;k++){ const t0 = rnd(0.3, DUR-0.3); stampSharp(a, t0, amp*rnd(0.7,1.2)); }
+  return a;
+}
+// superimpose plus-modifier activity on the same field as the parent discharge
+function addMods(sig, field, mods){
+  if(mods.includes('+F')) apply(sig, rda(rnd(16,24), rnd(12,20)), field);  // +F: fast (beta) activity（PD/RDA両方）
+  if(mods.includes('+R')) apply(sig, rda(rnd(1,3),  rnd(18,30)), field);   // +R: rhythmic delta/theta（PDのみ）
+  if(mods.includes('+S')) apply(sig, sharpOverlay(rnd(32,52)), field);     // +S: sharp waves/spikes（RDAのみ）
+}
+// 三相波GPDs専用：前頭→後頭のanteroposterior lag（数十ms）を電極対応で付与する。
+// 放電時刻・振幅は全電極で共有（＝同一放電）し、各電極のy座標で時間オフセットを与える。
+// apply(field)相当の空間分布は field[e] を各放電振幅に掛けて維持（＝焦点/全般の分布は不変）。
+function applyTriphasicGPD(sig, freq, amp, field, apLagMs){
+  const T = 1/freq, discharges = [], jitter = 0.02;
+  for(let k=0;;k++){
+    const t0 = 0.25 + k*T + rnd(-jitter,jitter);
+    if(t0 > DUR-0.2) break;
+    discharges.push({ t0, a: amp*rnd(0.85,1.15) });   // 同一放電（全電極共有）
+  }
+  const lagPerUnit = (apLagMs/1000)/8;                 // y-range 8（前+4 .. 後-4）
+  for(const e in ELEC){
+    const w = field[e]; if(w<=0) continue;
+    const off = (4 - ELEC[e][1]) * lagPerUnit;         // 前頭(y=+4)先行 → 後頭(y=-4)最大遅延
+    const a = sig[e];
+    for(const d of discharges) stampTriphasic(a, d.t0 + off, d.a * w);
+  }
+}
+
+function buildCase(groups){
+  // roster with group tags
+  const roster = [];
+  if(groups.basic){ roster.push('normal','diffuse_slow'); }
+  if(groups.iic){ roster.push('triphasic','grda','lrda','gpds','lpds','lpds_plus'); }
+  if(groups.ictal){ roster.push('sw','seizure'); }
+  if(groups.artifact){ roster.push('ecg_artifact','muscle_artifact','eye_artifact','move_artifact'); }
+  if(!roster.length) roster.push('normal');
+  const kind = pickKind(roster);
+
+  // every case carries an independent heart rhythm for the ECG lane
+  const bpm = Math.round(rnd(58,104));
+  let hTimes = heartTimes(bpm);
+  let sig, truth;
+
+  if(kind === 'normal'){
+    sig = background('awake');
+    truth = { judge:'normal', mt1:null, mt2:null, mods:[], name:'正常覚醒背景', acns:'—（後頭部優位律動 PDR ≈ 10Hz、正常）',
+      freq:'α 8.5–10.5Hz', reason:'てんかん性放電・周期性/律動性異常なし。後頭部優位α律動が保たれ、開閉眼で反応。NCSEを示唆する所見はない。',
+      teach:'まず「正常が言えること」が判読の土台。後頭部優位律動・前後勾配・反応性を確認する。' };
+  }
+  else if(kind === 'diffuse_slow'){
+    sig = background('slow');
+    truth = { judge:'enceph', mt1:null, mt2:null, mods:[], name:'びまん性徐波化', acns:'—（多形性δ/θ徐波化、周期性・律動性なし）',
+      freq:'δ/θ 主体', reason:'びまん性・多形性の徐波化のみで、周期性放電も律動性パターンも認めない。非特異的脳症の像で、Salzburg基準のてんかん性所見を満たさずNCSEは示唆されない。',
+      teach:'脳症の徐波化は「多形性・非律動性・非周期性」。ここに周期性/律動性が乗るとIICへ移行する。' };
+  }
+  else if(kind === 'triphasic'){
+    sig = background('slow');
+    const f = rnd(1.3, 2.2);
+    applyTriphasicGPD(sig, f, rnd(90,140), generalizedField(true), rnd(45,65)); // 前頭→後頭 AP lag
+    truth = { judge:'iic', mt1:'G', mt2:'PD', mods:[], name:`GPDs（三相波形態） ≈ ${f.toFixed(1)}Hz`,
+      acns:`Generalized Periodic Discharges (GPDs), 三相波morphology, 前頭部優位, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（≤2.5Hz）`,
+      reason:`前頭部優位・三相波形態のGPDsで周波数≤2.5Hz、時間的evolutionなし。Salzburg基準では単独ではNCSEと確定できず<b>IIC</b>。古典的には代謝性脳症（肝性等）で高頻度だが、てんかん性との重複があり、刺激への反応性や抗てんかん薬(AED)試験で鑑別する。`,
+      teach:'三相波＝ACNSではGPDs(三相波形態)。代謝性が典型だが「非てんかん性」と断定はできない。反応性・AED反応が鍵。' };
+  }
+  else if(kind === 'grda'){
+    sig = background('slow');
+    const f = rnd(1.5, 2.5);
+    apply(sig, rda(f, rnd(60,90)), generalizedField(true));
+    truth = { judge:'enceph', mt1:'G', mt2:'RDA', mods:[], name:`GRDA ≈ ${f.toFixed(1)}Hz`,
+      acns:`Generalized Rhythmic Delta Activity (GRDA), ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz`,
+      reason:`全般性の律動性δ活動。ACNS 2021の<b>IIC基準cはlateralized RDA限定でGRDAは対象外</b>（基準a/bはPD/SWのみ）。したがってGRDA単独は<b>IICに該当せず</b>、代謝性脳症・頭蓋内圧亢進・深部正中病変などに伴う<b>非てんかん性</b>の像として扱う（総合判定＝非てんかん性）。※descriptiveには "Generalized RDA" と記載する（用語の記載と総合判定は別）。`,
+      teach:'GRDAはACNSのIIC定義に含まれない（cはlateralized RDA限定）→単独では非てんかん性。ただし+S(鋭波化)やevolutionを伴えば発作寄りに変わる。同じ律動δでも片側性のLRDAはIIC対象という違いを対比で覚える。' };
+  }
+  else if(kind === 'lrda'){
+    sig = background('slow');
+    const side = Math.random()<0.5?'L':'R';
+    const f = rnd(1.5, 2.3);                            // >1.0Hz（IIC基準cの下限を満たす）
+    const field = lateralField(side, 2.2);
+    apply(sig, rda(f, rnd(70,105)), field);
+    // RDAに付与できる plus は +F / +S / +FS（+Rは不可）。基準cは plus修飾/fluctuation が必須
+    let rmods = Math.random()<0.15 ? ['+F','+S'] : (Math.random()<0.5 ? ['+F'] : ['+S']);
+    addMods(sig, field, rmods);
+    const ms = modStr(rmods);
+    const mtxt = ms==='+S' ? '鋭波/棘波が重畳（<b>+S</b>）' : ms==='+FS' ? '速波と鋭波が重畳（<b>+FS</b>）' : '速波が重畳（<b>+F</b>）';
+    truth = { judge:'iic', mt1:'L', mt2:'RDA', mods:rmods, name:`LRDA ${ms}（${side==='L'?'左':'右'}半球） ≈ ${f.toFixed(1)}Hz`,
+      acns:`Lateralized Rhythmic Delta Activity (LRDA) ${ms}, ${side==='L'?'左':'右'}側, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（>1.0Hz）`,
+      reason:`一側優位の律動性δ活動に${mtxt}。ACNS 2021の<b>IIC基準c</b>「lateralized RDA（LRDA/BIRDA/UIRDA/MfRDA。GRDAは除く）が >1.0Hz・≥10秒＋plus修飾または fluctuation」を満たし<b>IIC</b>。<b>RDAに付与できる plus は +F/+S（+Rは不可）</b>。<b>LRDAは急性期発作との関連が強く</b>、臨床・AED反応の評価を要する。`,
+      teach:'lateralized RDAは >1.0Hz＋plus修飾/fluctuationでIIC（基準c）。RDAの修飾は+F/+Sで+Rは付かない。GRDAは対象外。修飾のない律動δ単独はIICに該当しない。' };
+  }
+  else if(kind === 'gpds'){
+    sig = background('slow');
+    const f = rnd(0.8, 2.0);
+    const field = generalizedField(true);
+    apply(sig, periodic(f, rnd(80,120), 'sharp'), field);
+    const mods = [];
+    if(+f.toFixed(1) <= 1.0) mods.push(Math.random()<0.6?'+F':'+R'); // 表示値(≤1.0Hz)はplus修飾がないとIIC基準bを満たさない
+    else if(Math.random()<0.4) mods.push(Math.random()<0.6?'+F':'+R');
+    addMods(sig, field, mods);
+    const ms = modStr(mods);
+    const band = +f.toFixed(1)<=1.0
+      ? `周波数は<b>≥0.5〜≤1.0Hz（低周波数）</b>で、plus修飾（${ms}）を伴うため<b>IIC基準b</b>を満たす`
+      : `周波数は<b>&gt;1.0〜≤2.5Hz（中程度）</b>のため、これ単独で<b>IIC基準a</b>を満たす`;
+    truth = { judge:'iic', mt1:'G', mt2:'PD', mods, name:`GPDs${ms?' '+ms:''} ≈ ${f.toFixed(1)}Hz`,
+      acns:`Generalized Periodic Discharges (GPDs)${ms?' '+ms:''}, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（≤2.5Hz）`,
+      reason:`全般性周期性放電、時間的evolutionなし → 単独でNCSE確定に至らず<b>IIC</b>。${band}。${ms?`<b>${ms}修飾</b>はより発作性が高い（ictal寄り）ことを示唆する。`:''}低酸素脳症・敗血症等で見られ、頻度が高いほど・plus修飾があるほど発作リスクが上がる。`,
+      teach:'GPDsはPD。>1.0〜2.5Hzは単独でIIC(a)、0.5〜1.0Hzはplus修飾/fluctuationを伴ってIIC(b)。臨床像とAED反応で詰める。' };
+  }
+  else if(kind === 'lpds'){
+    sig = background('slow');
+    const side = Math.random()<0.5?'L':'R';
+    const f = rnd(0.8, 2.0);
+    const field = lateralField(side, 2.0);
+    apply(sig, periodic(f, rnd(90,135), 'sharp'), field);
+    const mods = [];
+    if(+f.toFixed(1) <= 1.0) mods.push(Math.random()<0.6?'+F':'+R'); // 表示値(≤1.0Hz)はplus修飾がないとIIC基準bを満たさない
+    else if(Math.random()<0.4) mods.push(Math.random()<0.6?'+F':'+R');
+    addMods(sig, field, mods);
+    const ms = modStr(mods);
+    const band = +f.toFixed(1)<=1.0
+      ? `周波数は<b>≥0.5〜≤1.0Hz（低周波数）</b>で、plus修飾（${ms}）を伴い<b>IIC基準b</b>を満たす`
+      : `周波数は<b>&gt;1.0〜≤2.5Hz（中程度）</b>のため単独で<b>IIC基準a</b>を満たす`;
+    truth = { judge:'iic', mt1:'L', mt2:'PD', mods, name:`LPDs${ms?' '+ms:''}（${side==='L'?'左':'右'}側） ≈ ${f.toFixed(1)}Hz`,
+      acns:`Lateralized Periodic Discharges (LPDs / 旧PLEDs)${ms?' '+ms:''}, ${side==='L'?'左':'右'}側, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（≤2.5Hz）`,
+      reason:`一側性周期性放電（旧PLEDs）でevolutionなし → 単独では<b>IIC</b>。${band}。${ms?`<b>${ms}修飾</b>を伴い、発作性はより高い。`:''}<b>LPDsは急性期発作・NCSEとの関連が最も強いパターン</b>で、しばしば「発作の一歩手前」。臨床発作・AED反応・evolutionの有無を厳密に評価する。`,
+      teach:'LPDs=最重要の警告パターン。位相逆転で焦点(側方性)を確認。>2.5Hzになる/evolveすると電気的発作＝NCSEへ。' };
+  }
+  else if(kind === 'lpds_plus'){
+    sig = background('slow');
+    const side = Math.random()<0.5?'L':'R';
+    const f = rnd(2.0, 2.5);
+    const field = lateralField(side, 1.9);
+    apply(sig, periodic(f, rnd(90,135), 'sharp'), field);
+    apply(sig, rda(rnd(16,22), rnd(14,22)), field);   // +F: superimposed fast activity
+    truth = { judge:'iic', mt1:'L', mt2:'PD', mods:['+F'], name:`LPDs+F（${side==='L'?'左':'右'}側） ≈ ${f.toFixed(1)}Hz`,
+      acns:`LPDs +F (plus fast activity), ${side==='L'?'左':'右'}側, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（境界）`,
+      reason:`周期性放電に高頻度活動が重畳（<b>+F修飾</b>）した境界例。周波数は2.5Hz付近で、Salzburg基準では確定NCSEに一歩届かない<b>possible NCSE＝IIC</b>。plus修飾は発作性を強く示唆し、<b>AED投与への臨床・脳波反応</b>で確定/除外する典型的シナリオ。`,
+      teach:'plus修飾(+F/+R/+FR)は「発作寄り」のサイン。2.5Hz付近＋plusはpossible NCSE。ベンゾ試験の適応を考える。' };
+  }
+  else if(kind === 'sw'){
+    // frequency is the teaching point: >2.5Hz sustained SW → NCSE ; ≤2.5Hz → IIC
+    const ncse = Math.random() < 0.6;
+    const f = ncse ? rnd(2.7, 3.6) : rnd(1.8, 2.5);
+    const generalized = Math.random() < 0.6;
+    sig = background(ncse ? 'awake' : 'slow');
+    const field = generalized ? generalizedField(true) : lateralField(Math.random()<0.5?'L':'R', 2.1);
+    apply(sig, spikeWave(f, rnd(95,140)), field);
+    truth = {
+      judge: ncse ? 'ncse' : 'iic', mt1: generalized?'G':'L', mt2:'SW', mods:[],
+      name:`${generalized?'全般性':'焦点性'}棘徐波複合 ≈ ${f.toFixed(1)}Hz`,
+      acns:`${generalized?'Generalized':'Lateralized'} Spike-and-Wave (SW), ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（${ncse?'>2.5Hz 持続':'≤2.5Hz'}）`,
+      reason: ncse
+        ? `明瞭なてんかん性放電（棘徐波）が<b>>2.5Hzで持続</b>。Salzburg基準では、既知のてんかん性脳症がなければ >2.5Hz のてんかん性放電の持続のみで<b>NCSEと判定</b>できる。`
+        : `てんかん性放電（棘徐波）だが周波数<b>≤2.5Hz</b>。Salzburg基準では≤2.5Hzの放電はそれ単独ではNCSE確定に不十分で、<b>時空間的evolution・subtleな臨床発作徴候・AEDへの臨床/脳波反応</b>のいずれかが加わって初めてNCSEと判定する（現時点では<b>IIC</b>）。`,
+      teach:'棘徐波は「>2.5Hz持続」が確定NCSEの分水嶺。必ず1秒グリッドで周波数を数える。≤2.5Hzなら追加所見を探す。'
+    };
+  }
+  else if(kind === 'ecg_artifact'){
+    sig = background('awake');
+    apply(sig, qrsFromTimes(hTimes, rnd(80,130)), ecgField());     // time-locked to the ECG lane
+    truth = { judge:'artifact', mt1:null, mt2:null, mods:[], name:`心電図(ECG)アーチファクト ≈ ${bpm}/分`,
+      acns:'—（非脳性：心起源）', freq:`${(bpm/60).toFixed(1)}Hz（心拍数 ${bpm}/分）`,
+      reason:`心拍に一致した規則的で鋭い偏位で、脳由来ではない。<b>最下部のECGチャンネルとタイムロックしている</b>のが決め手。判定は「脳か非脳か」が本質で、ACNS用語・Salzburgのてんかん性/IIC分類は適用しない。規則的なので<b>≤2.5HzのGPDs/周期性放電と最も紛らわしい</b>。`,
+      teach:'規則的すぎる＋心拍数域＋ECGチャンネルと一致＝ECGアーチファクト。まずECGを重ねて確認。' };
+  }
+  else if(kind === 'muscle_artifact'){
+    sig = background('awake');
+    const musc = ['F7','T3','T5','F8','T4','T6','Fp1','Fp2'], amp = rnd(14,28);
+    musc.forEach(e=>{ const b = emgBurst(amp); for(let i=0;i<N;i++) sig[e][i] += b[i]; });
+    truth = { judge:'artifact', mt1:null, mt2:null, mods:[], name:'筋電図(EMG)アーチファクト',
+      acns:'—（非脳性：筋起源）', freq:'>20–30Hz（筋放電）',
+      reason:`側頭・前頭優位の速い棘状活動で、各電極で独立して出る筋由来の混入。周波数が脳波帯域を超え、弛緩・鎮静・筋弛緩で消える。<b>速波・発作の速波成分と紛らわしい</b>。`,
+      teach:'脳波より速い(>20–30Hz)・電極ごとに独立・咬みしめで増える＝筋。' };
+  }
+  else if(kind === 'eye_artifact'){
+    sig = background('awake');
+    const flutter = Math.random() < 0.6;
+    if(flutter) apply(sig, rda(rnd(4,6), rnd(50,80)), eyeField());        // 眼瞼フラッター（律動性）
+    else        apply(sig, moveRhythm(rnd(0.4,1.0), rnd(75,110)), eyeField()); // 瞬目（散発的な大きな前頭偏位）
+    truth = { judge:'artifact', mt1:null, mt2:null, mods:[], name: flutter?'眼瞼フラッター アーチファクト':'眼球運動/瞬目 アーチファクト',
+      acns:'—（非脳性：眼球双極子）', freq: flutter?'≈4–6Hz（フラッター）':'散発性',
+      reason:`眼球の角膜(＋)網膜(−)双極子による前頭極優位の電位。<b>左右同極性(同相)</b>で前頭極に最大、後方へ急減。${flutter?'律動的なフラッターは<b>前頭部律動δ(FIRDA/GRDA)と紛らわしい</b>':'大きな散発性偏位'}が、EOG・眼球運動/瞬目と一致し、位相逆転は「眼」に生じる。`,
+      teach:'Fp1/Fp2最大＋左右同相＋眼の動きと一致＝眼アーチファクト。' };
+  }
+  else if(kind === 'move_artifact'){
+    sig = background('awake');
+    apply(sig, moveRhythm(rnd(0.8,2.2), rnd(60,110)), randomField());
+    truth = { judge:'artifact', mt1:null, mt2:null, mods:[], name:'体動/機械的リズム アーチファクト',
+      acns:'—（非脳性：機械的）', freq:'≈1–2Hz（不規則）',
+      reason:`振戦・胸郭理学療法・叩打などの機械的リズムの混入。<b>分布が解剖学的に不自然</b>で、形態は鋭く不規則。規則的だと<b>周期性放電/律動波と紛らわしい</b>ので、ビデオ・臨床状況・体動と照合する。`,
+      teach:'分布が非生理的＋処置/体動とタイミング一致＝体動アーチファクト。' };
+  }
+  else { /* seizure */
+    const generalized = Math.random() < 0.5;
+    sig = background('awake');
+    const field = generalized ? generalizedField(false) : lateralField(Math.random()<0.5?'L':'R', 2.2);
+    apply(sig, seizure(rnd(1.8,2.4), rnd(3.5,4.5), rnd(35,55), rnd(120,160)), field);
+    truth = { judge:'ncse', mt1: generalized?'G':'L', mt2:'EZ', mods:[], name:'電気的発作（時空間的evolution あり）',
+      acns:`Electrographic seizure — 律動性放電が周波数↑・振幅↑・分布拡大で evolve`,
+      freq:`≈2Hz → ≈4Hz へ加速`,
+      reason:`律動性放電が10秒の間に<b>周波数(≈2→4Hz)</b>で同方向へ段階的に変化し、分布も拡大＝<b>evolution</b>。ACNS 2021のevolutionは「周波数(同方向へ≥0.5Hz×2回連続)・形態(新規morphology×2回)・分布(≥2電極位置へ順次)のいずれか1カテゴリで2回連続変化」で、各状態≥3サイクル持続。これが<b>≥10秒</b>続けば<b>electrographic seizure＝NCSE相当</b>（>2.5Hz閾値によらない）。`,
+      teach:'evolutionは周波数/形態/分布のいずれか1カテゴリで2回連続の変化（各≥3サイクル）。振幅だけの変化はevolutionに当たらない。ページ左右で波形が「育つ」かを見る。' };
+  }
+  truth.id = kind;
+  const ecg = qrsFromTimes(hTimes, 130);              // clean ECG lane trace
+  return { sig, truth, ecg, bpm };
+}
+
+/* =========================================================================
+   BZD (benzodiazepine) trial clinical scenario builder.
+   Teaches: EEG改善だけでは不十分。臨床(意識)反応を伴って初めてNCSE確定。
+   ========================================================================= */
+function buildBZDCase(){
+  const scen = ['ncse_sw','ncse_sz','mimic_tri'][Math.floor(Math.random()*3)];
+  const bpm = Math.round(rnd(58,104)), hTimes = heartTimes(bpm);
+  const ecg = qrsFromTimes(hTimes, 130);
+  let sig, post, truth, bzd;
+
+  if(scen === 'ncse_sw'){
+    sig = background('awake');
+    const generalized = Math.random()<0.6;
+    const f = rnd(2.6, 3.3);
+    const field = generalized ? generalizedField(true) : lateralField(Math.random()<0.5?'L':'R', 2.1);
+    apply(sig, spikeWave(f, rnd(100,140)), field);
+    post = background('awake');                        // 放電が消失し背景が整理
+    truth = { id:'sw', judge:'ncse', mt1:generalized?'G':'L', mt2:'SW', mods:[],
+      name:`${generalized?'全般性':'焦点性'}棘徐波 ≈ ${f.toFixed(1)}Hz → BZDで消失`,
+      acns:`${generalized?'Generalized':'Lateralized'} Spike-and-Wave (SW), ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz`,
+      reason:`持続する棘徐波（てんかん性放電）にBZDを静注したところ、<b>脳波上の放電が消失し、かつ意識レベルが改善</b>した。脳波反応と臨床反応の両方が揃っており、<b>NCSEと確定</b>できる。` };
+    bzd = { correct:'ncse', eegImproved:true, clinicalImproved:true,
+      preNote:'持続するてんかん性放電（棘徐波）。反応性低下の患者。BZD診断的治療の適応を検討する場面。',
+      postNote:'投与後、脳波上の放電は消失し背景が整理。<b>意識レベルも明らかに改善</b>した。',
+      teach:'脳波の消失＋臨床（意識）の改善が揃えばNCSE確定。BZD試験は「脳波」と「臨床」を必ずセットで評価する。' };
+  }
+  else if(scen === 'ncse_sz'){
+    sig = background('awake');
+    const generalized = Math.random()<0.5;
+    const field = generalized ? generalizedField(false) : lateralField(Math.random()<0.5?'L':'R', 2.2);
+    apply(sig, seizure(rnd(1.8,2.4), rnd(3.5,4.5), rnd(35,55), rnd(120,160)), field);
+    post = background('awake');
+    truth = { id:'seizure', judge:'ncse', mt1:generalized?'G':'L', mt2:'EZ', mods:[],
+      name:'電気的発作（evolution）→ BZDで停止',
+      acns:'Electrographic seizure — evolvingな律動性放電',
+      freq:'≈2Hz → ≈4Hz',
+      reason:`evolutionを伴う電気的発作にBZDを静注し、<b>放電が停止し臨床（意識）も改善</b>。脳波・臨床の両反応が揃い<b>NCSE確定</b>。` };
+    bzd = { correct:'ncse', eegImproved:true, clinicalImproved:true,
+      preNote:'律動性放電がevolveする電気的発作。反応性低下あり。',
+      postNote:'投与後、律動性放電は停止。<b>意識レベルも改善</b>した。',
+      teach:'evolutionを伴う電気的発作がBZDで停止＋臨床改善 → NCSE確定。' };
+  }
+  else { /* mimic_tri — 代謝性三相波：脳波は一過性に減衰するが臨床は改善しない落とし穴 */
+    sig = background('slow');
+    const f = rnd(1.3, 2.2);
+    applyTriphasicGPD(sig, f, rnd(90,140), generalizedField(true), rnd(45,65)); // 前頭→後頭 AP lag
+    post = background('slow');
+    applyTriphasicGPD(post, f, rnd(30,50), generalizedField(true), rnd(45,65)); // 振幅減衰のみ（AP lag維持）
+    truth = { id:'triphasic', judge:'iic', mt1:'G', mt2:'PD', mods:[],
+      name:`三相波GPDs ≈ ${f.toFixed(1)}Hz（代謝性）— BZDで脳波のみ減衰`,
+      acns:`Generalized Periodic Discharges (GPDs), 三相波morphology, ${f.toFixed(1)}Hz`,
+      freq:`${f.toFixed(1)}Hz（≤2.5Hz）`,
+      reason:`前頭優位・三相波形態のGPDs（代謝性脳症で典型）。BZD静注後、<b>脳波は一過性に減衰したが臨床（意識）は改善しなかった</b>。<b>脳波だけの改善はNCSE確定の根拠にならない</b>—これは古典的な偽陽性の落とし穴で、判定は<b>IIC（NCSE確定ではない）</b>。鎮静そのもので律動性放電が減弱しうる点にも注意。` };
+    bzd = { correct:'not', eegImproved:true, clinicalImproved:false,
+      preNote:'前頭優位の三相波GPDs。肝性/腎性など代謝性脳症を疑う背景。',
+      postNote:'投与後、脳波の放電は<b>振幅がやや減衰</b>したが、<b>意識レベルは変わらない</b>（臨床反応なし）。',
+      teach:'三相波はBZD/鎮静で脳波が一過性に減衰しうるが臨床は改善しない。脳波のみの反応でNCSEと診断しないことが最重要。' };
+  }
+  truth.id = truth.id; // pattern id for stats
+  return { sig, post, truth, bzd, ecg, bpm, isBZD:true, phase:'pre' };
+}
+
+/* =========================================================================
+   Weakness tracking + roster biasing
+   ========================================================================= */
+const typeStats = {};                                  // id -> {seen, correct}
+let lastKind = null;
+let mistakes = [];                                     // recent wrong cases (for 間違いノート)
+
+/* ---- persistence (localStorage) ---- */
+const STORE_KEY = 'ncse_trainer_v1';
+function saveStore(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({typeStats, correct, total, mistakes})); }catch(e){}
+}
+function loadStore(){
+  let s = {};
+  try{ s = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }catch(e){ s = {}; }
+  if(s.typeStats) Object.assign(typeStats, s.typeStats);
+  if(typeof s.correct === 'number') correct = s.correct;
+  if(typeof s.total === 'number') total = s.total;
+  if(Array.isArray(s.mistakes)) mistakes = s.mistakes;
+}
+
+function recordStat(id, ok){
+  const s = typeStats[id] || (typeStats[id] = {seen:0, correct:0});
+  s.seen++; if(ok) s.correct++;
+  renderStats();
+}
+/* 出題重み：NCSE判読の習得が主目的なので発作性(sw/seizure)を最も厚く、次いでIIC。
+   アーチファクトは鑑別できれば十分なので薄く（ECGは最重要のGPDs擬態なのでやや厚め）。
+   全カテゴリONのとき合計100 → 発作性36% / IIC 44% / 基礎10% / アーチファクト10%。 */
+const KIND_WEIGHT = {
+  seizure:18, sw:18,                                             // 発作性 36
+  lpds:9, lpds_plus:8, gpds:8, lrda:7, triphasic:7, grda:5,      // IIC 44
+  diffuse_slow:5, normal:5,                                      // 基礎 10
+  ecg_artifact:4, muscle_artifact:2, eye_artifact:2, move_artifact:2  // アーチ 10
+};
+function pickWeighted(pool){
+  let tot = 0; for(const k of pool) tot += (KIND_WEIGHT[k]||1);
+  let r = Math.random()*tot;
+  for(const k of pool){ r -= (KIND_WEIGHT[k]||1); if(r<=0) return k; }
+  return pool[pool.length-1];
+}
+function pickKind(roster){
+  // bias toward weak types (accuracy < 0.6 with >=2 attempts); avoid immediate repeat
+  const weak = roster.filter(k => typeStats[k] && typeStats[k].seen>=2 && typeStats[k].correct/typeStats[k].seen < 0.6);
+  // 弱点の再出題は重みを無視して均等（苦手つぶし優先）、通常は重み付き抽選
+  let k = (weak.length && Math.random()<0.45)
+    ? weak[Math.floor(Math.random()*weak.length)]
+    : pickWeighted(roster);
+  if(k === lastKind && roster.length>1){            // one resample to reduce repeats
+    k = pickWeighted(roster.filter(x=>x!==lastKind));
+  }
+  lastKind = k;
+  return k;
+}
+function renderStats(){
+  const ids = Object.keys(typeStats).sort((a,b)=>{
+    const ra = typeStats[a].correct/typeStats[a].seen, rb = typeStats[b].correct/typeStats[b].seen;
+    return ra - rb;
+  });
+  if(!ids.length){ $('statBody').innerHTML = '<div class="statempty">まだ記録がありません。数問解くと型別の正答率と弱点が表示されます。苦手な型は自動的に多めに再出題されます。</div>'; return; }
+  $('statBody').innerHTML = ids.map(id=>{
+    const s = typeStats[id], acc = s.correct/s.seen, pct = Math.round(acc*100);
+    const weak = s.seen>=2 && acc<0.6;
+    return `<div class="statrow${weak?' weak':''}">`+
+      `<span class="nm">${TYPE_NAME[id]||id}${weak?' ⚠':''}</span>`+
+      `<span class="ac">${s.correct}/${s.seen}・${pct}%</span>`+
+      `<span class="bar"><i style="width:${pct}%"></i></span></div>`;
+  }).join('');
+}
+
+/* ---- derive montage channels from per-electrode signals ---- */
+function toMontage(sig, mode){
+  if(mode === 'AV'){
+    const es = Object.keys(ELEC), avg = new Float64Array(N);
+    for(let i=0;i<N;i++){ let s=0; for(const e of es) s+=sig[e][i]; avg[i]=s/es.length; }
+    return AV_ORDER.map(e=>{
+      const c = new Float64Array(N);
+      for(let i=0;i<N;i++) c[i] = sig[e][i]-avg[i];
+      return { label:`${e}–AV`, data:c };
+    });
+  }
+  const M = mode==='TB' ? MONTAGE_TB : MONTAGE_LB;
+  return M.map(([A,B]) => {
+    const c = new Float64Array(N);
+    for(let i=0;i<N;i++) c[i] = sig[A][i] - sig[B][i];
+    return { label:`${A}–${B}`, data:c };
+  });
+}
+
+/* ---- render ---- */
+const cv = $('eeg'), ctx = cv.getContext('2d');
+const GAIN = 0.12;                                     // px per µV（放電振幅引き上げに合わせ）
+let lastChannels = null, lastEcg = null;               // for redraw / overlay
+let plotGeom = null;                                   // {padL, plotW, padT, plotH} for measure tool
+
+function drawEEG(channels, ecg){
+  lastChannels = channels; lastEcg = ecg;
+  const W = cv.width, H = cv.height;
+  const padL = 74, padR = 12, padT = 10, padB = 22;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  plotGeom = { padL, plotW, padT, plotH };
+  const nCh = channels.length, hasEcg = !!ecg;
+  const rows = nCh + (hasEcg?1:0);
+  const rowH = plotH / rows;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#0b101a'; ctx.fillRect(0,0,W,H);
+
+  // time gridlines (1 s)
+  ctx.strokeStyle = getVar('--grid'); ctx.lineWidth = 1;
+  ctx.fillStyle = '#5b6a87'; ctx.font = '11px Consolas, monospace';
+  for(let s=0;s<=DUR;s++){
+    const x = padL + plotW*s/DUR;
+    ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke();
+    ctx.fillText(s+'s', x-6, H-6);
+  }
+  // EEG channels
+  ctx.lineWidth = 1;
+  for(let r=0;r<nCh;r++){
+    const yMid = padT + rowH*(r+0.5);
+    ctx.fillStyle = '#8fa0c0'; ctx.font = '11px Consolas, monospace';
+    ctx.fillText(channels[r].label, 6, yMid+3);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath(); ctx.moveTo(padL,yMid); ctx.lineTo(padL+plotW,yMid); ctx.stroke();
+    ctx.strokeStyle = getVar('--trace'); ctx.beginPath();
+    const d = channels[r].data;
+    for(let i=0;i<N;i++){
+      const x = padL + plotW*i/(N-1);
+      let y = yMid - d[i]*GAIN;
+      const lim = rowH*0.90;
+      if(y < yMid-lim) y = yMid-lim; if(y > yMid+lim) y = yMid+lim; // clip to lane
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  // ECG lane (separate, autoscaled, distinct color)
+  if(hasEcg){
+    const r = nCh, yMid = padT + rowH*(r+0.5);
+    ctx.strokeStyle = 'rgba(245,181,68,.30)';        // separator above the ECG lane
+    ctx.beginPath(); ctx.moveTo(padL, padT+rowH*nCh); ctx.lineTo(padL+plotW, padT+rowH*nCh); ctx.stroke();
+    ctx.fillStyle = getVar('--ecg'); ctx.font = 'bold 11px Consolas, monospace';
+    ctx.fillText('ECG', 6, yMid+3);
+    ctx.strokeStyle = 'rgba(245,181,68,.10)';
+    ctx.beginPath(); ctx.moveTo(padL,yMid); ctx.lineTo(padL+plotW,yMid); ctx.stroke();
+    let peak = 1; for(let i=0;i<N;i++){ const v=Math.abs(ecg[i]); if(v>peak) peak=v; }
+    const eg = (rowH*0.42)/peak;
+    ctx.strokeStyle = getVar('--ecg'); ctx.beginPath();
+    for(let i=0;i<N;i++){
+      const x = padL + plotW*i/(N-1);
+      let y = yMid - ecg[i]*eg;
+      const lim = rowH*0.46;
+      if(y < yMid-lim) y = yMid-lim; if(y > yMid+lim) y = yMid+lim;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  drawCalib(padL, plotW, padT);
+  drawMeasureOverlay();
+}
+// calibration bar: 100 µV (vertical) + 1 s (horizontal)
+function drawCalib(padL, plotW, padT){
+  const x = padL + 10, y = padT + 12;
+  const vpx = 100*GAIN;                                // 100 µV
+  const hpx = plotW/DUR;                               // 1 s
+  ctx.save();
+  ctx.strokeStyle = '#8fa0c0'; ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(x, y); ctx.lineTo(x, y+vpx);             // vertical (100µV)
+  ctx.moveTo(x, y+vpx); ctx.lineTo(x+hpx, y+vpx);     // horizontal (1s)
+  ctx.stroke();
+  ctx.fillStyle = '#9fb0cf'; ctx.font = '10px Consolas, monospace';
+  ctx.fillText('100µV', x+3, y+vpx-4);
+  ctx.fillText('1s', x+hpx-14, y+vpx+12);
+  ctx.restore();
+}
+
+/* ---- frequency measurement tool ---- */
+let measureMode = false, measurePts = [];              // canvas-x positions
+function xToTime(x){ if(!plotGeom) return 0; return (x-plotGeom.padL)/plotGeom.plotW*DUR; }
+function drawMeasureOverlay(){
+  if(!plotGeom || !measurePts.length) return;
+  const {padT, plotH} = plotGeom;
+  ctx.save();
+  ctx.strokeStyle = getVar('--warn'); ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+  measurePts.forEach(x=>{ ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+plotH); ctx.stroke(); });
+  ctx.restore();
+}
+function updateMeasureReadout(){
+  const out = $('measout');
+  if(measurePts.length < 2){ out.textContent = measurePts.length===1 ? '2点目をクリック…' : (measureMode?'2点をクリックして周期を計測':''); return; }
+  const t1 = xToTime(measurePts[0]), t2 = xToTime(measurePts[1]);
+  const dt = Math.abs(t2-t1);
+  if(dt < 1e-3){ out.textContent = '間隔が短すぎます'; return; }
+  const hz = 1/dt;
+  const flag = hz>2.5 ? '　→ >2.5Hz（棘徐波なら確定NCSE域）' : '　→ ≤2.5Hz（単独ではIIC域）';
+  out.textContent = `周期 ${(dt*1000).toFixed(0)}ms ＝ ${hz.toFixed(2)}Hz${flag}`;
+}
+cv.addEventListener('click', e=>{
+  if(!measureMode) return;
+  const rect = cv.getBoundingClientRect();
+  const x = (e.clientX-rect.left)*(cv.width/rect.width);
+  if(measurePts.length>=2) measurePts = [];
+  measurePts.push(x);
+  if(lastChannels) drawEEG(lastChannels, lastEcg);
+  updateMeasureReadout();
+});
+
+function getVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+/* ---- state / flow ---- */
+let level = 'basic', current = null, answered = false, midSel = {};
+let correct = 0, total = 0;
+let montageMode = 'LB';
+const LEVEL_HINT = {
+  basic:'初級：総合判定を4択で。',
+  mid:'中級：分布・パターン・修飾語・判定を選び自動採点。',
+  adv:'上級：ACNS用語を自分で記述し模範解答と照合（自己採点）。',
+  bzd:'臨床BZD：投与前脳波→BZD静注→投与後脳波＋臨床反応で NCSE確定/除外 を判断。'
+};
+
+function selectedGroups(){
+  return { basic: $('c_basic').checked, iic: $('c_iic').checked, ictal: $('c_ictal').checked, artifact: $('c_artifact').checked };
+}
+function currentChannels(){ return toMontage(current.sig, montageMode); }
+function redraw(){ if(!current) return; drawEEG(currentChannels(), $('ecgToggle').checked ? current.ecg : null); }
+
+function setMeta(extra){
+  $('eegmeta').innerHTML =
+    `<span>Montage: ${MONTAGE_LABEL[montageMode]}</span>`+
+    `<span>Time base: 10 s / page（1目盛 = 1秒）</span>`+
+    `<span>Calibration: 100µV / 1s（左上バー）</span>`+
+    `<span>心拍: ${current.bpm}/分</span>`+
+    (extra?`<span>${extra}</span>`:'');
+}
+
+function newCase(){
+  measurePts = [];
+  if(level === 'bzd'){
+    current = buildBZDCase();
+  } else {
+    current = buildCase(selectedGroups());
+  }
+  answered = false;
+  redraw();
+  setMeta(level==='bzd' ? '臨床BZDモード：投与前' : '');
+  updateMeasureReadout();
+  $('answer').className = 'answer';
+  renderQuestion();
+}
+
+const MID_GROUPS = [
+  {key:'mt1', title:'Main term 1（空間分布）', opts:[['G','Generalized'],['L','Lateralized'],['BI','Bilateral independent'],['Mf','Multifocal'],['none','該当なし']]},
+  {key:'mt2', title:'Main term 2（パターン）', opts:[['PD','Periodic (PD)'],['RDA','Rhythmic delta (RDA)'],['SW','Spike-wave (SW)'],['EZ','電気的発作(evolution)'],['none','該当なし']]},
+  {key:'mods', title:'修飾語（plus modifier）', opts:[]},   // 選択したMain term 2に応じて動的生成
+  {key:'judge', title:'総合判定', opts:[['normal','正常'],['enceph','非てんかん性'],['iic','IIC'],['ncse','NCSE'],['artifact','アーチファクト']]}
+];
+// plus修飾は付与できるパターンが決まっている：PD→+F/+R、RDA→+F/+S、SW/その他→なし
+const MOD_OPTS = {
+  PD:  [['none','なし'],['+F','+F 速波'],['+R','+R 律動δ/θ'],['+FR','+FR']],
+  RDA: [['none','なし'],['+F','+F 速波'],['+S','+S 鋭波/棘波'],['+FS','+FS']],
+  other:[['none','該当なし（PD/RDA以外にplus修飾は付かない）']]
+};
+function modOptsFor(mt2){ return mt2==='PD'?MOD_OPTS.PD : mt2==='RDA'?MOD_OPTS.RDA : MOD_OPTS.other; }
+function renderModOpts(mt2){
+  midSel.mods = undefined;
+  const row = $('modRow'); if(!row) return;
+  row.innerHTML = modOptsFor(mt2).map(o=>`<button class="pill" data-v="${o[0]}">${o[1]}</button>`).join('');
+  row.querySelectorAll('.pill').forEach(p=> p.onclick = ()=>{
+    if(answered) return;
+    row.querySelectorAll('.pill').forEach(x=>x.classList.remove('sel'));
+    p.classList.add('sel'); midSel.mods = p.dataset.v;
+    $('gradeBtn').textContent = '採点する ▶';
+  });
+}
+
+function renderQuestion(){
+  const q = $('qarea');
+  answered = false;
+  if(level === 'bzd'){ renderBZD(); return; }
+  if(level === 'basic'){
+    const opts = [
+      ['normal','正常','てんかん性・周期性・律動性の異常なし'],
+      ['enceph','非てんかん性（脳症・代謝性）','徐波化などの非特異的変化のみ'],
+      ['iic','IIC（possible NCSE）','周期性/律動性・≤2.5Hz放電などで確定不可'],
+      ['ncse','NCSE（確定）','>2.5Hz放電の持続 or 明瞭なevolution'],
+      ['artifact','アーチファクト（非脳性）','心電図・筋電図・眼球・体動など脳由来でない']
+    ];
+    q.innerHTML = `<p class="qtitle">初級：この10秒の総合判定は？（脳由来か？周波数・分布・evolutionを評価）</p>
+      <div class="opts">${opts.map(o=>
+        `<button class="opt" data-j="${o[0]}"><b>${o[1]}</b>${o[2]}</button>`).join('')}</div>`;
+    q.querySelectorAll('.opt').forEach(b => b.onclick = () => chooseMC(b));
+  } else if(level === 'mid'){
+    midSel = {};
+    q.innerHTML = `<p class="qtitle">中級：ACNS用語で記述（各項目を1つ選ぶ）→ 採点</p>` +
+      MID_GROUPS.map(g=> g.key==='mods'
+        ? `<div class="grp"><div class="glabel">${g.title}</div>`+
+          `<div class="pillrow" data-grp="mods" id="modRow"><span class="hint" style="padding:4px 2px">Main term 2 を選ぶと、そのパターンに付与可能な修飾語（PD:+F/+R、RDA:+F/+S）が表示されます</span></div></div>`
+        : `<div class="grp"><div class="glabel">${g.title}</div>`+
+          `<div class="pillrow" data-grp="${g.key}">`+
+          g.opts.map(o=>`<button class="pill" data-v="${o[0]}">${o[1]}</button>`).join('')+
+          `</div></div>`).join('') +
+      `<button class="btn" id="gradeBtn" style="margin-top:6px">採点する ▶</button>`;
+    q.querySelectorAll('.pillrow').forEach(row=>{
+      row.querySelectorAll('.pill').forEach(p => p.onclick = () => {
+        if(answered) return;
+        row.querySelectorAll('.pill').forEach(x=>x.classList.remove('sel'));
+        p.classList.add('sel'); midSel[row.dataset.grp] = p.dataset.v;
+        $('gradeBtn').textContent = '採点する ▶';
+        if(row.dataset.grp==='mt2') renderModOpts(p.dataset.v);   // 選択パターンに応じ修飾語を更新
+      });
+    });
+    $('gradeBtn').onclick = gradeMid;
+  } else { /* adv */
+    q.innerHTML = `<p class="qtitle">上級：Main term・修飾語・分布/側・周波数・判定を自分で記述 → 模範解答と照合</p>
+      <textarea id="freeText" placeholder="例）左中側頭部優位（Lateralized）に周期性放電（PD）を約1.5Hzで反復、位相逆転あり。速波の重畳（+F）あり。evolutionは明らかでない。→ LPDs +F、≤2.5Hz、IIC（possible NCSE）"></textarea>
+      <button class="btn sec" id="revealBtn" style="margin-top:10px">模範解答を表示 ▼</button>`;
+    $('revealBtn').onclick = () => revealAnswer(null);
+  }
+}
+
+/* ---- BZD scenario flow ---- */
+function renderBZD(){
+  const q = $('qarea'), b = current.bzd;
+  if(current.phase === 'pre'){
+    q.innerHTML = `<p class="qtitle">臨床BZD① 投与前の脳波を評価</p>
+      <div class="bzdnote">${b.preNote}</div>
+      <p class="expl">この所見に対し、診断的治療として<b>ベンゾジアゼピン(BZD)を静注</b>し、脳波と<b>臨床（意識）反応</b>を評価します。まず周波数・分布・evolutionを自分で読み取ってから投与へ進んでください（📏計測ツール利用可）。</p>
+      <button class="btn" id="giveBzd" style="margin-top:12px">💉 BZD（ミダゾラム/ジアゼパム）を静注 →</button>`;
+    $('giveBzd').onclick = ()=>{
+      current.sig = current.post; current.phase = 'post';
+      measurePts = []; redraw(); setMeta('臨床BZDモード：投与後');
+      renderBZD();
+    };
+  } else {
+    q.innerHTML = `<p class="qtitle">臨床BZD② 投与後の変化を解釈 → 判定</p>
+      <div class="bzdnote">投与後の脳波（上）＋臨床反応：${b.postNote}</div>
+      <p class="expl">脳波反応の有無だけでなく、<b>臨床（意識）反応を伴うか</b>を踏まえてNCSEを判断してください。</p>
+      <div class="opts" style="margin-top:8px">
+        <button class="opt" data-b="ncse"><b>NCSE 確定</b>脳波が改善し、かつ臨床（意識）も改善した</button>
+        <button class="opt" data-b="not"><b>NCSE ではない / IIC</b>脳波のみ変化・または臨床改善を伴わない</button>
+      </div>`;
+    q.querySelectorAll('.opt').forEach(btn=> btn.onclick = ()=> gradeBZD(btn));
+  }
+}
+function gradeBZD(btn){
+  if(answered) return;
+  answered = true;
+  const b = current.bzd, chosen = btn.dataset.b, ok = (chosen === b.correct);
+  total++; if(ok) correct++;
+  recordStat(current.truth.id, ok);
+  q_lock_opts(btn, b.correct, 'b');
+  revealAnswer(chosen==='ncse'?'ncse':(current.truth.judge));  // pass chosen judge for badge
+  // append BZD-specific interpretation
+  const extra = document.createElement('p');
+  extra.className = 'expl';
+  extra.innerHTML = `<b>BZD試験の解釈：</b>脳波反応 <b>${b.eegImproved?'あり':'なし'}</b>／臨床（意識）反応 <b>${b.clinicalImproved?'あり':'なし'}</b>。`+
+    `${b.correct==='ncse'?'脳波・臨床の両反応が揃い <b>NCSE確定</b>。':'脳波のみ（または不十分な）反応で臨床改善を伴わず、<b>NCSE確定の根拠にならない（IIC）</b>。'}`;
+  $('answer').appendChild(extra);
+  postAnswer(ok);
+}
+function q_lock_opts(chosenBtn, correctVal, attr){
+  document.querySelectorAll('.opt').forEach(x=>{
+    if(x.dataset[attr] === correctVal) x.classList.add('correct');
+    else if(x === chosenBtn) x.classList.add('wrong');
+    else x.classList.add('dim');
+    x.onclick = null;
+  });
+}
+
+function gradeMid(){
+  if(answered) return;
+  if(['mt1','mt2','mods','judge'].some(k=>!midSel[k])){
+    $('gradeBtn').textContent = '各項目を1つずつ選んでください';
+    return;
+  }
+  answered = true;
+  const t = current.truth;
+  const tv = { mt1:t.mt1||'none', mt2:t.mt2||'none', mods:modStr(t.mods)||'none', judge:t.judge };
+  document.querySelectorAll('.pillrow').forEach(row=>{
+    const k = row.dataset.grp, correctV = tv[k], sel = midSel[k];
+    row.querySelectorAll('.pill').forEach(p=>{
+      const v = p.dataset.v;
+      if(v === correctV) p.classList.add(v===sel ? 'correct' : 'miss');
+      else if(v === sel) p.classList.add('wrong');
+      p.onclick = null;
+    });
+  });
+  const ok = midSel.judge === t.judge;
+  total++; if(ok) correct++;
+  recordStat(t.id, ok);
+  revealAnswer(midSel.judge);
+  postAnswer(ok);
+}
+
+function chooseMC(btn){
+  if(answered) return;
+  answered = true;
+  const chosen = btn.dataset.j, truth = current.truth.judge;
+  const ok = chosen === truth;
+  total++; if(ok) correct++;
+  recordStat(current.truth.id, ok);
+  document.querySelectorAll('.opt').forEach(b=>{
+    if(b.dataset.j === truth) b.classList.add('correct');
+    else if(b === btn) b.classList.add('wrong');
+    else b.classList.add('dim');
+    b.onclick = null;
+  });
+  revealAnswer(chosen);
+  postAnswer(ok);
+}
+
+function revealAnswer(chosen){
+  const t = current.truth, [label, cls] = JUDGE_LABEL[t.judge];
+  const hit = chosen == null ? '' :
+    (chosen === t.judge
+      ? `<span class="badge normal">正解</span> `
+      : `<span class="badge ncse">不正解</span>（あなたの選択：${JUDGE_LABEL[chosen]?JUDGE_LABEL[chosen][0]:chosen}） `);
+  const struct = t.judge==='artifact'
+    ? '該当なし（非脳性アーチファクト。ACNS用語は脳由来パターンにのみ適用）'
+    : (t.mt1==null && t.mt2==null)
+      ? '該当なし（周期性/律動性/棘徐波パターンではない）'
+      : `分布 <b>${MT1_LABEL[t.mt1||'none']}</b>｜パターン <b>${MT2_LABEL[t.mt2||'none']}</b>｜修飾 <b>${MOD_LABEL[modStr(t.mods)||'none']}</b>`;
+  $('answer').className = 'answer show';
+  $('answer').innerHTML = `
+    <p class="verdict ${cls}">${hit}判定：${label}</p>
+    <span class="badge ${cls}">${t.name}</span>
+    <dl class="kv">
+      <dt>ACNS用語</dt><dd>${t.acns}</dd>
+      <dt>ACNS構成</dt><dd>${struct}</dd>
+      <dt>周波数</dt><dd>${t.freq}</dd>
+    </dl>
+    <p class="expl"><b>基礎解説：</b>${BASICS[t.id] || ''}</p>
+    <p class="expl"><b>判定の根拠：</b>${t.reason}</p>
+    <p class="expl"><b>学習ポイント（要点）：</b>${(current.bzd?current.bzd.teach:t.teach)}</p>
+    ${IIC_POINT}
+    <div class="refbox" id="answerRefs"><b>判定枠組み：</b>Salzburg基準（Leitinger 2016 <i>Lancet Neurol</i>, 感度97.7%/特異度89.6%）＋ ACNS重症脳波用語 2021（Hirsch <i>J Clin Neurophysiol</i>）。<br>確定条件は「既知てんかん性脳症がなければ >2.5Hzのてんかん性放電の持続で確定」「≤2.5Hz放電・律動性δは evolution／微細な臨床発作徴候／AEDへの臨床・脳波反応 のいずれかが加われば確定」。詳細は最下部の出典を参照。</div>`;
+  $('answer').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ---- wire up ---- */
+$('levelSeg').querySelectorAll('button').forEach(b=>{
+  b.onclick = () => {
+    level = b.dataset.level;
+    $('levelSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+    $('levelHint').textContent = LEVEL_HINT[level];
+    $('catField').style.opacity = (level==='bzd') ? .4 : 1;
+    $('answer').className = 'answer';
+    newCase();
+  };
+});
+$('newBtn').onclick = () => { if(sessionDone){ showResult(); return; } newCase(); };
+$('montageSel').onchange = e=>{ montageMode = e.target.value; redraw(); setMeta(level==='bzd'?('臨床BZDモード：'+(current.phase==='post'?'投与後':'投与前')):''); measurePts=[]; updateMeasureReadout(); };
+$('ecgToggle').onchange = ()=>{ redraw(); };
+$('measureBtn').onclick = ()=>{
+  measureMode = !measureMode;
+  $('measureBtn').classList.toggle('on', measureMode);
+  cv.classList.toggle('measure', measureMode);
+  measurePts = []; if(current) redraw(); updateMeasureReadout();
+};
+$('defBody').innerHTML = IIC_DEF + '<div class="divider"></div>' + PLUS_DEF + '<div class="divider"></div>' + EVOLUTION_DEF;
+$('levelHint').textContent = LEVEL_HINT[level];
+
+/* =========================================================================
+   Product layer: score persistence, sessions, results, share card,
+   mistake log, onboarding. (Does not touch the clinical EEG engine.)
+   ========================================================================= */
+const LEVEL_NAME = {basic:'初級（4択）', mid:'中級（ACNS用語）', adv:'上級（記述）', bzd:'臨床BZD'};
+
+function updateScore(){
+  const acc = total ? Math.round(correct/total*100) : 0;
+  $('score').innerHTML = `通算正答 <b>${correct}</b> / <b>${total}</b>${total?`　(${acc}%)`:''}`;
+}
+function pad2(n){ return String(n).padStart(2,'0'); }
+function dateStr(){ const d=new Date(); return `${d.getFullYear()}/${pad2(d.getMonth()+1)}/${pad2(d.getDate())}`; }
+
+/* ---- mistake log (間違いノート) ---- */
+function recordMistake(){
+  const t = current.truth, d = new Date();
+  mistakes.unshift({
+    tm: `${pad2(d.getMonth()+1)}/${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`,
+    type: TYPE_NAME[t.id]||t.id, name: t.name, judge: JUDGE_LABEL[t.judge][0],
+    teach: (current.bzd?current.bzd.teach:t.teach) || ''
+  });
+  if(mistakes.length > 50) mistakes.length = 50;
+  renderMistakes();
+}
+function renderMistakes(){
+  const el = $('mistakeBody'); if(!el) return;
+  if(!mistakes.length){ el.innerHTML = '<div class="statempty">誤答した症例の学習ポイントがここに溜まります。あとで見返して弱点を潰しましょう。</div>'; return; }
+  el.innerHTML = mistakes.map(m =>
+    `<div class="mk"><div class="mh"><b>${m.type}</b><span class="tm">${m.tm}</span></div>`+
+    `<div class="mt">正解：${m.judge}｜${m.name}</div><div class="mt">▶ ${m.teach}</div></div>`).join('');
+}
+
+/* ---- session state ---- */
+let sessionActive=false, sessionDone=false, sessionLen=0, sessionAnswered=0, sessionCorrect=0, sessionLog=[];
+function updateSessionUI(){
+  $('sessQ').textContent = sessionAnswered;
+  $('sessTot').textContent = sessionLen;
+  $('sessOk').textContent = sessionCorrect;
+  $('sessProg').style.width = (sessionLen? Math.round(sessionAnswered/sessionLen*100):0) + '%';
+  $('sessLabel').textContent = sessionLen===20 ? '試験（20問）' : 'セッション（10問）';
+}
+function startSession(len){
+  sessionLen=len; sessionActive=true; sessionDone=false;
+  sessionAnswered=0; sessionCorrect=0; sessionLog=[];
+  $('newBtn').textContent = '新しい症例 ▶';
+  $('sessBar').classList.add('on'); updateSessionUI();
+  $('answer').className='answer';
+  newCase();
+}
+function setModeButtons(mode){ $('modeSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.mode===mode)); }
+function exitSession(){
+  sessionActive=false; sessionDone=false; $('sessBar').classList.remove('on');
+  $('newBtn').textContent='新しい症例 ▶'; setModeButtons('practice');
+}
+
+/* central post-answer hook (called by every grader) */
+function postAnswer(ok){
+  updateScore();
+  if(!ok) recordMistake();
+  saveStore();
+  if(sessionActive){
+    sessionAnswered++; if(ok) sessionCorrect++;
+    sessionLog.push({ id: current.truth.id, ok });
+    updateSessionUI();
+    if(sessionAnswered >= sessionLen){
+      sessionActive=false; sessionDone=true;
+      $('newBtn').textContent = 'セッション結果を見る ▶';
+    }
+  }
+}
+
+/* ---- result screen ---- */
+function gradeFor(pct){
+  if(pct>=90) return ['秀','#31c48d'];
+  if(pct>=75) return ['優','#31c48d'];
+  if(pct>=60) return ['良','#f5b544'];
+  return ['要復習','#f0616d'];
+}
+function showResult(){
+  const n = sessionLog.length, ok = sessionLog.filter(x=>x.ok).length;
+  const pct = n ? Math.round(ok/n*100) : 0;
+  const [gr,gc] = gradeFor(pct);
+  const byType = {};
+  sessionLog.forEach(x=>{ const k=TYPE_NAME[x.id]||x.id; (byType[k]||(byType[k]={s:0,c:0})); byType[k].s++; if(x.ok) byType[k].c++; });
+  const rows = Object.keys(byType).sort((a,b)=>(byType[a].c/byType[a].s)-(byType[b].c/byType[b].s)).map(k=>{
+    const o=byType[k], p=Math.round(o.c/o.s*100), weak=o.c/o.s<0.6;
+    return `<div class="r${weak?' weak':''}"><span class="nm">${k}${weak?' ⚠':''}</span><span class="ac">${o.c}/${o.s}</span><span class="bar"><i style="width:${p}%"></i></span></div>`;
+  }).join('');
+  const weakest = Object.keys(byType).filter(k=>byType[k].c/byType[k].s<0.6);
+  $('resultModal').innerHTML =
+    `<span class="brandtag">セッション結果</span>`+
+    `<div class="resulthead" style="margin-top:12px">`+
+      `<div class="big">${ok}<small> / ${n}</small></div>`+
+      `<div class="acc">正答率 <b style="color:${gc}">${pct}%</b></div>`+
+      `<div class="grade" style="background:${gc}22;color:${gc}">${gr}</div>`+
+    `</div>`+
+    `<div class="rbreak">${rows}</div>`+
+    (weakest.length
+      ? `<p class="lead" style="margin:0 0 14px">重点復習：<b style="color:var(--warn)">${weakest.join('、')}</b> ― 苦手な型は次から多めに出題されます。「間違いノート」で要点を見返しましょう。</p>`
+      : `<p class="lead" style="margin:0 0 14px">弱点なし。素晴らしい判読精度です。難易度を上げて挑戦を。</p>`)+
+    `<div class="actions">`+
+      `<button class="btn" id="rsSave">結果を画像で保存</button>`+
+      `<button class="btn sec" id="rsAgain">同じ設定でもう一度</button>`+
+      `<button class="btn sec" id="rsClose">閉じる</button>`+
+    `</div>`;
+  $('resultOverlay').classList.add('on');
+  const card = { ok, n, pct, gr, gc, weakest, level, label: sessionLen===20?'20問 試験':'10問セッション', date: dateStr() };
+  $('rsSave').onclick = ()=> saveShareCard(card);
+  $('rsAgain').onclick = ()=>{ $('resultOverlay').classList.remove('on'); startSession(sessionLen); };
+  $('rsClose').onclick = ()=>{ $('resultOverlay').classList.remove('on'); exitSession(); };
+}
+
+/* ---- shareable result card (PNG) — regulatory-safe: educational, no patient data ---- */
+function roundRect(x,X,Y,W,H,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,r);
+  x.arcTo(X+W,Y+H,X,Y+H,r); x.arcTo(X,Y+H,X,Y,r); x.arcTo(X,Y,X+W,Y,r); x.closePath(); }
+function saveShareCard(r){
+  const W=640,H=420, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d');
+  x.fillStyle='#0f1420'; x.fillRect(0,0,W,H);
+  roundRect(x,20,20,W-40,H-40,18); x.fillStyle='#1a2233'; x.fill(); x.strokeStyle='#2e3a54'; x.lineWidth=1; x.stroke();
+  x.fillStyle='#4da3ff'; x.fillRect(44,60,42,4);
+  x.textBaseline='alphabetic';
+  x.font='bold 15px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#4da3ff'; x.fillText('波形判読トレーナー', 44, 52);
+  x.font='bold 25px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#e8edf7'; x.fillText('NCSE 脳波判読トレーニング', 44, 100);
+  x.font='14px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#93a0bb'; x.fillText(`${r.label} ／ ${LEVEL_NAME[r.level]||r.level} ／ ${r.date}`, 44, 126);
+  x.font='bold 96px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#e8edf7';
+  const st=`${r.ok}`; x.fillText(st, 44, 250); const sw=x.measureText(st).width;
+  x.font='30px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#93a0bb'; x.fillText(`/ ${r.n} 問正答`, 44+sw+16, 250);
+  x.font='bold 44px "Segoe UI",Meiryo,sans-serif'; x.fillStyle=r.gc; x.fillText(`${r.pct}%`, 430, 214);
+  x.font='15px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#93a0bb'; x.fillText('正答率', 430, 238);
+  roundRect(x,430,256,120,42,21); x.fillStyle=r.gc+'22'; x.fill(); x.strokeStyle=r.gc; x.stroke();
+  x.fillStyle=r.gc; x.font='bold 20px "Segoe UI",Meiryo,sans-serif';
+  x.textAlign='center'; x.fillText(r.gr, 490, 284); x.textAlign='left';
+  const wk = r.weakest.length ? ('重点復習：'+r.weakest.slice(0,4).join('、')) : '弱点なし ― 高精度！';
+  x.font='15px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#f5b544'; x.fillText(wk, 44, 322);
+  x.strokeStyle='#2e3a54'; x.beginPath(); x.moveTo(44,352); x.lineTo(W-44,352); x.stroke();
+  x.font='12px "Segoe UI",Meiryo,sans-serif'; x.fillStyle='#67748f';
+  x.fillText('合成脳波・教育用 ／ Salzburg基準 + ACNS 2021 準拠　#NCSE #脳波判読', 44, 378);
+  const a=document.createElement('a'); a.download='ncse-result.png'; a.href=c.toDataURL('image/png'); a.click();
+}
+
+/* ---- onboarding ---- */
+function openHelp(){ $('onboard').classList.add('on'); }
+function closeHelp(){ $('onboard').classList.remove('on'); try{ localStorage.setItem('ncse_seen','1'); }catch(e){} }
+$('helpBtn').onclick = openHelp;
+$('onboardStart').onclick = closeHelp;
+$('onboard').addEventListener('click', e=>{ if(e.target===$('onboard')) closeHelp(); });
+$('resultOverlay').addEventListener('click', e=>{ if(e.target===$('resultOverlay')){ $('resultOverlay').classList.remove('on'); exitSession(); } });
+
+/* ---- mode selector ---- */
+$('modeSeg').querySelectorAll('button').forEach(b=> b.onclick = ()=>{
+  const m=b.dataset.mode; setModeButtons(m);
+  if(m==='practice') exitSession();
+  else startSession(m==='s20'?20:10);
+});
+
+/* ---- reset ---- */
+$('resetBtn').onclick = ()=>{
+  if(!confirm('通算成績・型別成績・間違いノートをすべて消去します。よろしいですか？')) return;
+  for(const k in typeStats) delete typeStats[k];
+  correct=0; total=0; mistakes=[];
+  saveStore(); renderStats(); renderMistakes(); updateScore();
+};
+
+/* ---- init persisted state, then first case ---- */
+loadStore();
+updateScore();
+renderStats();
+renderMistakes();
+try{ if(!localStorage.getItem('ncse_seen')) openHelp(); }catch(e){}
+newCase();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

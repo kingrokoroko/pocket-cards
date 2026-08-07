@@ -209,12 +209,13 @@
 </style>
 
 <style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
   .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
     padding:10px 14px;margin:0 0 4px;
-    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
     color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
     text-decoration:none;-webkit-tap-highlight-color:transparent}
-  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
   .pc-backbar svg{flex:none}
   @supports (padding-top: env(safe-area-inset-top)){
     .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
@@ -387,10 +388,33 @@
               <td><span class="tag gl">GL 明記</span> NCS 2020<br><b>条件付き推奨 / very low</b></td>
             </tr>
             <tr>
-              <td class="nowrap">高張食塩水の<br>「目標 Na」</td>
-              <td><span class="val">ガイドライン上の目標値は存在しない</span>
-                  <span class="sub">NCS 2020 は <b>Na 目標ベースではなく「症状ベースのボーラス投与」</b>を推奨（SAH に対し条件付き）。数値を追いかける管理ではない</span></td>
-              <td><span class="tag gl">GL 明記</span> NCS 2020（＝「目標値なし」が推奨内容）</td>
+              <td class="nowrap">高張食塩水の<br>「目標 Na」<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">（ICH の場合）</span></td>
+              <td><span class="val">目標 Na 設定型・症状ベースのボーラス、<b>どちらも適切</b></span>
+                  <span class="sub">NCS 2020 の ICH 推奨は "<b>either symptom-based bolus dosing or using a targeted sodium concentration is appropriate</b>"＝<b>優劣をつけていない</b>。実際に目標を置くなら <b>Na 145–155 mEq/L</b> が文献上の値（下記 Wagner 2011）。<b>ただし上限 155–160 は越えない</b></span></td>
+              <td><span class="tag gl">GL 明記</span> NCS 2020<br><b>条件付き推奨 / very low</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">同・<b>SAH</b> の場合<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">（対比のため）</span></td>
+              <td><span class="val">症状ベースのボーラスを、目標Na設定型<b>より優先</b></span>
+                  <span class="sub">"rather than sodium target-based dosing"。<b>ICH と SAH で推奨が違う</b>ので混同しない</span></td>
+              <td><span class="tag gl">GL 明記</span> NCS 2020<br><b>条件付き推奨 / very low</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap"><b>予防的</b>な<br>浸透圧療法</td>
+              <td><span class="val">ICP 亢進が無い段階での先制投与は<b>有効性が確立していない</b></span>
+                  <span class="sub">原文「the efficacy of <b>early prophylactic</b> hyperosmolar therapy for improving outcomes is <b>not well established</b>」。予防的マンニトール持続投与は臨床的有益性を示せず、予防的高張食塩水は<b>そもそも十分に研究されていない</b>。ERICH の傾向スコアマッチ解析でも 3 か月 mRS の改善なし</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 2b / LOE B-NR</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">ICP 上昇時の<br><b>ボーラス</b>投与</td>
+              <td><span class="val">一過性の ICP 低下目的に考慮してよい</span></td>
+              <td><span class="tag gl">GL 明記</span> AHA/ASA 2022 <b>COR 2b / LOE C-LD</b></td>
+            </tr>
+            <tr>
+              <td class="nowrap">持続投与で Na を<br>高値維持する戦略</td>
+              <td><span class="val">転帰改善のエビデンスはない</span>
+                  <span class="sub">これを直接検証した唯一の大規模 RCT が <b>COBI</b>（TBI 370 例、20%NaCl 持続で <b>Na 150–155 mmol/L を48時間以上維持</b>）：6か月 GOS-E は <b>調整OR 1.02（95%CI 0.71–1.47), p=0.92</b> で有意差なし。ICP 亢進エピソードも 33.7% vs 36.3% で不変。一方 <b>Na&gt;160 が 12.4% vs 6.0%、VTE が 6.0% vs 2.2%</b> と増えた</span></td>
+              <td><span class="tag rct">RCT</span> COBI 2021（<b>TBI</b> 対象。ICH での同種 RCT はない）</td>
             </tr>
             <tr>
               <td class="nowrap">血漿浸透圧</td>
@@ -411,7 +435,87 @@
 
     <div class="callout">
       <span class="mk">!</span>
-      <div><strong>浸透圧療法の Na は「狙う値」ではなく「越えてはいけない値」。</strong>NCS 2020 が推奨しているのは症状ベースのボーラス投与であって、Na 150 台を目標に持続投与することではない。上限（Na 155–160 / Cl 110–115）に当たったら、まず投与量を見直す。</div>
+      <div><strong>「やや高めの Na を維持する」は、ICH では否定されていない。ただし治療であって予防ではない。</strong><br>
+      NCS 2020 の <b>ICH 推奨は目標 Na 設定型を明確に許容</b>している（SAH だけがボーラス優先）。実際 ICH で <b>Na 145–155</b> を狙った持続 3% 食塩水は<strong>血腫周囲浮腫の体積を減らす</strong>（Wagner 2011, Stroke：絶対体積 day8–14 で p=0.04、相対体積 day2–14 で p=0.02）。<br>
+      問題は<strong>そこから先が示されていない</strong>こと。Wagner 2011 は<b>歴史的対照との後ろ向き比較（治療 26 例 vs 対照 64 例）で、mRS は評価しておらず、院内死亡率は 11.5% vs 25%, p=0.078 と有意差なし</b>。同じ戦略を前向きに検証した COBI（TBI）は転帰を改善しなかった。<br>
+      <strong>結論：ICP 亢進・浮腫の進行が「実際にある」なら目標 Na 設定は正当な選択肢。何も起きていない段階で予防的に高 Na を維持する根拠はない（AHA/ASA 2022 で COR 2b / B-NR）。</strong></div>
+    </div>
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>マンニトールは血腫拡大を招きうる</strong>とする 2018 年のシステマティックレビュー・メタ解析があり、テント上 ICH 早期のルーチン使用は推奨されていない（AHA/ASA 2022 の supportive text）。</div>
+    </div>
+
+    <h3 class="mini-h" style="margin:22px 0 9px;">高Cl血症 ― なぜ起き、なぜ問題か</h3>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>問い</th><th>答え</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="nowrap">なぜ Cl が<br>上がるのか</td>
+              <td><span class="val">輸液の Na:Cl が <b>1:1</b>、血漿は <b>約 1.4:1</b></span>
+                  <span class="sub">血漿 Na 140 / Cl 100–106 に対し、<b>生食 154/154</b>、<b>3% NaCl 513/513</b>、<b>23.4% NaCl 約4004/4004</b>。Na を上げようとすると <b>Cl の方が不釣り合いに上がる</b>。持続投与では日単位で累積する<br>（参考：乳酸リンゲル 130/109・273 mOsm/L、Plasma-Lyte 148 は 140/98・294 mOsm/L）</span></td>
+              <td><span class="tag ext">外挿</span> 製剤組成（確立した既知事項）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">害①<br>腎血流低下</td>
+              <td><span class="val">Cl が緻密斑で感知され<b>輸入細動脈が収縮</b>する</span>
+                  <span class="sub">遠位尿細管の <b>NKCC2</b> が管腔内 Cl を感知 → ATP 放出 → <b>アデノシン</b>産生 → <b>A1 受容体</b>を介した輸入細動脈収縮 → GFR 低下（尿細管糸球体フィードバック TGF）。A1 受容体欠損マウスでは TGF が完全に消失する</span></td>
+              <td><span class="tag ext">外挿</span> 動物実験（Sun 2001, PNAS）＋分子生理学</td>
+            </tr>
+            <tr>
+              <td class="nowrap">害①の<br>ヒトでの裏付け</td>
+              <td><span class="val">健常人でも生食 2L で腎血流が落ちる</span>
+                  <span class="sub">健常男性 12 名の二重盲検クロスオーバー RCT。生食 2L/1時間で<b>腎動脈平均血流速度が低下（p=0.045）、腎皮質灌流も低下（MRI, p=0.008）</b>。Plasma-Lyte 148 では有意変化なし</span></td>
+              <td><span class="tag rct">RCT</span> Chowdhury 2012, Ann Surg（健常ボランティア）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">害②<br>代謝性アシドーシス</td>
+              <td><span class="val"><b>AG 正常</b>の高Cl性代謝性アシドーシス</span>
+                  <span class="sub">Stewart の strong ion difference (SID, 正常約 40 mEq/L) が Cl 上昇の分だけ狭まり、電気的中性を保つため [H⁺] が上昇。<b>Cl が 1 上がると HCO₃⁻ が概ね 1 下がる</b>ので AG は動かない</span></td>
+              <td><span class="tag ext">外挿</span> 物理化学モデル（Stewart 1983）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">Cl そのものか、<br>Na 負荷か</td>
+              <td><span class="val">対イオンが Cl か HCO₃ かで<b>結果が正反対</b></span>
+                  <span class="sub">イヌの脱神経腎に等浸透圧の高張液を注入すると、いずれも一旦は血管拡張するが、<b>NaCl 群だけ数分で反転して RBF・GFR が低下</b>（p&lt;0.01）。NaHCO₃・酢酸ナトリウム群では拡張が持続し GFR は不変。RBF 変化は血漿 Cl と <b>r = −0.91</b> で相関。<b>＝ Na でも浸透圧でもなく Cl 自体の作用</b></span></td>
+              <td><span class="tag ext">外挿</span> Wilcox 1983, J Clin Invest（イヌ）。機序的根拠としては最も強い</td>
+            </tr>
+            <tr>
+              <td class="nowrap">ICH での<br>臨床データ</td>
+              <td><span class="val">Cl ≥115 mEq/L で院内死亡が増える</span>
+                  <span class="sub">3% 高張食塩水の<b>持続投与を受けた ICH 患者</b>の多施設後ろ向き傾向スコアマッチ研究（n=219 → マッチ後 100）。院内死亡 <b>34% vs 14%, p=0.02</b>、多変量で <b>OR 4.4（95%CI 1.4–13.5), p=0.01</b>。カードの上限 Cl 110–115 はここに接続する</span></td>
+              <td><span class="tag cus">慣習</span> Riha 2017（<b>後ろ向き観察研究</b>。因果ではない）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">SAH での<br>臨床データ</td>
+              <td><span class="val">Cl 10 mmol/L 上昇ごとに AKI の <b>OR 7.39（95%CI 3.44–18.23）</b></span>
+                  <span class="sub">動脈瘤性 SAH、n=1267</span></td>
+              <td><span class="tag cus">慣習</span> Sadan 2017（後ろ向きコホート）</td>
+            </tr>
+            <tr>
+              <td class="nowrap">反対の証拠</td>
+              <td><span class="val">多変量で有意性が消える研究もある</span>
+                  <span class="sub">脳卒中患者では高Cl血症は<b>単変量で転帰と関連したが多変量で有意性消失</b>（Huang 2018）。高張食塩水投与例の AKI 予測因子では <b>CKD 既往（OR 9.7）＞ Na &gt;155（OR 4.1, 95%CI 2.1–8.0）</b> が挙がり、<b>Cl は多変量モデルにそもそも投入されていない</b>（Erdman 2016）。<b>重症度マーカーとしての交絡</b>が残る</span></td>
+              <td><span class="tag cus">慣習</span> 観察研究（negative な結果）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>ただし「Cl が低ければよい」は神経では通用しない。</strong>一般 ICU のバランス晶質液 vs 生食の RCT は、SPLIT（AKI 9.6% vs 9.2%, p=0.77）・BaSICS（90日死亡 26.4% vs 27.2%, p=0.47）・PLUS（21.8% vs 22.0%, p=0.90）が<strong>いずれも有意差なし</strong>、SMART だけが MAKE30 で 14.3% vs 15.4%（OR 0.91, 95%CI 0.84–0.99, p=0.04）と絶対差 1.1% の小差。<br>
+      <strong>そして脳損傷患者ではシグナルが逆転する。</strong>BaSICS の TBI サブ解析（n=483）で<strong>バランス液群の 90 日死亡が多い方向</strong>（OR 1.48, 95%信用区間 1.04–2.09、害の事後確率 0.98 ＝ ベイズ解析）。SMART も脳浮腫の懸念から脳損傷例には割付に関わらず生食を使ってよいプロトコルだった。<strong>乳酸リンゲル（273 mOsm/L, Na 130）の低張性による脳浮腫の害が、Cl 負荷の害を上回る</strong>と考えられる（機序仮説。トニシティと Cl 負荷を独立に検証した試験はない）。<br>
+      ※ Hammond の統合解析でも TBI サブグループは <b>RR 1.26（95%CI 0.98–1.60）で有意差なし</b>（方向は同じ）。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>実務：Cl を上げずに Na を上げたいなら、対イオンを替える。</strong><br>
+      SAH で高Cl血症をきたした患者を、<b>23.4% NaCl ボーラス vs 16.4% NaCl／酢酸ナトリウム混合ボーラス</b>に割り付けた二重盲検パイロット RCT（ACETatE, n=32）で、<strong>AKI が 53.3%（NaCl 群）vs 11.8%（酢酸混合群）, p=0.01</strong>。<b>単施設・n=32 と小規模</b>だが方向は明確で、機序（Wilcox の HCO₃/酢酸では GFR が落ちない）とも整合する。<br>
+      <strong>アセタゾラミドは使わない。</strong>重炭酸尿を促し、代償的に Cl 再吸収が亢進するため、<b>それ自体が AG 正常の高Cl性代謝性アシドーシスを作る薬</b>。是正どころか悪化させる。</div>
     </div>
 
     <h3 class="mini-h" style="margin:22px 0 9px;">低ナトリウム血症</h3>
@@ -680,7 +784,8 @@
     <p><b>ICH 術後に特化した目標値の RCT はほぼ存在しない。</b>青（GL 明記）でも、その根拠となった RCT（INTERACT2・ATACH-2・TICH-2）は<b>いずれも早期手術予定例を除外</b>している。ICP・CPP・PaCO₂・PaO₂ は TBI（Brain Trauma Foundation 第4版）からの外挿、輸液管理は SAH からの外挿である。</p>
     <p><b>赤（慣習）の値は「間違い」ではなく「検証されていない」。</b>K 4.0・Mg 2.0・血小板 10万・フィブリノゲン 150・INR 1.4・EVD 設定圧・血漿浸透圧 320 は、いずれもガイドラインに数値の記載がない。他科と交渉するときにエビデンスとして持ち出さないこと。</p>
     <p><b>日本脳卒中治療ガイドライン 2021〔改訂 2025〕</b>は書籍のみの公開で本文を照合できていない。院内資料に転記する際は原典で確認すること。</p>
-    <p><b>主要出典</b>: AHA/ASA 2022 ICH ガイドライン (PMID 35579034) / NCS 2020 脳浮腫ガイドライン (32227294) / 欧州低Na血症ガイドライン 2014 (24569125) / Verbalis 2013 (24074529) / TRAIN (39382241) / TRAIN の ICH 二次解析 Faso 2025 (40525290) / HEMOTION (38869931) / INTERACT3 (37245517) / MISTIE III (30739747) / ENRICH (38598795) / IMASH (20378868) / MASH-2 (22633825) / BTF 第4版 (27654000) / SIBICC (31659383) / NCS EVD 合意声明 2016 (26738503)</p>
+    <p><b>主要出典</b>: AHA/ASA 2022 ICH ガイドライン (PMID 35579034) / NCS 2020 脳浮腫ガイドライン (32227294) / 欧州低Na血症ガイドライン 2014 (24569125) / Verbalis 2013 (24074529) / TRAIN (39382241) / TRAIN の ICH 二次解析 Faso 2025 (40525290) / HEMOTION (38869931) / INTERACT3 (37245517) / MISTIE III (30739747) / ENRICH (38598795) / IMASH (20378868) / MASH-2 (22633825) / BTF 第4版 (27654000) / SIBICC (31659383) / NCS EVD 合意声明 2016 (26738503) / <b>COBI</b> (34032829) / <b>Wagner 2011 PHE</b> (21512173)</p>
+    <p><b>高Cl血症の出典</b>: Riha 2017 ICH (PMID 28538442) / Sadan 2017 SAH (28504980) / Erdman 2016 (28042364) / Huang 2018 (30018587) / Wilcox 1983 機序 (<b>6826732</b>) / Chowdhury 2012 (22580944) / Sun 2001 TGF (11504952) / Stewart 1983 SID (6423247) / SPLIT (26444692) / SMART (29485925) / BaSICS (34375394) / BaSICS-TBI サブ解析 (36888820) / PLUS (35041780) / Hammond 2022 (38319180) / <b>ACETatE</b> (32391156, 2020年に Erratum あり)</p>
   </div>
 
   <footer>

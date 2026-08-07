@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Respiratory Mechanics</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#1a2233; --panel2:#222c42; --line:#2e3a54;
+    --text:#e8edf7; --muted:#93a0bb; --accent:#4da3ff;
+    --good:#31c48d; --warn:#f5b544; --bad:#f0616d; --info:#7c8bff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI","Meiryo",system-ui,sans-serif; line-height:1.5; font-size:16px;
+    -webkit-text-size-adjust:100%}
+  .wrap{max-width:560px; margin:0 auto; padding:14px 12px 40px}
+  h1{font-size:1.15rem; margin:0 0 2px}
+  .sub{color:var(--muted); font-size:.72rem; margin:0 0 14px}
+
+  /* stacked on mobile: results → input → modules */
+  .app{display:flex; flex-direction:column}
+  .col-results{order:1}
+  .col-input{order:2}
+  .col-modules{order:3; min-width:0}
+
+  /* results */
+  .results{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:16px}
+  .metric{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--info);
+    border-radius:11px; padding:10px 12px}
+  .metric.good{border-left-color:var(--good)} .metric.warn{border-left-color:var(--warn)}
+  .metric.bad{border-left-color:var(--bad)} .metric.blocked{opacity:.4}
+  .metric .name{font-size:.72rem; color:var(--muted); display:flex; justify-content:space-between; gap:4px}
+  .metric .val{font-size:1.55rem; font-weight:650; font-variant-numeric:tabular-nums; margin:1px 0}
+  .metric .val small{font-size:.68rem; color:var(--muted); font-weight:400; margin-left:2px}
+  .metric .formula{font-size:.62rem; color:#5f6d8a; font-family:Consolas,monospace}
+  .badge{font-size:.6rem; padding:1px 6px; border-radius:20px; font-weight:600; white-space:nowrap}
+  .badge.good{background:rgba(49,196,141,.16); color:var(--good)}
+  .badge.warn{background:rgba(245,181,68,.16); color:var(--warn)}
+  .badge.bad{background:rgba(240,97,109,.16); color:var(--bad)}
+  .badge.info{background:rgba(124,139,255,.16); color:var(--info)}
+  .na{color:#5f6d8a}
+
+  .warnbox{background:rgba(240,97,109,.12); border:1px solid var(--bad); border-radius:10px;
+    padding:9px 12px; margin-bottom:14px; font-size:.8rem; color:#ffd3d7}
+  .warnbox b{color:var(--bad)}
+  .warnbox ul{margin:5px 0 0; padding-left:16px}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px; margin-bottom:14px}
+  .card h2{font-size:.85rem; margin:0 0 11px; color:var(--accent)}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .field label{display:block; font-size:.72rem; color:var(--muted); margin-bottom:4px}
+  input,select{width:100%; background:var(--panel2); border:1px solid var(--line); color:var(--text);
+    border-radius:9px; padding:11px 12px; font-size:1.05rem; font-variant-numeric:tabular-nums}
+  input.err{border-color:var(--bad); background:rgba(240,97,109,.08)}
+  input:focus,select:focus{outline:none; border-color:var(--accent)}
+  .full{grid-column:1/-1}
+  .divider{height:1px; background:var(--line); margin:11px 0}
+  .btn{width:100%; background:var(--accent); color:#06101f; border:0; border-radius:10px;
+    padding:14px; font-size:1rem; font-weight:650; cursor:pointer; margin-top:4px}
+  details{margin-bottom:14px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:0 13px}
+  summary{cursor:pointer; padding:13px 0; font-size:.9rem; color:var(--accent); font-weight:600}
+
+  .trend .head{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+  .trend select{width:auto; flex:1; min-width:120px}
+  .chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px}
+  .chip{font-size:.72rem; padding:5px 11px; border-radius:20px; border:1px solid var(--line);
+    background:var(--panel2); color:var(--muted); cursor:pointer}
+  .chip.on{background:var(--accent); color:#06101f; border-color:var(--accent); font-weight:600}
+  table{width:100%; border-collapse:collapse; font-size:.75rem; font-variant-numeric:tabular-nums}
+  th,td{text-align:right; padding:6px 6px; border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted); font-weight:500}
+  .del{color:var(--bad); cursor:pointer}
+  .empty{color:#5f6d8a; font-size:.82rem; padding:16px 0; text-align:center}
+  .chartwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  h3.pk{font-size:.85rem;color:var(--text);margin:16px 0 9px;border-left:3px solid var(--accent);padding-left:8px}
+  .note{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:.75rem;color:#b9c3da;margin-bottom:12px}
+  .note b{color:var(--warn)}
+  .peepgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .peepgrid .field{margin-bottom:0}
+  .riout{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+  .ri-big{grid-column:1/-1}
+  .dtrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:7px;align-items:center}
+  .addbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:11px 14px;cursor:pointer;font-size:.85rem;margin-top:4px;width:100%}
+  .delrow{background:var(--panel2);border:1px solid var(--line);color:var(--bad);border-radius:7px;padding:10px 12px;cursor:pointer}
+  .best{color:var(--good);font-weight:600}
+  .nmdrow{display:grid;grid-template-columns:.7fr 1fr 1fr auto;gap:6px;margin-bottom:7px;align-items:center}
+  .nmdrow input{padding:9px 7px}
+
+  /* interpretation guide */
+  code{background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:.82em;font-family:Consolas,monospace}
+  .guide .body{padding:2px 0 13px}
+  .guide p{font-size:.82rem;color:#c4cde0;margin:0 0 10px}
+  .guide b{color:var(--text)}
+  .foot{color:#5f6d8a;font-size:.68rem;line-height:1.6;margin-top:18px}
+
+  /* ===== desktop layout ===== */
+  @media(min-width:900px){
+    .wrap{max-width:1160px; padding:22px 22px 60px}
+    h1{font-size:1.5rem}
+    .sub{font-size:.82rem; margin-bottom:20px}
+    .app{display:grid; grid-template-columns:350px minmax(0,1fr);
+      grid-template-areas:"input results" "input modules"; column-gap:20px; align-items:start}
+    .col-input{grid-area:input; position:sticky; top:18px}
+    .col-results{grid-area:results}
+    .col-modules{grid-area:modules}
+    .results{grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:12px}
+    .metric .val{font-size:1.7rem}
+    .card h2{font-size:1rem}
+    input,select{font-size:1rem}
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+<div class="wrap">
+  <h1>Respiratory Mechanics</h1>
+  <p class="sub">教育・自己学習用 ・ VCV定常流前提 ・ 端末内保存（PC / スマホ対応）</p>
+
+  <div class="app">
+    <!-- ===== INPUT (left on desktop) ===== -->
+    <div class="col-input">
+      <div class="card">
+        <h2>Input</h2>
+        <div class="field full" style="margin-bottom:10px">
+          <label>患者ラベル（ベッド番号等）</label>
+          <input type="text" id="label" placeholder="例: ICU-3" autocomplete="off">
+        </div>
+        <div class="grid">
+          <div class="field"><label>Vt (mL)</label><input type="number" inputmode="decimal" id="vt" value="450" step="10"></div>
+          <div class="field"><label>Flow (L/min)</label><input type="number" inputmode="decimal" id="flow" value="60" step="5"></div>
+          <div class="field"><label>Ppeak</label><input type="number" inputmode="decimal" id="ppeak" value="30" step="1"></div>
+          <div class="field"><label>Pplat</label><input type="number" inputmode="decimal" id="pplat" value="22" step="1"></div>
+          <div class="field"><label>設定PEEP</label><input type="number" inputmode="decimal" id="peep" value="8" step="1"></div>
+          <div class="field"><label>Total PEEP</label><input type="number" inputmode="decimal" id="peeptot" value="8" step="1"></div>
+          <div class="field"><label>RR (/min)</label><input type="number" inputmode="decimal" id="rr" value="18" step="1"></div>
+          <div class="field"><label>身長 (cm)</label><input type="number" inputmode="decimal" id="height" value="165" step="1"></div>
+          <div class="field full"><label>性別（PBW算出）</label>
+            <select id="sex"><option value="male">男性</option><option value="female">女性</option></select>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="grid">
+          <div class="field"><label>Pes (任意)</label><input type="number" inputmode="decimal" id="pes" step="1"></div>
+          <div class="field"><label>PaO₂ (任意)</label><input type="number" inputmode="decimal" id="pao2" step="1"></div>
+          <div class="field full"><label>FiO₂ (任意)</label><input type="number" inputmode="decimal" id="fio2" step="0.05" placeholder="0.21-1.0"></div>
+        </div>
+        <button class="btn" id="saveBtn">この測定を保存</button>
+      </div>
+    </div>
+
+    <!-- ===== RESULTS (top-right on desktop) ===== -->
+    <div class="col-results">
+      <div id="warn"></div>
+      <div class="results" id="results"></div>
+    </div>
+
+    <!-- ===== MODULES (bottom-right on desktop) ===== -->
+    <div class="col-modules">
+      <div class="card" id="peepCard">
+        <h2>PEEP Optimization & Recruitability (ARDS · Investigational)</h2>
+        <div class="note">
+          <b>⚠ 研究的指標・限界に注意。</b> R/I ratioの閾値0.5はChen 2020論文の中央値を便宜的に採用した値で、アウトカムから検証されたカットオフではありません（原著も「予測閾値は未確立」）。best-compliance PEEPを狙うopen lung approachはART試験(JAMA 2017)でむしろ死亡率が悪化しています。数値は参考として扱い、施設プロトコル・指導医判断と併せて解釈してください。
+        </div>
+
+        <h3 class="pk">① Recruitability — R/I ratio (Chen 2020)</h3>
+        <div class="peepgrid">
+          <div class="field"><label>PEEP高</label><input type="number" inputmode="decimal" id="ri_ph" placeholder="例 15"></div>
+          <div class="field"><label>PEEP低</label><input type="number" inputmode="decimal" id="ri_pl" placeholder="例 5"></div>
+          <div class="field"><label>設定Vt (mL)</label><input type="number" inputmode="decimal" id="ri_vt" placeholder="例 420"></div>
+          <div class="field"><label>低PEEPでのPplat</label><input type="number" inputmode="decimal" id="ri_pplat" placeholder="cmH₂O"></div>
+          <div class="field"><label>PEEP低下直後1呼吸目の呼気量(mL)</label><input type="number" inputmode="decimal" id="ri_vrel" placeholder="release量"></div>
+          <div class="field"><label>AOP 気道開放圧(任意)</label><input type="number" inputmode="decimal" id="ri_aop" placeholder="cmH₂O"></div>
+        </div>
+        <div class="riout" id="ri_out"></div>
+
+        <h3 class="pk">② Decremental PEEP Trial (Best Compliance)</h3>
+        <div class="field" style="margin-bottom:9px"><label>Vt (mL・一定)</label><input type="number" inputmode="decimal" id="dt_vt" placeholder="例 420"></div>
+        <div id="dt_rows"></div>
+        <button class="addbtn" id="dt_add" type="button">＋ PEEPステップを追加</button>
+        <div id="dt_out" style="margin-top:12px"></div>
+
+        <h3 class="pk">③ NMD — P–V Curve Hysteresis (Nakayama/Bunya 2022 · Investigational)</h3>
+        <div class="note">原著に明示的な数式は無く、<b>NMD＝「同一圧での吸気肢・呼気肢の容量差の最大値 ÷ 最大容量Vmax ×100(%)」</b>という定義に基づく実装。Hamilton P/V tool（低流量 0→40→0 cmH₂O, 2 cmH₂O/s）で得た準静的P-V曲線が前提で、他機種・super-syringe法での妥当性は未検証。確立カットオフ無し、R/I ratioと相関する探索的指標（ρ=0.74, 中央値≈41）。呼気肢＞吸気肢＝gap>0が正常な向き。</div>
+        <div class="nmdrow" style="color:var(--muted);font-size:.68rem;margin-bottom:5px"><span>圧</span><span>吸気肢V</span><span>呼気肢V</span><span></span></div>
+        <div id="nmd_rows"></div>
+        <button class="addbtn" id="nmd_add" type="button">＋ 圧点を追加</button>
+        <div class="riout" id="nmd_out" style="margin-top:12px"></div>
+      </div>
+
+      <details class="trend" id="trendCard">
+        <summary>Trends / Saved Records</summary>
+        <div style="padding-bottom:13px">
+          <div class="head">
+            <select id="trendPatient"></select>
+          </div>
+          <div class="chips" id="metricChips"></div>
+          <div class="chartwrap"><div id="chart"></div></div>
+          <div id="table"></div>
+        </div>
+      </details>
+
+      <details class="guide" open>
+        <summary>Interpretation Guide (Study Notes)</summary>
+        <div class="body">
+          <p><b>Cstat と Cdyn の差</b> ＝ 気道抵抗成分の反映。差が大きい（Cdyn ≪ Cstat）＝抵抗高値（気管支攣縮・分泌物・チューブ閉塞）。両方低い＝拘束性（ARDS・肺水腫・線維化・胸郭要因）。</p>
+          <p><b>ドライビングプレッシャー ΔP</b> は「そのVtがその肺にとって大きすぎないか」を1つの数字で表す。ARDSでは <code>&lt;15 cmH₂O</code> を目標。ΔP = Vt × エラスタンス。</p>
+          <p><b>時定数 τ = R×C</b>：1τで63%、3τで95%が充満/排出。呼気時間が <code>3τ</code> 未満だとauto-PEEPが生じやすい。閉塞性肺疾患はτが長い＝長い呼気時間が必要。</p>
+          <p><b>Mechanical Power</b>：圧×量×頻度を統合したVILIの指標。<code>&lt;17 J/min</code> が一つの目安。同じΔPでもRRやflowを上げると増える点が触るとわかる。</p>
+          <p><b>経肺圧 PL = Pplat − Pes</b>：胸壁の硬さ（肥満・腹圧・胸水）を差し引いた、真に肺実質にかかる圧。PEEP設定や安全なPplatの個別化に使う。</p>
+        </div>
+      </details>
+
+      <p class="foot">
+        ※ 教育・自己学習用。気道抵抗は定常流VCV前提の近似で、PCVや減衰波では妥当しません。実際の臨床判断は波形・患者全体で行ってください。<br>
+        参考基準値：Cstat 50–100、Raw（挿管下）&lt;15、ΔP &lt;15、Vt 6–8 mL/kg PBW、MP &lt;17 J/min。
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- core engine ---------- */
+const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n};
+const f1=x=>x==null||!isFinite(x)?null:Math.round(x*10)/10;
+const f2=x=>x==null||!isFinite(x)?null:Math.round(x*100)/100;
+function pbw(h,s){ if(h==null)return null; return (s==="male"?50:45.5)+0.91*(h-152.4); }
+
+function compute(inp){
+  const {vt,flow,ppeak,pplat,peep,peeptot,rr,height,sex,pes,pao2,fio2}=inp;
+  const PEEPt=peeptot!=null?peeptot:peep;
+  const warn=[], block={};
+  if(pplat!=null&&ppeak!=null&&pplat>ppeak){warn.push("Pplat > Ppeak：気道抵抗が負に。Pplat測定を確認。");block.raw=1;block.cdyn=1;}
+  if(peeptot!=null&&peep!=null&&peeptot<peep){warn.push("Total PEEP < 設定PEEP：auto-PEEPが負に。呼気ポーズ測定を確認。");block.autopeep=1;}
+  if(pplat!=null&&PEEPt!=null&&pplat<=PEEPt){warn.push("Pplat ≤ Total PEEP：ΔP・Cstatが計算不可。");block.cstat=1;block.dp=1;block.elast=1;}
+  if(ppeak!=null&&PEEPt!=null&&ppeak<=PEEPt){block.cdyn=1;}
+  [["Vt",vt],["Flow",flow],["RR",rr]].forEach(([k,v])=>{if(v!=null&&v<=0)warn.push(`${k} が0以下です。`)});
+
+  const dp=(!block.dp&&pplat!=null&&PEEPt!=null)?pplat-PEEPt:null;
+  const cstat=(!block.cstat&&vt!=null&&dp)?vt/dp:null;
+  const cdyn=(!block.cdyn&&vt!=null&&ppeak!=null&&PEEPt!=null&&(ppeak-PEEPt)>0)?vt/(ppeak-PEEPt):null;
+  const flowLs=flow!=null?flow/60:null;
+  const raw=(!block.raw&&ppeak!=null&&pplat!=null&&flowLs)?(ppeak-pplat)/flowLs:null;
+  const elast=(!block.elast&&cstat)?1000/cstat:null;
+  const tau=(raw!=null&&cstat!=null)?raw*(cstat/1000):null;
+  const autopeep=(!block.autopeep&&peeptot!=null&&peep!=null)?peeptot-peep:null;
+  const w=pbw(height,sex);
+  const vtkg=(vt!=null&&w)?vt/w:null;
+  const mp=(rr!=null&&vt!=null&&ppeak!=null&&dp!=null)?0.098*rr*(vt/1000)*(ppeak-0.5*dp):null;
+  const pl=(pplat!=null&&pes!=null)?pplat-pes:null;
+  const pf=(pao2!=null&&fio2&&fio2>0)?pao2/fio2:null;
+  return {values:{dp,cstat,cdyn,raw,elast,tau,autopeep,vtkg,mp,pl,pf,pbw:w},warn};
+}
+
+const cls=(c,l)=>({cls:c,label:l});
+const METRICS=[
+  {key:"cstat",name:"Cstat",unit:"mL/cmH₂O",formula:"Vt/(Pplat−PEEPt)",st:v=>v>=50?cls("good","正常"):v>=30?cls("warn","低下"):cls("bad","高度低下")},
+  {key:"cdyn",name:"Cdyn",unit:"mL/cmH₂O",formula:"Vt/(Ppeak−PEEPt)",st:()=>null},
+  {key:"raw",name:"Raw",unit:"cmH₂O/L/s",formula:"(Ppeak−Pplat)/Flow",st:v=>v<15?cls("good","正常"):v<25?cls("warn","上昇"):cls("bad","高度上昇")},
+  {key:"elast",name:"エラスタンス",unit:"cmH₂O/L",formula:"1/Cstat",st:()=>null},
+  {key:"dp",name:"ΔP",unit:"cmH₂O",formula:"Pplat−PEEPt",st:v=>v<15?cls("good","目標内"):v<18?cls("warn","境界"):cls("bad","高値")},
+  {key:"tau",name:"時定数 τ",unit:"秒",formula:"Raw×Cstat",st:()=>cls("info","参考"),fmt:f2},
+  {key:"autopeep",name:"Auto-PEEP",unit:"cmH₂O",formula:"TotalPEEP−設定PEEP",st:v=>v<=0?cls("good","なし"):v<5?cls("warn","軽度"):cls("bad","有意")},
+  {key:"vtkg",name:"Vt/kg PBW",unit:"mL/kg",formula:"Vt/PBW",st:v=>(v>=6&&v<=8)?cls("good","肺保護"):v<=10?cls("warn","やや大"):cls("bad","過大")},
+  {key:"mp",name:"Mech Power",unit:"J/min",formula:"0.098·RR·Vt·(Ppk−½ΔP)",st:v=>v<17?cls("good","許容"):v<25?cls("warn","上昇"):cls("bad","高値")},
+  {key:"pl",name:"経肺圧 PL",unit:"cmH₂O",formula:"Pplat−Pes",st:()=>cls("info","任意"),opt:true},
+  {key:"pf",name:"P/F比",unit:"mmHg",formula:"PaO₂/FiO₂",opt:true,fmt:Math.round,st:v=>v>=300?cls("good","正常/軽"):v>=200?cls("warn","中等"):cls("bad","重症")},
+];
+
+const $=id=>document.getElementById(id);
+const IN=["label","vt","flow","ppeak","pplat","peep","peeptot","rr","height","sex","pes","pao2","fio2"];
+IN.forEach(id=>$(id).addEventListener("input",render));
+$("saveBtn").addEventListener("click",saveRecord);
+
+function readInputs(){
+  return {label:$("label").value.trim(),vt:num($("vt").value),flow:num($("flow").value),ppeak:num($("ppeak").value),
+    pplat:num($("pplat").value),peep:num($("peep").value),peeptot:num($("peeptot").value),rr:num($("rr").value),
+    height:num($("height").value),sex:$("sex").value,pes:num($("pes").value),pao2:num($("pao2").value),fio2:num($("fio2").value)};
+}
+
+function render(){
+  const inp=readInputs(); const {values,warn}=compute(inp);
+  $("warn").innerHTML=warn.length?`<div class="warnbox"><b>⚠ 入力の確認</b><ul>${warn.map(w=>`<li>${w}</li>`).join("")}</ul></div>`:"";
+  let html="";
+  for(const m of METRICS){
+    const v=values[m.key]; if(m.opt&&v==null)continue;
+    const fmt=m.fmt||f1; const s=(v!=null&&m.st)?m.st(v):null;
+    const badge=s&&s.label?`<span class="badge ${s.cls}">${s.label}</span>`:"";
+    const valStr=v==null?`<span class="na">—</span>`:`${fmt(v)}<small>${m.unit}</small>`;
+    let extra="";
+    if(m.key==="tau"&&v!=null)extra=`<div class="formula">3τ=${f2(v*3)}s</div>`;
+    if(m.key==="vtkg"&&values.pbw)extra=`<div class="formula">PBW≈${f1(values.pbw)}kg</div>`;
+    html+=`<div class="metric ${s?s.cls:''} ${v==null?'blocked':''}">
+      <div class="name"><span>${m.name}</span>${badge}</div>
+      <div class="val">${valStr}</div><div class="formula">${m.formula}</div>${extra}</div>`;
+  }
+  $("results").innerHTML=html;
+}
+
+/* persistence + trend */
+const KEY="respmech_records_v1";
+const loadAll=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}};
+const saveAll=r=>localStorage.setItem(KEY,JSON.stringify(r));
+let activeMetrics=["cstat","dp","raw","mp"];
+
+function saveRecord(){
+  const inp=readInputs();
+  if(!inp.label){$("label").classList.add("err");$("label").focus();return;}
+  $("label").classList.remove("err");
+  const {values}=compute(inp);
+  const d=new Date(),pad=n=>String(n).padStart(2,"0");
+  const rec={id:d.getTime()+"_"+Math.round(Math.random()*1e4),label:inp.label,
+    time:`${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`,
+    ts:d.getTime(),inp,values};
+  const all=loadAll();all.push(rec);saveAll(all);
+  renderTrend(inp.label);
+  $("trendCard").open=true;
+  $("saveBtn").textContent="✓ 保存しました";setTimeout(()=>$("saveBtn").textContent="この測定を保存",1200);
+}
+function delRecord(id){saveAll(loadAll().filter(r=>r.id!==id));renderTrend($("trendPatient").value);}
+
+function renderTrend(preferLabel){
+  const all=loadAll();
+  const patients=[...new Set(all.map(r=>r.label))];
+  const sel=$("trendPatient");
+  const current=preferLabel||sel.value||patients[patients.length-1]||"";
+  sel.innerHTML=patients.length?patients.map(p=>`<option ${p===current?'selected':''}>${p}</option>`).join(""):`<option>—</option>`;
+  sel.onchange=()=>renderTrend(sel.value);
+
+  $("metricChips").innerHTML=METRICS.filter(m=>["cstat","cdyn","raw","dp","mp","vtkg","autopeep"].includes(m.key))
+    .map(m=>`<span class="chip ${activeMetrics.includes(m.key)?'on':''}" data-k="${m.key}">${m.name}</span>`).join("");
+  $("metricChips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    const k=c.dataset.k;
+    activeMetrics.includes(k)?activeMetrics=activeMetrics.filter(x=>x!==k):activeMetrics.push(k);
+    renderTrend(sel.value);
+  });
+
+  const recs=all.filter(r=>r.label===current).sort((a,b)=>a.ts-b.ts);
+  if(!recs.length){$("chart").innerHTML=`<div class="empty">保存された測定がありません。</div>`;$("table").innerHTML="";return;}
+  $("chart").innerHTML=drawChart(recs,activeMetrics);
+
+  const cols=["cstat","raw","dp","mp"];
+  const head=`<tr><th>日時</th>${cols.map(k=>`<th>${METRICS.find(m=>m.key===k).name}</th>`).join("")}<th></th></tr>`;
+  const body=recs.slice().reverse().map(r=>`<tr><td>${r.time.split(" ")[1]||r.time}</td>${cols.map(k=>{
+    const v=r.values[k];return `<td>${v==null?'—':f1(v)}</td>`;}).join("")}<td><span class="del" onclick="delRecord('${r.id}')">✕</span></td></tr>`).join("");
+  $("table").innerHTML=`<table>${head}${body}</table>`;
+}
+
+const COLORS={cstat:"#4da3ff",cdyn:"#7c8bff",raw:"#f5b544",dp:"#f0616d",mp:"#31c48d",vtkg:"#e07be0",autopeep:"#ff9f6b"};
+function drawChart(recs,keys){
+  const W=Math.max(500,recs.length*64),H=190,P=32;
+  const xs=recs.map((_,i)=>recs.length===1?W/2:P+i*(W-2*P)/(recs.length-1));
+  let svg=`<svg width="${W}" height="${H}" style="min-width:100%">`;
+  svg+=`<line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="#2e3a54"/>`;
+  for(const k of keys){
+    const pts=recs.map((r,i)=>({x:xs[i],v:r.values[k]})).filter(p=>p.v!=null);
+    if(!pts.length)continue;
+    const vals=pts.map(p=>p.v);let mn=Math.min(...vals),mx=Math.max(...vals);
+    if(mn===mx){mn-=1;mx+=1;}const span=mx-mn;
+    const y=v=>(H-P)-(v-mn)/span*(H-2*P);const col=COLORS[k]||"#9aa7c2";
+    if(pts.length>1){const d=pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+      svg+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2"/>`;}
+    pts.forEach(p=>{svg+=`<circle cx="${p.x}" cy="${y(p.v)}" r="3.2" fill="${col}"/>`});
+    const lp=pts[pts.length-1];
+    svg+=`<text x="${lp.x+5}" y="${y(lp.v)-4}" fill="${col}" font-size="10">${METRICS.find(m=>m.key===k).name}</text>`;
+  }
+  recs.forEach((r,i)=>{const t=r.time.split(" ")[1]||r.time;
+    svg+=`<text x="${xs[i]}" y="${H-11}" fill="#5f6d8a" font-size="9" text-anchor="middle">${t}</text>`});
+  return svg+`</svg>`;
+}
+
+/* ===== PEEP optimization module (R/I ratio + decremental trial) ===== */
+function computeRI(ph,pl,vt,pplat,vrel,aop){
+  const warn=[];
+  if([ph,pl,vt,pplat,vrel].some(x=>x==null)) return {incomplete:true,warn};
+  if(ph<=pl) warn.push("PEEP高 ≤ PEEP低：値を確認してください。");
+  const effLow=(aop!=null&&aop>pl)?aop:pl;
+  const dPEEP=ph-effLow;
+  const clow=(pplat>effLow)?vt/(pplat-effLow):null;
+  if(clow==null) warn.push("Pplat ≤ 低PEEP(またはAOP)：コンプライアンスが計算不可。");
+  if(vrel<vt) warn.push("release量 < 設定Vt：PEEP低下直後の呼気量は通常Vtより大。測定を確認。");
+  const dEELV=vrel-vt;
+  const predicted=(clow!=null)?clow*dPEEP:null;
+  const vrec=(predicted!=null)?dEELV-predicted:null;
+  const crec=(vrec!=null&&dPEEP)?vrec/dPEEP:null;
+  const ri=(crec!=null&&clow)?crec/clow:null;
+  return {warn,clow,dEELV,predicted,vrec,crec,ri,dPEEP,effLow};
+}
+function pkbox(label,val,unit,cls,sub){
+  return `<div class="metric ${cls||''}"><div class="name">${label}</div>
+    <div class="val">${val}<small>${unit||''}</small></div>${sub?`<div class="formula">${sub}</div>`:''}</div>`;
+}
+function renderRI(){
+  const g=id=>num($(id).value);
+  const r=computeRI(g("ri_ph"),g("ri_pl"),g("ri_vt"),g("ri_pplat"),g("ri_vrel"),g("ri_aop"));
+  if(r.incomplete){$("ri_out").innerHTML=`<div class="note ri-big" style="margin:0">PEEP高・低、設定Vt、低PEEPでのPplat、PEEP低下直後1呼吸目の呼気量を入力するとR/I ratioを計算します（AOPは任意）。</div>`;return;}
+  let html="";
+  if(r.warn.length) html+=`<div class="warnbox ri-big" style="margin:0 0 2px">${r.warn.map(w=>`• ${w}`).join("<br>")}</div>`;
+  html+=pkbox("低PEEP Crs", r.clow==null?"—":f1(r.clow),"mL/cmH₂O","",`Vt/(Pplat−${r.effLow})`);
+  html+=pkbox("Recruited vol", r.vrec==null?"—":Math.round(r.vrec),"mL","","ΔEELV−予測膨張量");
+  let st="",lab="";
+  if(r.ri!=null){ if(r.ri>=0.5){st="good";lab="recruiter（高）";} else {st="bad";lab="non-recruiter（低）";} }
+  html+=pkbox("R/I ratio", r.ri==null?"—":f2(r.ri),"", st, lab?`${lab}／閾値0.5は便宜的`:"C_rec/C_low");
+  $("ri_out").innerHTML=html;
+}
+function makeDTRow(peep,pplat){
+  const div=document.createElement("div");div.className="dtrow";
+  div.innerHTML=`<input type="number" inputmode="decimal" class="dt_peep" placeholder="PEEP" value="${peep??''}">
+    <input type="number" inputmode="decimal" class="dt_pplat" placeholder="Pplat" value="${pplat??''}">
+    <button type="button" class="delrow">✕</button>`;
+  div.querySelector(".delrow").onclick=()=>{div.remove();renderDT();};
+  div.querySelectorAll("input").forEach(i=>i.addEventListener("input",renderDT));
+  return div;
+}
+function renderDT(){
+  const vt=num($("dt_vt").value);
+  const rows=[...document.querySelectorAll("#dt_rows .dtrow")].map(r=>({
+    peep:num(r.querySelector(".dt_peep").value), pplat:num(r.querySelector(".dt_pplat").value)}));
+  const calc=rows.map(r=>{
+    const dp=(r.peep!=null&&r.pplat!=null)?r.pplat-r.peep:null;
+    const c=(vt!=null&&dp!=null&&dp>0)?vt/dp:null; return {...r,dp,c};});
+  const valid=calc.filter(x=>x.c!=null);
+  if(!valid.length){$("dt_out").innerHTML=`<div class="note" style="margin:0">Vtと各PEEPステップのPplatを入力すると、Cstat・ΔPを比較しbest complianceを表示します。</div>`;return;}
+  const bestC=Math.max(...valid.map(x=>x.c));
+  let t=`<table><tr><th>PEEP</th><th>Pplat</th><th>Cstat</th><th>ΔP</th><th></th></tr>`;
+  calc.forEach(x=>{ const isBest=x.c!=null&&x.c===bestC;
+    t+=`<tr><td>${x.peep??'—'}</td><td>${x.pplat??'—'}</td>
+      <td class="${isBest?'best':''}">${x.c==null?'—':f1(x.c)}</td>
+      <td>${x.dp==null?'—':f1(x.dp)}</td>
+      <td>${isBest?'<span class="best">◀best</span>':''}</td></tr>`;});
+  t+=`</table><div class="formula" style="margin-top:8px">best compliance PEEP = ${valid.find(x=>x.c===bestC).peep} cmH₂O。これより高PEEPでCstat低下＝過膨張傾向、低PEEPで低下＝虚脱傾向。※best complianceが有益とは限らない（ART試験）。</div>`;
+  $("dt_out").innerHTML=t;
+}
+function initPeep(){
+  ["ri_ph","ri_pl","ri_vt","ri_pplat","ri_vrel","ri_aop"].forEach(id=>$(id).addEventListener("input",renderRI));
+  const rowsC=$("dt_rows");
+  [16,14,12,10,8,6].forEach(p=>rowsC.appendChild(makeDTRow(p,null)));
+  $("dt_vt").addEventListener("input",renderDT);
+  $("dt_add").addEventListener("click",()=>{rowsC.appendChild(makeDTRow());renderDT();});
+  renderRI();renderDT();
+}
+
+render();renderTrend();initPeep();
+
+/* ===== NMD — P-V曲線ヒステリシス（Nakayama/Bunya 2022） ===== */
+function makeNMDRow(p,vi,ve){
+  const d=document.createElement("div");d.className="nmdrow";
+  d.innerHTML=`<input type="number" inputmode="decimal" class="nmd_p" placeholder="圧" value="${p??''}">
+    <input type="number" inputmode="decimal" class="nmd_vi" placeholder="吸気V" value="${vi??''}">
+    <input type="number" inputmode="decimal" class="nmd_ve" placeholder="呼気V" value="${ve??''}">
+    <button type="button" class="delrow">✕</button>`;
+  d.querySelector(".delrow").onclick=()=>{d.remove();renderNMD();};
+  d.querySelectorAll("input").forEach(i=>i.addEventListener("input",renderNMD));
+  return d;
+}
+function renderNMD(){
+  const rows=[...document.querySelectorAll("#nmd_rows .nmdrow")].map(r=>({
+    p:num(r.querySelector(".nmd_p").value), vi:num(r.querySelector(".nmd_vi").value), ve:num(r.querySelector(".nmd_ve").value)}));
+  const allV=[]; rows.forEach(r=>{if(r.vi!=null)allV.push(r.vi);if(r.ve!=null)allV.push(r.ve);});
+  const Vmax=allV.length?Math.max(...allV):null;
+  const pairs=rows.filter(r=>r.p!=null&&r.vi!=null&&r.ve!=null).map(r=>({p:r.p,gap:r.ve-r.vi}));
+  if(!pairs.length||Vmax==null){$("nmd_out").innerHTML=`<div class="note ri-big" style="margin:0">各圧点で吸気肢・呼気肢の容量を入力するとNMDを計算します。</div>`;return;}
+  let maxg=-Infinity,maxp=null;
+  pairs.forEach(x=>{if(x.gap>maxg){maxg=x.gap;maxp=x.p;}});
+  const nmd=Vmax?maxg/Vmax*100:null;
+  const at20=pairs.find(x=>x.p===20);
+  let html="";
+  if(maxg<0) html+=`<div class="warnbox ri-big" style="margin:0 0 2px">gapが全て負：吸気肢・呼気肢の入力が逆でないか確認してください。</div>`;
+  html+=pkbox("最大距離", Math.round(maxg),"mL","",`@ ${maxp} cmH₂O`);
+  html+=pkbox("NMD", nmd==null?"—":f1(nmd),"%","",`最大距離/Vmax×100（Vmax=${Math.round(Vmax)}）`);
+  if(at20) html+=pkbox("距離@20", Math.round(at20.gap),"mL","",`正規化 ${f1(at20.gap/Vmax*100)}%`);
+  $("nmd_out").innerHTML=html;
+}
+function initNMD(){
+  const c=$("nmd_rows");
+  [0,5,10,15,20,25,30,35,40].forEach(p=>c.appendChild(makeNMDRow(p,null,null)));
+  $("nmd_add").addEventListener("click",()=>{c.appendChild(makeNMDRow());renderNMD();});
+  renderNMD();
+}
+initNMD();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

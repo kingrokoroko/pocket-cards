@@ -226,12 +226,13 @@
 </style>
 
 <style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
   .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
     padding:10px 14px;margin:0 0 4px;
-    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
     color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
     text-decoration:none;-webkit-tap-highlight-color:transparent}
-  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
   .pc-backbar svg{flex:none}
   @supports (padding-top: env(safe-area-inset-top)){
     .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
@@ -384,7 +385,9 @@
         <p class="mini-h">浸透圧療法</p>
         <ul class="clean">
           <li>NCS 2020 は <strong>マンニトールより高張食塩水を推奨</strong>（弱い推奨・エビデンスの質は低〜中、TBI/SAH からの外挿）。</li>
-          <li>マンニトール <span class="dose">0.25〜1 g/kg</span> ／ 高張食塩水はボーラスまたは持続。<strong>症状ベースで打つ</strong>（Na の数値を追いかけない）。</li>
+          <li>マンニトール <span class="dose">0.25〜1 g/kg</span> ／ 高張食塩水はボーラスまたは持続。<strong>ICH では「症状ベースのボーラス」も「目標 Na を設定した持続」もどちらも可</strong>（NCS 2020 は優劣をつけていない。ボーラス優先は SAH の推奨なので混同しない）。</li>
+          <li><strong>予防的な浸透圧療法には根拠がない</strong>。ICP 亢進が起きていない段階での先制投与は「有効性が確立していない」（AHA/ASA 2022 <span class="pill mod">COR 2b / B-NR</span>）。持続で Na 150–155 を維持する戦略は TBI の RCT（COBI）で <b>調整OR 1.02（0.71–1.47), p=0.92</b> と転帰を改善しなかった。</li>
+          <li>マンニトールは<strong>血腫拡大を招きうる</strong>とのメタ解析があり、テント上 ICH 早期のルーチン使用は推奨されない。</li>
           <li><strong>合併症の型が違う</strong>：マンニトール＝AKI（神経外科 ICU 単施設コホート n=3964 で 13.6%）、高張食塩水＝高Cl性代謝性アシドーシス。</li>
           <li><strong>急な中止でリバウンド</strong>。漸減する。</li>
         </ul>

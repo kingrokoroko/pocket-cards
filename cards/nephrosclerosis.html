@@ -236,12 +236,13 @@
 </style>
 
 <style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
   .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
     padding:10px 14px;margin:0 0 4px;
-    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
     color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
     text-decoration:none;-webkit-tap-highlight-color:transparent}
-  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
   .pc-backbar svg{flex:none}
   @supports (padding-top: env(safe-area-inset-top)){
     .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}

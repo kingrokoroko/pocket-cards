@@ -21,38 +21,57 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 VAULT = os.path.dirname(ROOT)
 CARDS_DIR = os.path.join(ROOT, "cards")
 
-# (出力ファイル名, 正本ファイル名, ハブでの表示名, 一言説明, 分野タグ)
-CARDS = [
-    ("nms.html",
-     "NMS治療ポケットカード.html",
-     "悪性症候群（NMS）治療",
-     "確立した治療は原因薬中止と支持療法のみ。薬物療法はいずれもRCTがない。PHS型では逆に原因薬を再開する。",
-     "神経・中毒"),
-    ("ich-postop.html",
-     "脳出血術後管理ポケットカード.html",
-     "脳出血 術後管理",
-     "開頭・内視鏡血腫除去後の全身管理。術後に特化したRCTは存在せず、推奨は全て他病態からの外挿。",
-     "脳神経"),
-    ("ich-targets.html",
-     "脳出血術後管理 目標値カード.html",
-     "脳出血 術後 目標値",
-     "血圧・体温・血糖などの目標値を、根拠の質（ガイドライン／RCT／外挿／慣習）で色分けした一覧。",
-     "脳神経"),
-    ("nephrosclerosis.html",
-     "高血圧性腎硬化症 降圧薬ポケットカード.html",
-     "高血圧性腎硬化症の降圧薬",
-     "ICUでの内服導入。第一選択は蛋白尿の有無で決まり、降圧効果と腎保護効果は別の軸として評価する。",
-     "腎・循環"),
+# ハブの構成。カードを増やすときは該当セクションに1行足すだけでよい。
+# 各項目 = (出力ファイル名, 正本ファイル名, ハブでの表示名, 一言説明, 分野タグ)
+SECTIONS = [
+    ("ポケットカード", "ベッドサイドで開く要点まとめ", [
+        ("nms.html",
+         "NMS治療ポケットカード.html",
+         "悪性症候群（NMS）治療",
+         "確立した治療は原因薬中止と支持療法のみ。薬物療法はいずれもRCTがない。PHS型では逆に原因薬を再開する。",
+         "神経・中毒"),
+        ("ich-postop.html",
+         "脳出血術後管理ポケットカード.html",
+         "脳出血 術後管理",
+         "開頭・内視鏡血腫除去後の全身管理。術後に特化したRCTは存在せず、推奨は全て他病態からの外挿。",
+         "脳神経"),
+        ("ich-targets.html",
+         "脳出血術後管理 目標値カード.html",
+         "脳出血 術後 目標値",
+         "血圧・体温・血糖などの目標値を、根拠の質（ガイドライン／RCT／外挿／慣習）で色分けした一覧。",
+         "脳神経"),
+        ("nephrosclerosis.html",
+         "高血圧性腎硬化症 降圧薬ポケットカード.html",
+         "高血圧性腎硬化症の降圧薬",
+         "ICUでの内服導入。第一選択は蛋白尿の有無で決まり、降圧効果と腎保護効果は別の軸として評価する。",
+         "腎・循環"),
+    ]),
+    ("アプリ", "その場で計算・練習するもの", [
+        ("respiratory-mechanics.html",
+         "respiratory-mechanics-app.html",
+         "呼吸メカニクス計算",
+         "駆動圧・コンプライアンス・抵抗に加え、R/I ratio、decremental PEEP、神経筋駆動の評価まで。",
+         "人工呼吸"),
+        ("ncse-eeg-trainer.html",
+         "ncse-eeg-trainer.html",
+         "NCSE 脳波判読トレーナー",
+         "合成脳波でNCSEの判読を練習する。Salzburg基準＋ACNS 2021、14パターン・4難易度。",
+         "脳波・教育"),
+    ]),
 ]
+
+# 平坦化したカード一覧（生成処理はこちらを使う）
+CARDS = [c for _title, _sub, items in SECTIONS for c in items]
 
 BACK_BAR_CSS = """
 <style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
   .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
     padding:10px 14px;margin:0 0 4px;
-    background:var(--surface,#fff);border-bottom:1px solid var(--line,#dde3ec);
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
     color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
     text-decoration:none;-webkit-tap-highlight-color:transparent}
-  .pc-backbar:active{background:var(--surface-2,#f5f7fa)}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
   .pc-backbar svg{flex:none}
   @supports (padding-top: env(safe-area-inset-top)){
     .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
@@ -108,16 +127,24 @@ def build_card(out_name, src_name):
 
 def build_index():
     tpl = io.open(os.path.join(ROOT, "_index.template.html"), encoding="utf-8").read()
-    items = []
-    for out_name, _src, title, desc, tag in CARDS:
-        items.append(
-            '      <a class="card" href="cards/{href}">\n'
-            '        <span class="tag">{tag}</span>\n'
-            '        <h2>{title}</h2>\n'
-            '        <p>{desc}</p>\n'
-            "      </a>".format(href=out_name, tag=tag, title=title, desc=desc)
+    blocks = []
+    for sec_title, sec_sub, items in SECTIONS:
+        rows = []
+        for out_name, _src, title, desc, tag in items:
+            rows.append(
+                '      <a class="card" href="cards/{href}">\n'
+                '        <span class="tag">{tag}</span>\n'
+                '        <h2>{title}</h2>\n'
+                '        <p>{desc}</p>\n'
+                "      </a>".format(href=out_name, tag=tag, title=title, desc=desc)
+            )
+        blocks.append(
+            '  <section>\n'
+            '    <h2 class="sec">{t}<span>{s}</span></h2>\n'
+            '    <div class="grid">\n{rows}\n    </div>\n'
+            '  </section>'.format(t=sec_title, s=sec_sub, rows="\n".join(rows))
         )
-    out = tpl.replace("<!--CARDS-->", "\n".join(items))
+    out = tpl.replace("<!--SECTIONS-->", "\n\n".join(blocks))
     io.open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8", newline="\n").write(out)
 
 
