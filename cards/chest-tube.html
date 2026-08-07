@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>胸腔ドレーン管理 ― 吸引 / water seal / 陰圧 / air leak</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+  ul.clean.warn li::before { background: var(--sev); }
+
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: st; display: flex; flex-direction: column; gap: 10px; }
+  ol.steps li {
+    counter-increment: st; position: relative; padding-left: 34px; font-size: .88rem; color: var(--ink-2);
+  }
+  ol.steps li::before {
+    content: counter(st); position: absolute; left: 0; top: 0;
+    width: 23px; height: 23px; border-radius: 7px; display: grid; place-items: center;
+    font-size: .74rem; font-weight: 700; background: var(--accent-soft); color: var(--accent);
+  }
+  ol.steps li strong { color: var(--ink); font-weight: 600; }
+
+  .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .chain .step {
+    flex: 1 1 130px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 10px 12px; font-size: .82rem; color: var(--ink-2);
+  }
+  .chain .step b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 2px; }
+  .chain .step.end { background: var(--accent-soft); border-color: var(--accent); }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 104px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 80px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .87rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+  .rung-body .how { display: block; margin-top: 5px; font-size: .81rem; color: var(--ink-3); }
+  .rung-body .how b { color: var(--ink-2); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout, .card + .callout, .callout + .card, .figure + .callout { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+  .callout.danger { background: var(--sev-soft); border-color: var(--sev); }
+  .callout.danger .mk { color: var(--sev); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+  /* 狭い画面では図を縮めず横スクロールさせる（縮めると図中の文字が読めなくなる） */
+  @media (max-width: 660px) {
+    .figure { overflow-x: auto; }
+    .figure svg { min-width: 600px; }
+    .fig-cap::before {
+      content: "← 横にスクロールできます"; display: block;
+      font-size: .7rem; color: var(--accent); font-weight: 700; margin-bottom: 5px;
+    }
+  }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 84px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>胸腔ドレーン管理 ― 吸引 / water seal / 陰圧 / air leak</h1>
+    <div class="subtitle">Chest tube management ／ 救急・集中治療 ／ 作成 2026-08-07</div>
+  </header>
+
+  <p class="lede">
+    3つのモードは「吸引の強さの段階」ではなく<strong>役割が違う</strong>。判断の骨格は
+    <strong>①術後・気胸は原則 water seal ②肺が膨らみきらないときだけ吸引 ③外傷は逆に吸引 ④−20 cmH₂O は根拠のない慣習</strong>の4点。
+    <strong>フルクチュエーション消失は「正常な終点」でもある</strong>ので、反射的にミルキングしない。
+  </p>
+
+  <!-- 1. モード -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>3つのモードは何が違うのか</h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>モード</th><th>一方向弁</th><th>陰圧源</th><th>空気の排出力</th><th>使いどころ</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>持続吸引</td>
+              <td>あり</td>
+              <td><span class="dose">−8〜−20 cmH₂O</span>（外部）</td>
+              <td><span class="pill go">最大</span></td>
+              <td>肺が膨らみきらない・皮下気腫増悪・外傷性血気胸・膿胸の初期</td>
+            </tr>
+            <tr>
+              <td>water seal</td>
+              <td>あり（水封が弁）</td>
+              <td><b>患者自身の呼気陽圧・咳のみ</b></td>
+              <td><span class="pill mid">中</span></td>
+              <td><b>術後・自然気胸の標準</b>。遷延する air leak</td>
+            </tr>
+            <tr>
+              <td>クランプ</td>
+              <td><b>なし</b></td>
+              <td>なし</td>
+              <td><span class="pill stop">ゼロ</span></td>
+              <td>抜去前トライアルのみ。<b>air leak が残る状態では緊張性気胸</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div><strong>water seal は「何もしていない」状態ではない。</strong>一方向弁として機能したまま、余計な陰圧をかけていない状態。
+      一方 <strong>クランプは弁が消える</strong>ので、性質がまったく違う。「吸引 → water seal → クランプ」は連続した弱化ではない。</div>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　なぜ吸引でエアリークが止まらないのか ― air stealing</p>
+      <svg viewBox="0 0 620 250" role="img" aria-label="吸引は瘻孔を横切る圧較差を増やし瘻を開存させ続ける">
+        <defs>
+          <marker id="cf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--sev)"/>
+          </marker>
+          <marker id="cf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--mild)"/>
+          </marker>
+        </defs>
+
+        <!-- 左：吸引 -->
+        <text x="150" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="var(--sev)">吸引 −20 cmH₂O</text>
+        <rect x="40" y="40" width="220" height="160" rx="12" fill="var(--sev-soft)" stroke="var(--sev)" stroke-width="1.4"/>
+        <!-- 肺 -->
+        <path d="M 70,80 C 70,58 110,52 130,66 C 150,52 190,58 190,80 L 190,150 C 190,168 150,176 130,164 C 110,176 70,168 70,150 Z"
+              fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.4"/>
+        <text x="130" y="118" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">肺</text>
+        <!-- 瘻孔 -->
+        <circle cx="188" cy="112" r="7" fill="none" stroke="var(--sev)" stroke-width="2.2"/>
+        <text x="188" y="98" text-anchor="middle" font-size="10" fill="var(--sev)" font-weight="700">瘻孔</text>
+        <!-- 空気の流れ -->
+        <line x1="196" y1="112" x2="248" y2="112" stroke="var(--sev)" stroke-width="2.4" marker-end="url(#cf-a)"/>
+        <text x="150" y="188" text-anchor="middle" font-size="11" fill="var(--sev)" font-weight="700">圧較差 大 → 瘻孔が閉じない</text>
+
+        <!-- 右：water seal -->
+        <text x="470" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="var(--mild)">water seal</text>
+        <rect x="360" y="40" width="220" height="160" rx="12" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.4"/>
+        <path d="M 390,76 C 390,54 430,48 450,62 C 470,48 512,54 512,76 L 512,154 C 512,172 470,180 450,168 C 430,180 390,172 390,154 Z"
+              fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.4"/>
+        <text x="450" y="118" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">肺</text>
+        <circle cx="510" cy="112" r="5" fill="none" stroke="var(--mild)" stroke-width="2.2" stroke-dasharray="3 3"/>
+        <line x1="516" y1="112" x2="546" y2="112" stroke="var(--mild)" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#cf-b)"/>
+        <text x="470" y="188" text-anchor="middle" font-size="11" fill="var(--mild)" font-weight="700">圧較差 小 → 瘻孔が閉じる</text>
+
+        <!-- 中央矢印 -->
+        <text x="310" y="118" text-anchor="middle" font-size="20" fill="var(--ink-3)">→</text>
+
+        <!-- 数値 -->
+        <text x="310" y="232" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">
+          気漏残存例：POD3朝までの消失 water seal 67% vs 吸引 7%（p=0.001, Cerfolio 2001）
+        </text>
+      </svg>
+      <p class="fig-cap">
+        吸引は空気を「抜いている」のではなく<b>瘻孔を横切る圧較差を増やして引き続けている</b>（air stealing）。
+        ただし<b>メタ解析まで上げると気漏期間の差は有意に至らない</b>（最大14RCT・2449例）。確実に言えるのは
+        <b>「吸引を足しても良くならない」まで</b>。
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. 選択 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>吸引か water seal か <span class="sec-note">病態で方向が逆になる</span></h2>
+
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">術後・自然気胸 <span class="tag">原則 water seal</span></p>
+        <ul class="clean">
+          <li><strong>気漏期間</strong>：メタ解析で有意差なし。<strong>吸引の上乗せ効果は証明されていない</strong></li>
+          <li><strong>ドレーン留置期間</strong>：water seal が <span class="tnum">0.74〜0.92 日</span>短い（Zhou 2019 / Qiu 2023、いずれも 95%CI 下限がほぼゼロで意義は限定的）</li>
+          <li><strong>術後気胸の再貯留は逆に吸引群で少ない</strong>：<span class="tnum">OR 0.11（0.03–0.49）</span>（Deng 2010）、<span class="tnum">OR 0.27（0.13–0.59）</span>（Qiu 2023）</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">外傷性血気胸 <span class="tag" style="background:var(--mod-soft);color:var(--mod);">吸引優位</span></p>
+        <ul class="clean">
+          <li><strong>ドレーン留置期間</strong> <span class="tnum">MD −3.38 日（−5.72〜−1.04）</span></li>
+          <li><strong>入院期間</strong> <span class="tnum">MD −3.90 日（−6.01〜−1.80）</span></li>
+          <li><strong>遷延性 air leak</strong> <span class="tnum">OR 0.27（0.06–0.50）</span>（GRADE moderate、他は low）</li>
+          <li>律速は<strong>血液・凝血塊の排出とドレーン開存維持</strong>。ただし後続RCT（n=70）は差なしで<strong>領域自体は未確定</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">→</span>
+      <div><strong>実務の落としどころ：「原則 water seal、肺が膨らみきらない／皮下気腫が進む／残存腔が大きいときに吸引」。外傷は初期から吸引。</strong>
+      移行の閾値を検証したRCTはなく、ここは専門家意見レベル。</div>
+    </div>
+
+    <div class="card pad" style="margin-top:12px;">
+      <p class="mini-h">吸引を「避ける」べき状況</p>
+      <ul class="clean warn">
+        <li><strong>肺全摘後は吸引禁忌</strong>。縦隔を患側へ引き込んで血行動態が破綻し、心膜を開けていれば<strong>心ヘルニア（急性心捻転）</strong>。balanced drainage（陽圧側 +1／陰圧側 −13 cmH₂O 程度に水柱で上限）を使うか、そもそも置かない</li>
+        <li><strong>長期虚脱肺・大量胸水では初期から強く吸わない</strong>（再膨張性肺水腫）。リスクは<strong>喫煙歴 <span class="tnum">OR 1.94（1.22–3.10）</span></strong>、<strong>症状持続期間 <span class="tnum">WMD 3.76 日</span></strong>、気胸サイズ。急速再膨張（&lt;10分）、1回 1.5 L 超の排液も総説レベルで挙がる</li>
+      </ul>
+    </div>
+
+    <div class="card pad" style="margin-top:12px;">
+      <p class="mini-h">第3の選択肢 ― 低圧の間欠吸引</p>
+      <p style="margin:0;font-size:.88rem;color:var(--ink-2);">
+        夜間のみ <span class="dose">−10 cmH₂O</span>、日中 water seal の <b>alternate suction</b> が water seal 単独に優る
+        （気漏≧4日 p=0.04、≧7日 p=0.02、ドレーン留置 p=0.002、在院 p=0.004／Brunelli 2005）。
+        <b>害を出すのは高い陰圧の「持続」であって、低圧の間欠的補助はむしろ有利</b>という読み方ができる。
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. 陰圧 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>陰圧はどれくらいが適正か <span class="sec-note">−20 は根拠のない慣習</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図②　圧のスケール ― 生理的範囲と実際にかかっている圧</p>
+      <svg viewBox="0 0 620 300" role="img" aria-label="胸腔内圧のスケール上で正常範囲、推奨設定、慣習の-20、ストリッピングの-400を比較">
+        <!-- 目盛軸 -->
+        <line x1="70" y1="52" x2="70" y2="240" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="70" y="36" text-anchor="middle" font-size="11" fill="var(--ink-3)">0</text>
+
+        <!-- 帯：正常範囲 0〜-8 -->
+        <rect x="70" y="60" width="96" height="30" rx="5" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.4"/>
+        <text x="178" y="74" font-size="12" fill="var(--mild)" font-weight="700">正常胸腔内圧　0 〜 −8</text>
+        <text x="178" y="88" font-size="10.5" fill="var(--ink-3)">呼気終末 ≒0／吸気終末 ≒−8 cmH₂O</text>
+
+        <!-- 推奨 -8 -->
+        <rect x="70" y="100" width="96" height="30" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"/>
+        <text x="178" y="114" font-size="12" fill="var(--accent)" font-weight="700">デジタル推奨　−8</text>
+        <text x="178" y="128" font-size="10.5" fill="var(--ink-3)">呼気終末の正常胸腔内陰圧に相当（Yaftian 2022：再挿入率 1.3%）</text>
+
+        <!-- -10〜-15 -->
+        <rect x="70" y="140" width="150" height="30" rx="5" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.4"/>
+        <text x="232" y="154" font-size="12" fill="var(--ink-2)" font-weight="700">アナログの出発点　−10 〜 −15</text>
+        <text x="232" y="168" font-size="10.5" fill="var(--ink-3)">RCTでは −2 が −10 に優る（留置 27.4h vs 47.5h, p=0.047）</text>
+
+        <!-- -20 慣習 -->
+        <rect x="70" y="180" width="205" height="30" rx="5" fill="var(--mod-soft)" stroke="var(--mod)" stroke-width="1.4"/>
+        <text x="287" y="194" font-size="12" fill="var(--mod)" font-weight="700">−20　＝ 1940年代からの慣習</text>
+        <text x="287" y="208" font-size="10.5" fill="var(--ink-3)">BTS：“based on convention, not research”。上限であって出発点ではない</text>
+
+        <!-- 装置の2倍 -->
+        <rect x="70" y="220" width="330" height="30" rx="5" fill="var(--sev-soft)" stroke="var(--sev)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="412" y="234" font-size="12" fill="var(--sev)" font-weight="700">実際には設定の約2倍まで</text>
+        <text x="412" y="248" font-size="10.5" fill="var(--ink-3)">高流量条件下（Bar-El 2001）。表示圧 ≠ 胸腔内圧</text>
+
+        <!-- ストリッピング -->
+        <rect x="70" y="262" width="500" height="26" rx="5" fill="var(--sev)" opacity=".85"/>
+        <text x="320" y="279" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">ストリッピング　−87（5cm）〜 −400 cmH₂O（全長）　※スケール外</text>
+      </svg>
+      <p class="fig-cap">
+        <b>−20 cmH₂O に生理学的根拠はない。</b>正常胸腔内圧は呼気終末 ≒0、吸気終末 ≒−8 cmH₂O。
+        さらに<b>表示圧は胸腔内圧ではない</b> ― 装置は高流量条件下で設定の約2倍を出しうるし、回路内に排液が溜まる・気漏量が増えるほど乖離は拡大する（Aguayo 2018）。
+        <b>気漏が多いときこそ設定を下げる</b>方向で考える。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>状況</th><th>設定</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr><td>デジタル装置（Thopaz 等）</td><td><span class="dose">−8 cmH₂O</span></td><td>呼気終末の正常胸腔内陰圧。後ろ向き n=155 で再挿入率 1.3% <span class="pill care">観察研究</span></td></tr>
+            <tr><td>アナログ</td><td><span class="dose">−10 〜 −15 から</span></td><td>−20 は上限。低圧側が有利という RCT（−2 vs −10）と整合 <span class="pill mid">RCT</span></td></tr>
+            <tr><td>液体排出のみが目的</td><td><span class="dose">−5 程度</span></td><td>BTS 付録の実務記載 <span class="pill care">専門家意見</span></td></tr>
+            <tr><td>大きな air leak</td><td><b>下げる</b>（〜−25 まで上げるという記載もあるが実測乖離が大きい）</td><td>air stealing・実伝達圧の乖離 <span class="pill care">機序</span></td></tr>
+            <tr><td>肺全摘後</td><td><b>吸引しない</b>（balanced drainage）</td><td>縦隔偏位・心ヘルニア <span class="pill stop">禁忌</span></td></tr>
+            <tr><td>小児</td><td><span class="dose">−5 〜 −10</span></td><td>施設プロトコル。<b>RCTの裏付けなし</b> <span class="pill care">専門家意見</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. air leak -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>Air leak ― どこを見て、どうするか</h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図③　段階的クランプテスト（患者側か回路側かの切り分け）</p>
+      <svg viewBox="0 0 620 220" role="img" aria-label="挿入部側から遠位へ順にクランプしてリークが消える位置を探す">
+        <defs>
+          <marker id="cf-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+        <!-- 患者 -->
+        <rect x="20" y="66" width="86" height="76" rx="12" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.4"/>
+        <text x="63" y="100" text-anchor="middle" font-size="12" fill="var(--ink-2)" font-weight="700">胸腔</text>
+        <text x="63" y="118" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">刺入部</text>
+
+        <!-- チューブ -->
+        <line x1="106" y1="104" x2="500" y2="104" stroke="var(--line-strong)" stroke-width="7" stroke-linecap="round"/>
+
+        <!-- 装置 -->
+        <rect x="500" y="62" width="96" height="84" rx="10" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.4"/>
+        <text x="548" y="98" text-anchor="middle" font-size="12" fill="var(--ink-2)" font-weight="700">ドレナージ</text>
+        <text x="548" y="115" text-anchor="middle" font-size="12" fill="var(--ink-2)" font-weight="700">装置</text>
+
+        <!-- クランプ位置 -->
+        <g>
+          <rect x="130" y="88" width="12" height="32" rx="3" fill="var(--accent)"/>
+          <text x="136" y="78" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">①</text>
+          <rect x="250" y="88" width="12" height="32" rx="3" fill="var(--ink-3)"/>
+          <text x="256" y="78" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-weight="700">②</text>
+          <rect x="370" y="88" width="12" height="32" rx="3" fill="var(--ink-3)"/>
+          <text x="376" y="78" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-weight="700">③</text>
+        </g>
+        <line x1="136" y1="132" x2="376" y2="132" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#cf-c)"/>
+        <text x="256" y="150" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">挿入部側 → 遠位へ 8〜12 インチ間隔で順に</text>
+
+        <!-- 判定 -->
+        <rect x="20" y="166" width="286" height="40" rx="8" fill="var(--sev-soft)" stroke="var(--sev)" stroke-width="1.3"/>
+        <text x="163" y="183" text-anchor="middle" font-size="11.5" fill="var(--sev)" font-weight="700">①でリークが消える ＝ 患者側</text>
+        <text x="163" y="198" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">肺実質・気管支断端／刺入部からの空気引き込み</text>
+
+        <rect x="316" y="166" width="280" height="40" rx="8" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.3"/>
+        <text x="456" y="183" text-anchor="middle" font-size="11.5" fill="var(--mild)" font-weight="700">消えない ＝ 回路側</text>
+        <text x="456" y="198" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">接続の緩み・チューブ破損・装置の不具合</text>
+      </svg>
+      <p class="fig-cap">
+        クランプテストの前に必ず目視で確認するもの：<b>接続部の緩み</b>、<b>側孔の胸腔外逸脱</b>（挿入時の皮膚マークとのズレ、X線で最近位側孔マーカーの位置）、
+        チューブ破損、水封室の水位。<b>手技標準・専門家意見レベル</b>で、RCTでの検証はない。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="pad" style="padding-bottom:0;"><p class="mini-h">Cerfolio 分類 ― いつ気泡が出るかで重症度と原因部位が推定できる</p></div>
+      <div class="table-scroll">
+        <table style="min-width:560px;">
+          <thead><tr><th>Grade</th><th>出現タイミング</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td>FE <span class="pill go">軽</span></td><td>咳・強制呼気のみ</td><td>最軽度。抜去が近い</td></tr>
+            <tr><td>E <span class="pill mid">頻</span></td><td>呼気時のみ</td><td><b>術後最多。肺胞胸膜瘻</b></td></tr>
+            <tr><td>I <span class="pill care">注意</span></td><td>吸気時のみ</td><td>稀。<b>陽圧換気中はこの向きになる</b></td></tr>
+            <tr><td>C <span class="pill stop">重</span></td><td>吸気・呼気とも連続</td><td><b>最重症。気管支胸膜瘻を疑う</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pad" style="padding-top:13px;">
+        <ul class="clean">
+          <li><strong>FE と E で 98% 超</strong>を占める。半定量として Pleur-evac の気泡到達列数を組み合わせ「E4」のように記載</li>
+          <li><strong>デジタルなら mL/min で定量。</strong>抜去閾値は <strong>&lt;20 mL/min が6時間以上</strong>が多用されるが、施設間で 0〜50 mL/min・1〜12時間と幅があり<strong>標準化されていない</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div><strong>新規に出たリークで考えること</strong>：気管支胸膜瘻の発症（感染・縫合不全の遅発性破綻）、医原性（CV穿刺・気管挿管/切開）、
+      <strong>ドレーンの引き抜けで側孔が皮下に出た</strong>、バロトラウマ。<strong>C型（連続）＋換気困難</strong>なら BPF・気管気管支損傷を疑い CT・気管支鏡へ。
+      人工呼吸中は<strong>低一回換気量・PEEP最小化・短い吸気時間</strong>、必要に応じて分離肺換気／HFOV／ECMO（いずれも症例報告レベル）。</div>
+    </div>
+  </section>
+
+  <!-- 5. 遷延性air leak -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>遷延性 air leak（PAL）の段階的対応</h2>
+
+    <div class="card pad">
+      <div class="kv">
+        <div><span class="k">定義</span><span class="v"><b>術後5日 or 7日以上</b>（統一されていない）</span></div>
+        <div><span class="k">頻度</span><span class="v"><b>15%</b>（39研究89,006例）／STS-GTSD 52,198例では <b>10.4%</b></span></div>
+        <div><span class="k">リスク</span><span class="v">COPD／低FEV1、上葉切除、胸膜癒着、低BMI、男性、低DLCO、ステロイド</span></div>
+        <div><span class="k">予測</span><span class="v">IPAL score <b>C統計量 0.71（0.70–0.72）</b>＝中等度。<b>単独でハイリスク選別するには不十分</b></span></div>
+      </div>
+    </div>
+
+    <div class="ladder" style="margin-top:12px;">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">step 1</span><span class="sev-name">吸引を外す</span></div>
+        <div class="rung-body">
+          <b>water seal へ。まずここ。</b>費用ゼロ・リスクゼロで、気漏残存例のRCTで最も大きな効果が出ている。
+          <span class="how"><b>根拠</b>：Cerfolio 2001（67% vs 7%, p=0.001）。ただしメタ解析では有意に至らない</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">step 2</span><span class="sev-name">自己血パッチ</span></div>
+        <div class="rung-body">
+          自己血を胸腔内に注入する胸膜癒着術（ABPP）。<b>成功率 75–93%</b>、多施設コホートで抜去早期化・在院短縮・合併症増加なし。
+          <span class="how"><b>限界</b>：RCTが乏しく大半が後ろ向き。膿胸リスク約9%。PALは多くが自然軽快するため「効いた」バイアスが残る</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">step 3</span><span class="sev-name">気管支バルブ</span></div>
+        <div class="rung-body">
+          気管支鏡的に一方向弁（EBV）を留置。<b>成功率 82%（95%CI 75–88）</b>、50例超の研究では 93%。<b>合併症 9.1%</b>（肉芽腫・逸脱・低酸素）。
+          <span class="how"><b>限界</b>：28観察研究2472例のメタ解析だが<b>RCTはゼロ</b>。対照群のない単群研究が中心</span>
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">step 4</span><span class="sev-name">外科的再手術</span></div>
+        <div class="rung-body">保存的・気管支鏡的処置が奏効しない場合の最終手段。<span class="how">BTS 2023：手術適応がない PAL には自己血胸膜癒着術または気管支鏡的療法を考慮</span></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">◇</span>
+      <div><strong>予防的シーラント（術中）は「気漏は減るが在院日数は縮まない」</strong>（Cochrane、16RCT・1642例）。
+      代替エンドポイントと真のエンドポイントの乖離の典型。ハイリスク例への選択的使用は理にかなうが、その戦略自体は検証されていない。</div>
+    </div>
+  </section>
+
+  <!-- 6. フルクチュエーション -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>フルクチュエーションが消えたとき</h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図④　自発呼吸と陽圧換気では振れる向きが逆になる</p>
+      <svg viewBox="0 0 620 210" role="img" aria-label="自発呼吸では吸気時に患者側へ振れ、陽圧換気では逆位相になる">
+        <!-- 左：自発呼吸 -->
+        <text x="155" y="22" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--mild)">自発呼吸</text>
+        <line x1="40" y1="105" x2="270" y2="105" stroke="var(--line)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <path d="M 40,105 C 62,105 62,62 84,62 C 106,62 106,105 128,105 C 150,105 150,62 172,62 C 194,62 194,105 216,105 C 238,105 238,62 260,62"
+              fill="none" stroke="var(--mild)" stroke-width="2.6"/>
+        <text x="84" y="52" text-anchor="middle" font-size="10.5" fill="var(--mild)" font-weight="700">吸気</text>
+        <text x="128" y="126" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">呼気</text>
+        <text x="155" y="152" text-anchor="middle" font-size="11" fill="var(--ink-2)">吸気で胸腔内圧が<tspan font-weight="700">より陰圧</tspan> → 水柱は患者側へ</text>
+
+        <!-- 区切り -->
+        <line x1="310" y1="30" x2="310" y2="180" stroke="var(--line)" stroke-width="1.2"/>
+
+        <!-- 右：陽圧換気 -->
+        <text x="465" y="22" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">陽圧換気</text>
+        <line x1="350" y1="105" x2="580" y2="105" stroke="var(--line)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <path d="M 350,105 C 372,105 372,148 394,148 C 416,148 416,105 438,105 C 460,105 460,148 482,148 C 504,148 504,105 526,105 C 548,105 548,148 570,148"
+              fill="none" stroke="var(--accent)" stroke-width="2.6"/>
+        <text x="394" y="168" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700">吸気</text>
+        <text x="438" y="94" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">呼気</text>
+        <text x="465" y="192" text-anchor="middle" font-size="11" fill="var(--ink-2)">吸気で胸腔内圧が<tspan font-weight="700">陽圧化</tspan> → 逆位相</text>
+      </svg>
+      <p class="fig-cap">
+        フルクチュエーションは<b>胸腔内圧の呼吸性変動そのもの</b>。同じ所見でも人工呼吸中は向きが反転するので、
+        <b>目視の印象だけで「振れ方がおかしい」と判断しない</b>。Cerfolio 分類の E 型も、陽圧換気中は I 型として出る。
+      </p>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">◎</span>
+      <div><strong>消失＝異常ではない。</strong>肺が完全に再膨張してドレーン先端が肺・胸壁に密着すれば、圧変動は伝達されなくなる。
+      <strong>air leak なし・排液減少・呼吸状態良好なら、むしろ抜去のサイン。</strong></div>
+    </div>
+
+    <div class="ladder" style="margin-top:12px;">
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">まず</span><span class="sev-name">物理的な原因</span></div>
+        <div class="rung-body">
+          <b>キンク・体位性圧迫・患者の下敷き</b> ― 最頻。<b>チューブ全長を体表からボトルまで目視でたどる</b>
+          <span class="how"><b>確認</b>：ベッド柵・患者体重で挟まれていないか。接続部の緩みも同時に見る</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">つぎに</span><span class="sev-name">吸引のかけすぎ</span></div>
+        <div class="rung-body">
+          <b>過度の陰圧で常時吸われていると振れない。</b>
+          <span class="how"><b>確認</b>：<b>water seal に切り替えて再評価</b>するのが最速の鑑別。これで振れれば設定の問題</span>
+        </div>
+      </div>
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">正常</span><span class="sev-name">完全再膨張</span></div>
+        <div class="rung-body">
+          ドレーン先端が肺・胸壁に密着＝<b>正常な終点</b>
+          <span class="how"><b>確認</b>：胸部X線／エコーで lung sliding。air leak なし・排液減少と矛盾しないか</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">異常</span><span class="sev-name">内腔の閉塞</span></div>
+        <div class="rung-body">
+          血餅・フィブリン・膿。心臓外科術後の血栓閉塞は最大 36% との報告
+          <span class="how"><b>確認</b>：管腔内の目視 → 生理食塩水フラッシュで開通性。<b>ミルキングは鑑別手段ではない</b></span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">異常</span><span class="sev-name">側孔の逸脱</span></div>
+        <div class="rung-body">
+          側孔が胸腔外（皮下）へ出た・抜けかけ
+          <span class="how"><b>確認</b>：挿入時の皮膚マークとのズレ、<b>X線で最近位側孔マーカーが胸壁内にあるか</b></span>
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">異常</span><span class="sev-name">器質的変化</span></div>
+        <div class="rung-body">
+          高度癒着・fibrothorax・無気肺。可逆性が低い
+          <span class="how"><b>確認</b>：CT・超音波で含気消失／胸膜肥厚。VATS 剥皮術などの外科的評価へ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout danger" style="margin-top:12px;">
+      <span class="mk">×</span>
+      <div><strong>ミルキング／ストリッピングはルーチンでは行わない。</strong>
+      5 cm しごくだけで <span class="tnum">−87 cmH₂O</span>、全長なら <span class="tnum">−400 cmH₂O</span>（通常の吸引圧の1桁上）。
+      排液量は増えるが<strong>死亡率・罹患率は改善しない</strong>（RCT 2本、Dango 2010：罹患率 49.3% vs 52.8%, p=0.67）。
+      <strong>「フルクチュエーションが弱い → とりあえずミルキング」は害しかない。</strong></div>
+    </div>
+  </section>
+
+  <!-- 7. 抜去 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>抜去</h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>結論</th><th>数値・根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>排液量の閾値</td>
+              <td><b>300 mL/日</b> <span class="pill mid">RCT</span></td>
+              <td>3群RCT（n=150）で <b>450mL群は再貯留 21.6%・穿刺 15.7%</b> vs 300mL群 4.0%・2.0%（p=0.001）。<br>「450でも安全」とする RCT は <b>n=70 で検出力不足</b>（対照も200mLと異なる）</td>
+            </tr>
+            <tr>
+              <td>air leak 消失</td>
+              <td>デジタルで <b>&lt;20 mL/min ×6時間</b></td>
+              <td>施設間で 0〜50 mL/min・1〜12時間と幅。<b>標準化された閾値はない</b> <span class="pill care">観察研究</span></td>
+            </tr>
+            <tr>
+              <td>抜去タイミング</td>
+              <td><b>どちらでも可</b></td>
+              <td>外傷では吸気終末 8% vs 呼気終末 6%（p=1.0）。術後例では呼気終末優位の報告もあり<b>不一致</b>。<br>要点は<b>胸腔内が陽圧に保たれた状態で抜き、同時に閉鎖する準備</b> <span class="pill mid">RCT</span></td>
+            </tr>
+            <tr>
+              <td>抜去後X線</td>
+              <td><b>無症状なら省略可</b></td>
+              <td>複数の系統的レビューで管理変更につながる頻度が低いと一致。<b>具体的数値の出典は特定できず</b> <span class="pill care">SR</span></td>
+            </tr>
+            <tr>
+              <td>クランプトライアル</td>
+              <td><b>ルーチンでは推奨されない</b></td>
+              <td>安全性は保たれるが<b>クランプ中に 13.6% で気胸増悪</b>し再開放を要した報告。<br>BTS 2023 は research question 扱いで推奨なし <span class="pill care">後ろ向き・RCT1本</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout danger" style="margin-top:12px;">
+      <span class="mk">×</span>
+      <div><strong>搬送時はクランプしない。</strong>吸引源から外して <strong>water seal のまま</strong>運ぶ。ボトルは常に胸部より低く。
+      air leak が残っている状態でクランプすると空気が逃げ場を失い<strong>緊張性気胸</strong>になる。
+      （根拠水準は<strong>生理学的合理性と症例報告に基づく専門家コンセンサス</strong>で、RCTではない）</div>
+    </div>
+  </section>
+
+  <!-- 8. 落とし穴 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>やってはいけないこと（要点の再掲）</h2>
+    <div class="card pad">
+      <ul class="clean warn">
+        <li><strong>遷延する air leak に吸引を「足す」</strong> → 逆。まず外す</li>
+        <li><strong>反射的にミルキング／ストリッピング</strong> → −400 cmH₂O、利益は証明されていない</li>
+        <li><strong>肺全摘後に吸引をかける</strong> → 縦隔偏位・心ヘルニア</li>
+        <li><strong>長期虚脱肺・大量胸水を一気に強く吸う</strong> → 再膨張性肺水腫</li>
+        <li><strong>搬送でクランプする</strong> → 緊張性気胸</li>
+        <li><strong>ダイヤルの表示を胸腔内圧だと思う</strong> → 最大2倍の乖離</li>
+        <li><strong>肺切除後のエビデンスを外傷に外挿する</strong> → 外傷は吸引優位で方向が逆</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質について</h3>
+    <p><b>比較的強い（RCT／メタ解析）</b>：吸引 vs water seal（最大14RCT・2449例）、外傷での吸引優位（3RCT・270例）、吸引圧 −2 vs −10（n=228）、
+    ミルキング／ストリッピングの無効性（RCT 2本）、抜去閾値 300 mL/日（3群RCT n=150）、抜去タイミング（n=102本）、シーラント（Cochrane 16RCT）。</p>
+    <p><b>弱い（観察研究・専門家意見）</b>：吸引⇄water seal の移行閾値、air leak の系統的評価手順、フルクチュエーション消失の鑑別の優先順位、
+    デジタル抜去閾値の具体値、肺全摘後の吸引禁忌（機序推論と症例報告）、搬送時のクランプ禁止、小児の吸引圧、胸膜癒着術後の吸引継続、
+    膿胸・乳び胸でのモード選択（直接比較なし）。</p>
+    <p><b>未解決</b>：外傷領域はメタ解析（吸引優位）と後続RCT（差なし）が一致せず、進行中のRCT待ち。PAL の定義（5日 or 7日）も統一されていない。</p>
+    <p><b>引用時の注意</b>：BTS 2023 本体は <b>PMID 37433578</b>（37553157 は同名の別記事）／STS-GTSD の PAL score は <b>Seder CW 2019</b>（"Attaar 2020" は著者取り違え）／
+    Qiu 2023 の OR 0.27 は<b>「吸引群で気胸が少ない」向き</b>（逆に書いた二次資料が流布）。</p>
+  </div>
+
+  <footer>
+    文献ノート31件＋総説は Obsidian <code>文献\胸腔ドレーン管理（気胸・air leak）\</code> に登録済み。<br>
+    med-literature ×4 で調査 → fact-checker で数値を反証 → citation-verifier で書誌照合（誤り5件を訂正）。<br>
+    最終判断は施設プロトコルと患者の状態に基づいて行うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
