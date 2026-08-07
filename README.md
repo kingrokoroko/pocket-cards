@@ -22,12 +22,14 @@ index.html   sw.js   cards/   icons/      ← すべて生成物。直接編集�
 
 カードの中身の正本は **保管庫直下の HTML**（このフォルダの1つ上）。
 
-| 出力 | 正本 |
-|---|---|
-| `cards/nms.html` | `../NMS治療ポケットカード.html` |
-| `cards/ich-postop.html` | `../脳出血術後管理ポケットカード.html` |
-| `cards/ich-targets.html` | `../脳出血術後管理 目標値カード.html` |
-| `cards/nephrosclerosis.html` | `../高血圧性腎硬化症 降圧薬ポケットカード.html` |
+| 節 | 出力 | 正本 |
+|---|---|---|
+| ポケットカード | `cards/nms.html` | `../NMS治療ポケットカード.html` |
+| ポケットカード | `cards/ich-postop.html` | `../脳出血術後管理ポケットカード.html` |
+| ポケットカード | `cards/ich-targets.html` | `../脳出血術後管理 目標値カード.html` |
+| ポケットカード | `cards/nephrosclerosis.html` | `../高血圧性腎硬化症 降圧薬ポケットカード.html` |
+| アプリ | `cards/respiratory-mechanics.html` | `../respiratory-mechanics-app.html` |
+| アプリ | `cards/ncse-eeg-trainer.html` | `../ncse-eeg-trainer.html` |
 
 `build.py` は正本に対して manifest / theme-color / SW登録 / 戻るバーを**注入するだけ**で、
 カードの中身は書き換えない。したがって：
@@ -35,7 +37,11 @@ index.html   sw.js   cards/   icons/      ← すべて生成物。直接編集�
 - **正本を編集 → `python build.py` → commit & push** の順を必ず守る
 - `cards/` を直接編集しない（次のビルドで消える）
 
-カードを増やすときは `build.py` の `CARDS` に1行足すだけでよい（ハブにも自動で並ぶ）。
+カードを増やすときは `build.py` の `SECTIONS` の該当節に1行足すだけでよい（ハブにも自動で並ぶ）。
+臨床の要点まとめ＝「ポケットカード」節、計算・練習ツール＝「アプリ」節。
+
+**新しいポケットカードを作ったら、その場で下の更新手順まで完走させること。**
+PCの中のHTMLのままでは使われない。ベッドサイドのスマホで開けて初めて価値が出る。
 
 ## 更新のしかた
 
