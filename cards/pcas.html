@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>PCAS ― 体温 / 呼吸循環 / 神経学的予後予測</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+  ul.clean.warn li::before { background: var(--sev); }
+
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: st; display: flex; flex-direction: column; gap: 10px; }
+  ol.steps li {
+    counter-increment: st; position: relative; padding-left: 34px; font-size: .88rem; color: var(--ink-2);
+  }
+  ol.steps li::before {
+    content: counter(st); position: absolute; left: 0; top: 0;
+    width: 23px; height: 23px; border-radius: 7px; display: grid; place-items: center;
+    font-size: .74rem; font-weight: 700; background: var(--accent-soft); color: var(--accent);
+  }
+  ol.steps li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 104px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 84px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .87rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+  .rung-body .how { display: block; margin-top: 5px; font-size: .81rem; color: var(--ink-3); }
+  .rung-body .how b { color: var(--ink-2); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  table.narrow { min-width: 460px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+  .trial-sub { font-weight: 400; color: var(--ink-3); font-size: .78rem; display: block; margin-top: 2px; }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+  .pill.flat { background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout, .card + .callout, .callout + .card, .figure + .callout { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+  .callout.danger { background: var(--sev-soft); border-color: var(--sev); }
+  .callout.danger .mk { color: var(--sev); }
+  .callout.key { background: var(--accent-soft); border-color: var(--accent); }
+  .callout.key .mk { color: var(--accent); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+  @media (max-width: 660px) {
+    .figure { overflow-x: auto; }
+    .figure svg { min-width: 600px; }
+    .fig-cap::before {
+      content: "← 横にスクロールできます"; display: block;
+      font-size: .7rem; color: var(--accent); font-weight: 700; margin-bottom: 5px;
+    }
+  }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 96px 1fr; gap: 10px; }
+  @media (max-width: 480px) { .kv > div { grid-template-columns: 1fr; gap: 2px; } }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .dosebox {
+    background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 14px 17px;
+  }
+  .dosebox .big {
+    font-family: var(--mono); font-size: clamp(1.05rem, 3.2vw, 1.4rem); font-weight: 700;
+    color: var(--ink); letter-spacing: -.01em;
+  }
+  .dosebox .sub { font-size: .84rem; color: var(--ink-2); margin-top: 4px; }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>PCAS ― 体温 / 呼吸循環 / 神経学的予後予測</h1>
+    <div class="subtitle">Post-cardiac arrest syndrome ／ ROSC後の集中治療 ／ 救急・集中治療 ／ 作成 2026-08-09</div>
+  </header>
+
+  <p class="lede">
+    骨格は4つ。<strong>①体温は「深く冷やす」より「発熱させない（&lt;37.5℃）」</strong>が現在の基本。
+    <strong>②ただし中間の重症度層には33℃が効く可能性が残っており、検証RCTが進行中</strong>。
+    <strong>③神経学的予後予測は ROSC後72時間以降・multimodal・偽陽性0%（0%FPR）の所見でのみ行う</strong>。単一指標での治療中止は禁忌。
+    <strong>④呼吸循環はおおむね標準的目標</strong>（SpO<sub>2</sub> 90–98%、PaCO<sub>2</sub> 35–45、MAP&gt;65）で、ECMO中の高酸素だけは意識して避ける。
+  </p>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>30秒サマリー<span class="sec-note">迷ったらここだけ</span></h2>
+    <div class="card pad">
+      <div class="kv">
+        <div><span class="k">目標体温</span><span class="v"><b>37.5℃ 以下（発熱予防）</b>。深部低体温（33℃）を全例に行う根拠は失われた</span></div>
+        <div><span class="k">誰にやるか</span><span class="v">ROSC後も<b>昏睡が続く患者</b>。<b>GCS ≧ 8 は適応なし</b>。高度脳浮腫のGCS 3も積極的にはやらない</span></div>
+        <div><span class="k">やり方</span><span class="v"><b>できるだけ早く開始</b>（院外での冷却は推奨しない）／<b>血管内冷却 &gt; 体表冷却</b>／<b>最低36時間</b>／復温は<b>12〜24時間かけて</b></span></div>
+        <div><span class="k">Shivering</span><span class="v"><b>必ず管理する</b>。BSASで評価し、鎮静鎮痛（DEX・ケタミン）＋アセトアミノフェン＋Mg、最後に筋弛緩</span></div>
+        <div><span class="k">呼吸</span><span class="v"><b>SpO<sub>2</sub> 90–98%</b>（ERCは94–98%）、<b>PaCO<sub>2</sub> 35–45 mmHg</b>、<b>30度挙上</b></span></div>
+        <div><span class="k">循環</span><span class="v"><b>MAP &gt; 65 mmHg</b>。<b>ST上昇があれば緊急CAG/PCI</b>、なければ（ACS疑いが強くなければ）急がない</span></div>
+        <div><span class="k">予後予測</span><span class="v"><b>72時間以降・multimodal・0%FPR</b>。自動瞳孔計 <b>NPi ≦ 2</b> は早期でも 0%FPR で有望</span></div>
+        <div><span class="k">最大の禁</span><span class="v"><b>単一指標で治療中止を決めない。</b>回復しうる患者の治療中止は取り返しがつかない</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>目標値一覧<span class="sec-note">根拠の質を色で分けてある</span></h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>項目</th><th>目標</th><th>補足</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>深部体温</td>
+              <td><span class="dose">&lt; 37.5 ℃</span></td>
+              <td>発熱を積極的に予防する。ILCOR は弱い推奨・低い確実性</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>TTM 持続時間</td>
+              <td><span class="dose">最低 36 時間</span></td>
+              <td>24h と 48h、36h と 72h いずれも差が出ておらず、<b>長くする意味は乏しい</b></td>
+              <td><span class="pill go">RCT</span></td>
+            </tr>
+            <tr>
+              <td>復温速度</td>
+              <td><span class="dose">12〜24 時間かけて</span></td>
+              <td>試験値では 0.25〜0.5 ℃/h。<b>この具体値は講義の口頭補足</b></td>
+              <td><span class="pill flat">口頭・要確認</span></td>
+            </tr>
+            <tr>
+              <td>SpO<sub>2</sub></td>
+              <td><span class="dose">90–98 %</span></td>
+              <td>AHA 90–98% ／ ERC 94–98%</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>PaO<sub>2</sub></td>
+              <td><span class="dose">60–105 mmHg</span></td>
+              <td>AHA 60–105 ／ ERC 75–100。<b>低酸素も高酸素も避ける</b></td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>PaCO<sub>2</sub></td>
+              <td><span class="dose">35–45 mmHg</span></td>
+              <td>意図的な高／低換気は行わない</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>体位</td>
+              <td><span class="dose">30度挙上</span></td>
+              <td>誤嚥予防と頭蓋内圧低下</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>MAP（一般）</td>
+              <td><span class="dose">&gt; 60–65 mmHg</span></td>
+              <td>低血圧を避けることが主眼。個別化MAPに明確な根拠はない</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>MAP（ECPR）</td>
+              <td><span class="dose">&gt; 70–80 mmHg ?</span></td>
+              <td><b>やや高めが良いかもしれない、程度</b>。RCTはなく観察研究のみ</td>
+              <td><span class="pill care">観察研究</span></td>
+            </tr>
+            <tr>
+              <td>ECMO中の PaO<sub>2</sub></td>
+              <td><span class="dose">&gt; 300 mmHg を避ける</span></td>
+              <td>過度な低め調整も不要（BLENDERで差なし）。<b>交絡の可能性あり</b></td>
+              <td><span class="pill care">メタ解析＋RCT</span></td>
+            </tr>
+            <tr>
+              <td>神経予後判定の時期</td>
+              <td><span class="dose">ROSC/復温後 72 時間以降</span></td>
+              <td>ERCは GCS-M ≦ 5 の患者を72時間時点で評価</td>
+              <td><span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>血清 Mg（shivering）</td>
+              <td><span class="dose">sMg &lt; 4 mg/dL で 1 g/h</span></td>
+              <td>効果は限定的</td>
+              <td><span class="pill flat">慣習</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>体温管理 ― なぜ「低体温」から「発熱予防」になったのか</h2>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 268" role="img" aria-label="主要TTM試験における介入群と対照群の目標体温と結果">
+        <g font-size="10.5" fill="var(--ink-3)">
+          <text x="140" y="34" text-anchor="middle">32</text>
+          <text x="206" y="34" text-anchor="middle">33</text>
+          <text x="272" y="34" text-anchor="middle">34</text>
+          <text x="337" y="34" text-anchor="middle">35</text>
+          <text x="403" y="34" text-anchor="middle">36</text>
+          <text x="468" y="34" text-anchor="middle">37</text>
+          <text x="534" y="34" text-anchor="middle">38 ℃</text>
+        </g>
+        <g stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4">
+          <path d="M140,40 L140,236"/><path d="M206,40 L206,236"/><path d="M272,40 L272,236"/>
+          <path d="M337,40 L337,236"/><path d="M403,40 L403,236"/><path d="M468,40 L468,236"/>
+          <path d="M534,40 L534,236"/>
+        </g>
+
+        <!-- HACA 2002 -->
+        <text x="8" y="62" font-size="11.5" font-weight="700" fill="var(--ink)">HACA 2002</text>
+        <text x="8" y="76" font-size="9.5" fill="var(--ink-3)">VF/pVT n=273</text>
+        <line x1="206" y1="66" x2="534" y2="66" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <rect x="140" y="60" width="132" height="12" rx="6" fill="var(--accent)"/>
+        <circle cx="534" cy="66" r="6.5" fill="var(--sev)"/>
+        <text x="560" y="63" font-size="10.5" font-weight="700" fill="var(--mild)">差あり</text>
+        <text x="560" y="76" font-size="9.5" fill="var(--ink-3)">良好 55% vs 39%</text>
+
+        <!-- Bernard 2002 -->
+        <text x="8" y="105" font-size="11.5" font-weight="700" fill="var(--ink)">Bernard 2002</text>
+        <text x="8" y="119" font-size="9.5" fill="var(--ink-3)">VF n=77</text>
+        <line x1="206" y1="109" x2="468" y2="109" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <circle cx="206" cy="109" r="6.5" fill="var(--accent)"/>
+        <circle cx="468" cy="109" r="6.5" fill="var(--mod)"/>
+        <text x="560" y="106" font-size="10.5" font-weight="700" fill="var(--mild)">差あり</text>
+        <text x="560" y="119" font-size="9.5" fill="var(--ink-3)">良好 49% vs 26%</text>
+
+        <!-- TTM 2013 -->
+        <text x="8" y="148" font-size="11.5" font-weight="700" fill="var(--ink)">TTM 2013</text>
+        <text x="8" y="162" font-size="9.5" fill="var(--ink-3)">全波形 n=939</text>
+        <line x1="206" y1="152" x2="403" y2="152" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <circle cx="206" cy="152" r="6.5" fill="var(--accent)"/>
+        <circle cx="403" cy="152" r="6.5" fill="var(--ink-3)"/>
+        <text x="560" y="149" font-size="10.5" font-weight="700" fill="var(--ink-3)">差なし</text>
+        <text x="560" y="162" font-size="9.5" fill="var(--ink-3)">死亡 50% vs 48%</text>
+
+        <!-- HYPERION 2019 -->
+        <text x="8" y="191" font-size="11.5" font-weight="700" fill="var(--ink)">HYPERION 2019</text>
+        <text x="8" y="205" font-size="9.5" fill="var(--ink-3)">non-shockable n=581</text>
+        <line x1="206" y1="195" x2="468" y2="195" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <circle cx="206" cy="195" r="6.5" fill="var(--accent)"/>
+        <circle cx="468" cy="195" r="6.5" fill="var(--ink-3)"/>
+        <text x="560" y="192" font-size="10.5" font-weight="700" fill="var(--mild)">差あり</text>
+        <text x="560" y="205" font-size="9.5" fill="var(--ink-3)">良好 10.2% vs 5.7%</text>
+
+        <!-- TTM2 2021 -->
+        <text x="8" y="234" font-size="11.5" font-weight="700" fill="var(--ink)">TTM2 2021</text>
+        <text x="8" y="248" font-size="9.5" fill="var(--ink-3)">全波形 n=1850</text>
+        <line x1="206" y1="238" x2="521" y2="238" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <circle cx="206" cy="238" r="6.5" fill="var(--accent)"/>
+        <circle cx="521" cy="238" r="6.5" fill="var(--ink-3)"/>
+        <text x="560" y="235" font-size="10.5" font-weight="700" fill="var(--ink-3)">差なし</text>
+        <text x="560" y="248" font-size="9.5" fill="var(--ink-3)">死亡 50% vs 48%</text>
+
+        <g font-size="10" fill="var(--ink-2)">
+          <circle cx="16" cy="14" r="5.5" fill="var(--accent)"/><text x="27" y="18">介入群（低体温）</text>
+          <circle cx="146" cy="14" r="5.5" fill="var(--sev)"/><text x="157" y="18">対照群が発熱していた</text>
+          <circle cx="300" cy="14" r="5.5" fill="var(--mod)"/><text x="311" y="18">対照 37℃</text>
+          <circle cx="392" cy="14" r="5.5" fill="var(--ink-3)"/><text x="403" y="18">対照も厳格に体温管理</text>
+        </g>
+      </svg>
+      <p class="fig-cap">
+        <b>読み方は「対照群が何度だったか」。</b>2002年の2試験は対照群に体温指定がなく、実測で38℃近くまで発熱していた。
+        つまり示されたのは「低体温が良い」ではなく<b>「発熱が悪い」だった可能性</b>がある。
+        対照群を36℃・37.8℃以下と厳格に管理した TTM・TTM2 では差が消えた ―― これが「深部低体温から発熱予防へ」の実体。
+        <b>ただし HYPERION は対照を37℃で厳格管理してなお non-shockable で差を出しており、「発熱予防だけで全部説明できる」とも言い切れない。</b>
+        この矛盾が、次節の「重症度で層別化する」につながる。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>試験</th><th>対象・n</th><th>介入 vs 対照</th><th>結果</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>HACA<span class="trial-sub">NEJM 2002</span></td>
+              <td>OHCA・VF/pVT<br>273例</td>
+              <td>32–34℃ 24時間<br>vs 体温指定なし</td>
+              <td>6か月 CPC 1–2 <b>55% vs 39%</b>、p=0.009、RR 1.40<span class="trial-sub">目標到達まで8時間、対照群は38℃近くまで発熱、資金難で早期終了</span></td>
+            </tr>
+            <tr>
+              <td>Bernard<span class="trial-sub">NEJM 2002</span></td>
+              <td>OHCA・VF<br>77例</td>
+              <td>33℃ 12時間（氷嚢）<br>vs 37℃</td>
+              <td>退院時良好 <b>49% vs 26%</b>、p=0.046、aOR 5.25<span class="trial-sub">対照群の発熱が多く、症例数も予後評価も不十分</span></td>
+            </tr>
+            <tr>
+              <td>TTM<span class="trial-sub">NEJM 2013</span></td>
+              <td>OHCA 全波形<br>939例</td>
+              <td>33℃ vs 36℃<br>36時間</td>
+              <td>180日死亡 <b>50% vs 48%</b>、HR 1.06（0.89–1.28）<b>差なし</b><span class="trial-sub">神経学的予後不良も差なし（RR 1.02）。導入まで最長4時間、復温がやや急速</span></td>
+            </tr>
+            <tr>
+              <td>HYPERION<span class="trial-sub">NEJM 2019</span></td>
+              <td>OHCA＋IHCA<br><b>non-shockable</b> 581例</td>
+              <td>33℃ 24時間<br>vs 37℃</td>
+              <td>90日 CPC 1–2 <b>10.2% vs 5.7%</b>、p=0.04 <span class="pill go">差あり</span><span class="trial-sub">non-shockable では低体温有利という唯一の陽性RCT</span></td>
+            </tr>
+            <tr>
+              <td><b>TTM2</b><span class="trial-sub">NEJM 2021</span></td>
+              <td>OHCA 全波形<br>1850例</td>
+              <td>33℃ 28時間<br>vs 37.8℃以下（発熱予防）</td>
+              <td>6か月死亡 <b>50% vs 48%</b>、RR 1.04。機能予後（mRS）も <b>55% vs 55%</b><span class="trial-sub">現時点で最大の試験。心停止から無作為化まで135分、目標体温到達まで180分</span></td>
+            </tr>
+            <tr>
+              <td>TTM2＋HYPERION<br>統合解析<span class="trial-sub">JAMA Neurol 2024</span></td>
+              <td>non-shockable<br>912例</td>
+              <td>33℃ vs 37℃</td>
+              <td>90日死亡 <b>80.1% vs 82.1%</b>、RR 1.04、p=0.63 <b>差なし</b><span class="trial-sub">HYPERION 単独の陽性所見は統合すると消える</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="pad"><p class="mini-h">「どれだけ続けるか」も差が出ていない<span class="tag">持続時間のRCT 2本</span></p></div>
+      <div class="table-scroll">
+        <table class="narrow">
+          <thead><tr><th>試験</th><th>比較</th><th>結果</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>TTH48<span class="trial-sub">JAMA 2017・355例</span></td>
+              <td>33℃ <b>48時間 vs 24時間</b></td>
+              <td>6か月 CPC 1–2 <b>69% vs 64%</b>、p=0.33。<b>48時間群で有害事象が多くICU滞在が延長</b></td>
+            </tr>
+            <tr>
+              <td>BOX（期間）<span class="trial-sub">NEJM 2023・789例</span></td>
+              <td>デバイスによる発熱予防を<br><b>36時間 vs 72時間</b></td>
+              <td>90日 CPC 3–5 <b>32.3% vs 33.6%</b>、p=0.70。CPC・mRS・MoCA いずれも差なし。<b>短い側で37.7℃以上の発熱が多かった</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>「長くやる意味は乏しい」までは言えるが、「短くてよい」とは言い切れない。</strong>
+      TTH48 の Kaplan-Meier は48時間群がわずかに良く見えており、<strong>検出力不足の可能性</strong>がある。
+      BOX でも短い側で発熱が増えている。<strong>最低36時間を確保し、その後も発熱させないこと</strong>が実務上の落とし所になる。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>High-quality TTM の5要素<span class="sec-note">「冷やした」ではなく「どう冷やしたか」</span></h2>
+
+    <div class="ladder">
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">1</span><span class="sev-name">開始時期</span></div>
+        <div class="rung-body">
+          <b>できるだけ早く。</b>ただし<b>病院前（院外）での冷却はエビデンスがなく推奨しない</b>。
+          <span class="how">TTM2 では心停止から無作為化まで135分、目標体温到達までさらに180分かかっている。<b>実臨床でこれ以上早くするのは難しい</b>という現実的制約がある。冷却カテーテルを入れないと始まらないので、<b>方針が決まった時点でデバイスを手配する</b>。</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">2</span><span class="sev-name">目標体温</span></div>
+        <div class="rung-body">
+          <b>37.5℃ 以下（発熱予防）。</b>ただし低体温が効く亜集団が存在する可能性は残っている。
+          <span class="how">ILCOR の定義は TTM から <b>Hypothermic ／ Normothermic ／ Fever prevention ／ No temperature control</b> の4区分へ変わった。用語は煩雑なので、実務では「何度を目標に、何で、どれだけ維持するか」を具体的に指示すればよい。</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">3</span><span class="sev-name">持続時間</span></div>
+        <div class="rung-body">
+          <b>最低36時間。</b>それより長くしても上乗せは示されていない。
+          <span class="how">24h/48h、36h/72h いずれのRCTも差なし。<b>48時間群では有害事象とICU滞在が増える</b>ため、漫然と延長しない。</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">4</span><span class="sev-name">管理方法</span></div>
+        <div class="rung-body">
+          <b>血管内冷却 &gt; 体表冷却</b>（どちらも使えるなら血管内）。
+          <span class="how">TTM2 の post hoc（Intensive Care Med 2025）では<b>血管内が cooling performance で優位</b> ―― 目標到達が早く、維持中の温度変動が小さく、overcooling と TTM後発熱が少ない。<b>ただし神経学的予後は IPTW 調整後には差がない</b>。
+          自施設で使えるのは <b>サーモガード（血管内）</b> と <b>アークティックサン（体表）</b>。フィードバック機構とコア体温モニタがあることが「high-quality」の最低条件で、<b>冷たい水をかけるだけ・shivering 未管理は low-quality</b>。</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">5</span><span class="sev-name">復温</span></div>
+        <div class="rung-body">
+          <b>ゆっくり。12〜24時間かけて。</b>
+          <span class="how">試験で用いられた速度は 0.25〜0.5 ℃/h。<b>復温後に発熱させないところまでがTTM</b>で、BOX では早く復温した側で 37.7℃以上の発熱が増えた。<b>「12〜24時間」という具体値は講義の口頭補足であり、スライドには記載がない。</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key" style="margin-top:12px;">
+      <span class="mk">◆</span>
+      <div><strong>全員にやる必要はない。GCS ≧ 8 は TTM の適応なし。</strong>
+      逆側の端 ―― <strong>GCS 3 で高度脳浮腫がある患者</strong>にTTMを行うかは議論があり、他に予後を示唆する所見がなければ積極的にはやらない、というのが講義での立場だった。</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>重症度で層別化する<span class="sec-note">なぜ全体では差が出ないのか</span></h2>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 172" role="img" aria-label="rCASTによる重症度層別化と低体温の効きどころ">
+        <text x="40" y="22" font-size="12.5" font-weight="700" fill="var(--ink)">rCAST スコア</text>
+        <rect x="40" y="36" width="170" height="42" rx="8" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.5"/>
+        <rect x="212" y="36" width="246" height="42" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+        <rect x="460" y="36" width="200" height="42" rx="8" fill="var(--sev-soft)" stroke="var(--sev)" stroke-width="1.5"/>
+
+        <text x="125" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">low</text>
+        <text x="125" y="70" text-anchor="middle" font-size="11" fill="var(--ink-2)">&lt; 5.5</text>
+        <text x="335" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">moderate</text>
+        <text x="335" y="70" text-anchor="middle" font-size="11" fill="var(--ink-2)">6 – 13.5</text>
+        <text x="560" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">high</text>
+        <text x="560" y="70" text-anchor="middle" font-size="11" fill="var(--ink-2)">≧ 14</text>
+
+        <text x="125" y="100" text-anchor="middle" font-size="11" fill="var(--ink-3)">何をしても</text>
+        <text x="125" y="115" text-anchor="middle" font-size="11" fill="var(--ink-3)">おおむね助かる</text>
+        <text x="560" y="100" text-anchor="middle" font-size="11" fill="var(--ink-3)">何をしても</text>
+        <text x="560" y="115" text-anchor="middle" font-size="11" fill="var(--ink-3)">救命が困難</text>
+
+        <rect x="212" y="92" width="246" height="34" rx="8" fill="var(--accent)"/>
+        <text x="335" y="106" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--surface)">33℃ の効果が出るとすればここ</text>
+        <text x="335" y="120" text-anchor="middle" font-size="10.5" fill="var(--surface)">検証RCT が進行中（自施設も参加）</text>
+
+        <path d="M40,146 L660,146" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="350" y="164" text-anchor="middle" font-size="11" fill="var(--ink-3)">両端を混ぜて解析すると、中間層の効果は全体の中に埋もれて見えなくなる</text>
+      </svg>
+      <p class="fig-cap">
+        <b>「全体で差が出ない」＝「誰にも効かない」ではない。</b>
+        低severityは何をしても生存し、high severityは何をしても死亡する。<b>TTMの上乗せが出るとすれば中間層</b>という解釈で、
+        moderate severity を対象に 33/34℃ を検証するRCTが現在進行中（自施設も参加中）。<b>現時点では可能性の段階であり、標準診療ではない。</b>
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>層別化の軸</th><th>内容</th><th>示唆</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>rCAST<span class="trial-sub">Crit Care Med 2021</span></td>
+              <td>&lt;5.5 low ／ 6–13.5 moderate ／ ≧14 high</td>
+              <td><b>moderate で33℃が有効の可能性。</b>Web入力で即座に30日神経予後良好率が算出でき、実務上使いやすい <span class="pill care">観察研究</span></td>
+            </tr>
+            <tr>
+              <td>PCAC<span class="trial-sub">JAMA Netw Open 2020</span></td>
+              <td>昏睡の程度・臓器不全・脳浮腫（GWR&lt;1.2）・highly malignant EEG（皮質背景活動&lt;2μVの消失）で層別化</td>
+              <td>脳浮腫（184/187が死亡）・悪性脳波（234/243が死亡）を除いた911例で、<b>PCAC 3–4 は33℃が有利な可能性、PCAC 2 はむしろ36℃が有利な可能性</b>。<b>いずれも propensity matched では有意差なし</b> <span class="pill care">観察研究</span></td>
+            </tr>
+            <tr>
+              <td>ECPR<span class="trial-sub">Resusc Plus 2023</span></td>
+              <td>ECMO下では早期冷却と血管内での体温維持が安定して行える</td>
+              <td>TTMなしよりTTMありが神経学的予後良好（<b>normo vs hypo の比較ではない</b>）。34–36℃群が36℃超群より院内死亡が低い。32–34℃群と35–36℃群で30日神経予後は同等 <span class="pill care">観察研究のみ</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>Shivering ― 管理しなければTTMは成立しない</h2>
+
+    <div class="card pad">
+      <p class="mini-h">評価は BSAS（Bedside Shivering Assessment Scale）<span class="tag">まず数値化する</span></p>
+      <ol class="steps">
+        <li><strong>体表加温（skin counterwarming）</strong> ― 耳・手・足など末梢を温める。<b>自施設の研究では有意差が出なかった</b>（手足に当てる方式で実施）。体幹前面やもう少し中枢寄りを温めた方が効くのでは、というのが講義での私見 <span class="pill flat">自施設研究・陰性</span></li>
+        <li><strong>鎮静鎮痛</strong> ― デクスメデトミジン、ケタミンを含めて調整する。<b>実務上ここが主軸</b></li>
+        <li><strong>アセトアミノフェン</strong></li>
+        <li><strong>マグネシウム</strong> ― <b>sMg &lt; 4 mg/dL で 1 g/h</b>。<b>効果は限定的</b></li>
+        <li><strong>筋弛緩</strong> ― 本気で止めたいときの手段。<b>BISを併用する</b>。けいれんなどの臨床所見が隠れる点に注意 <span class="pill care">最終手段</span></li>
+      </ol>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>筋弛緩をかけた時点で「臨床でのけいれん」は見えなくなる。</strong>
+      shivering 制御のために筋弛緩を使うなら、<strong>脳波でのモニタリングをセットで考える</strong>。
+      予後予測の材料を自分で消してしまわないこと。</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>呼吸管理<span class="sec-note">目標は標準的。ECMOの酸素だけ別に考える</span></h2>
+
+    <div class="dosebox">
+      <div class="big">SpO₂ 90–98% &nbsp;/&nbsp; PaCO₂ 35–45 mmHg &nbsp;/&nbsp; 30度挙上</div>
+      <div class="sub">PaO<sub>2</sub> は AHA 60–105、ERC 75–100 mmHg。<b>低酸素も高酸素も避ける</b>という以上のことは言えていない。呼吸回数を「20回程度」とする指示は<b>講義の口頭補足のみで、スライドに記載はない</b>。</div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="pad"><p class="mini-h">VA-ECMO 中の高酸素血症 ― 3つの根拠</p></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>研究</th><th>内容</th><th>結果</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>メタ解析<span class="trial-sub">Resuscitation 2024</span></td>
+              <td>VA-ECMO の観察研究10本</td>
+              <td>hyperoxemia（概ね <b>PaO<sub>2</sub> &gt; 300</b>）で生存は normoxia 有利。<b>eCPR だけでなく心原性ショックでも同様</b>。神経学的予後は PaO<sub>2</sub>&gt;300 で normoxia 有利 <span class="pill care">観察研究のMA</span></td>
+            </tr>
+            <tr>
+              <td>ECMOxy<span class="trial-sub">Ann Intensive Care 2024</span></td>
+              <td>仏・スイス多施設 後ろ向き</td>
+              <td>ICU死亡の多変量解析で <b>FsO<sub>2</sub> 平均（day1–3）OR 1.03</b>、<b>post-oxygenator PaO<sub>2</sub>（day1–3）OR 1.03</b>。<b>高すぎる設定は不利</b> <span class="pill care">後ろ向き</span></td>
+            </tr>
+            <tr>
+              <td><b>BLENDER</b><span class="trial-sub">Intensive Care Med 2024</span></td>
+              <td>多施設RCT・VA-ECMO<br>SpO<sub>2</sub> 92–96%(149例) vs FiO<sub>2</sub> 1.0かつSpO<sub>2</sub>&gt;97%(151例)</td>
+              <td>28 ICU-free days <b>差なし</b>。28日死亡 39.6% vs 39.1%、60日死亡 43% vs 41.1% <b>いずれも差なし</b> <span class="pill go">RCT</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout key" style="margin-top:12px;">
+      <span class="mk">◆</span>
+      <div><strong>「PaO<sub>2</sub> 300超は下げる、しかし神経質に絞りにいく必要はない」</strong>が実務的な着地点。
+      観察研究は「高酸素が頭を悪くした」ように見えるが、<strong>心臓が動かず死んでいく患者ほど FiO<sub>2</sub> を上げられている、という交絡</strong>の可能性を講義でも繰り返し強調していた。
+      介入したRCT（BLENDER）で差が出ていない事実の方が重い。</div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>循環管理</h2>
+
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>低血圧を避け MAP &gt; 60–65 mmHg。</strong>必要に応じて輸液・ノルアドレナリン・ドブタミン・MCS（IABP／ECMO／IMPELLA）</li>
+        <li><strong>ST上昇があれば緊急CAG/PCI。</strong>ST上昇がなく、ACSが強く疑われるのでなければ<b>CAGは遅らせるべき</b></li>
+        <li><strong>post-resuscitation myocardial dysfunction（気絶心筋）は 24–72 時間で回復しうる。</strong>虚血再灌流による可逆性の心機能低下であり、<b>初期の心機能だけで見限らない</b></li>
+        <li><strong>ECPR ではやや高め（MAP &gt; 70–80 mmHg）が良いかもしれないが、観察研究のみでRCTはない</strong></li>
+        <li><strong>個別化MAP（personalized MAP）が良いという明確なエビデンスは現時点でない</strong></li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>ECMO症例で「最初まったく動かないから駄目だ」と判断するのは早い。</strong>
+      数日で自然に動き出すことがある。<strong>心機能を理由とした早期の方針決定は、神経学的予後予測（72時間）とは別の話として、それ自体が時期尚早になりうる。</strong></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>神経学的予後予測<span class="sec-note">このカードで最も間違えてはいけない節</span></h2>
+
+    <div class="callout danger">
+      <span class="mk">×</span>
+      <div><strong>原則は3つ。①multimodal（単一指標に頼らない）②ROSC／復温後72時間以降 ③偽陽性0%（0%FPR）の所見でのみ判断する。</strong>
+      回復の可能性がある患者の治療を中止することは<strong>取り返しがつかない</strong>ため、感度を犠牲にしてでも特異度を取る。</div>
+    </div>
+
+    <div class="figure" style="margin-top:12px;">
+      <svg viewBox="0 0 700 262" role="img" aria-label="神経学的予後予測に使えるモダリティの時間軸">
+        <g font-size="10.5" fill="var(--ink-3)">
+          <text x="140" y="22" text-anchor="middle">ROSC</text>
+          <text x="272" y="22" text-anchor="middle">24h</text>
+          <text x="404" y="22" text-anchor="middle">48h</text>
+          <text x="536" y="22" text-anchor="middle">72h</text>
+        </g>
+        <g stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4">
+          <path d="M140,28 L140,232"/><path d="M272,28 L272,232"/><path d="M404,28 L404,232"/>
+        </g>
+        <path d="M536,28 L536,238" stroke="var(--sev)" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="536" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="var(--sev)">方針決定はここから</text>
+
+        <g font-size="11" fill="var(--ink)" font-weight="700">
+          <text x="8" y="52">NPi ≦ 2</text>
+          <text x="8" y="82">qPLR &lt; 4%</text>
+          <text x="8" y="112">頭部CT（GWR）</text>
+          <text x="8" y="142">脳波 EEG</text>
+          <text x="8" y="172">ミオクローヌス</text>
+          <text x="8" y="202">NSE・NfL</text>
+          <text x="8" y="232">対光反射消失</text>
+        </g>
+
+        <rect x="140" y="41" width="532" height="15" rx="7.5" fill="var(--accent)"/>
+        <text x="406" y="52" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">いつの時点でも FPR 0%（0–0%）</text>
+
+        <rect x="272" y="71" width="400" height="15" rx="7.5" fill="var(--accent)"/>
+        <text x="472" y="82" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">24h以降で FPR 0%（0–1%）</text>
+
+        <rect x="140" y="101" width="532" height="15" rx="7.5" fill="var(--mod)"/>
+        <text x="406" y="112" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">直後の陽性所見も有用。48h以降・TTM後に再撮影で顕在化</text>
+
+        <rect x="272" y="131" width="400" height="15" rx="7.5" fill="var(--mod)"/>
+        <text x="472" y="142" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">24h以降または復温後に実施</text>
+
+        <rect x="404" y="161" width="268" height="15" rx="7.5" fill="var(--mod)"/>
+        <text x="538" y="172" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">48h以内は EEG なしに使わない</text>
+
+        <rect x="404" y="191" width="268" height="15" rx="7.5" fill="var(--ink-3)"/>
+        <text x="538" y="202" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">本邦では保険未収載</text>
+
+        <rect x="536" y="221" width="136" height="15" rx="7.5" fill="var(--sev)"/>
+        <text x="604" y="232" text-anchor="middle" font-size="10" fill="var(--surface)" font-weight="700">72h以降で FPR 0%</text>
+      </svg>
+      <p class="fig-cap">
+        <b>72時間の縦線より左では「治療を止める判断」をしない</b> ―― 使えるのは情報を集める作業だけ。
+        <b>自動瞳孔計の NPi ≦ 2 だけが例外的に ROSC直後から 0%FPR</b> を示しており、早期判定の材料として有望。
+        ただし<b>感度が低い</b>ため、これ単独で決めるのではなく NSE 等との組み合わせで感度を補う。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>モダリティ</th><th>予後不良を示す所見</th><th>注意点</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>自動瞳孔計<span class="trial-sub">BOX substudy・ICM 2024</span></td>
+              <td><b>NPi ≦ 2</b>（0.1–5.0、低いほど不良）<br><b>qPLR &lt; 4%</b>（瞳孔収縮割合）</td>
+              <td>NPi ≦2 は 0/24/48/72h いずれでも <b>FPR 0%（0–0%）</b>。qPLR&lt;4% は<b>24時間以降</b>で FPR 0%（直後は予後良好例が混じる）。<b>単体では感度が低い</b> <span class="pill go">前向きサブ解析</span></td>
+            </tr>
+            <tr>
+              <td>対光反射</td>
+              <td><b>72時間以降の消失</b></td>
+              <td>0%FPR。ERC のアルゴリズムでは <b>GCS-M ≦ 5</b> の患者を72時間時点で評価する <span class="pill mid">ガイドライン</span></td>
+            </tr>
+            <tr>
+              <td>ミオクローヌス</td>
+              <td>24時間以内の発症は予後不良のことが多い<br><b>status myoclonus</b>：10秒ごと1回が10分以上、または1分ごと1回以上が30分以上</td>
+              <td><b>48時間以内のミオクローヌスを EEG なしに予後予測へ用いてはならない</b>。status myoclonus は EEG 施行までの暫定的な臨床診断名。<b>Lance-Adams 症候群（亜急性〜慢性期、音・光で誘発）は予後が比較的良好</b> <span class="pill stop">誤用が起きやすい</span></td>
+            </tr>
+            <tr>
+              <td>脳波（EEG）</td>
+              <td>Suppressed background（&lt;10μV）<br>Burst suppression<br>Early status epilepticus（&lt;24h）</td>
+              <td>実施は<b>24時間以降または復温後</b>。<b>Continuous background は予後良好</b>。
+              <b>てんかん重積があっても予後良好例がある</b> ―― 発症が遅い（&gt;24h）・背景波あり・他モダリティで不良所見なし の「favorable post-anoxic SE」は<b>1/3が6か月後に良好</b>（TTM2 substudy, Neurology 2025）。<b>EEGを見ないと区別できない</b> <span class="pill care">要専門判読</span></td>
+            </tr>
+            <tr>
+              <td>頭部CT</td>
+              <td><b>灰白質白質境界（GWR）の不明瞭化</b><br>GWR &lt; 1.1–1.8</td>
+              <td>ROSC直後でも所見があれば予後不良（99%）。<b>48時間以降に所見が出ることも多く、TTM後の再撮影が有用</b> <span class="pill care">閾値が報告により幅あり</span></td>
+            </tr>
+            <tr>
+              <td>バイオマーカー</td>
+              <td>NSE <b>&gt; 60 μg/L</b>（48/72h）<br>NfL <b>242–609 pg/mL</b>（24h）</td>
+              <td>予後良好側は NSE &lt;17 μg/L、NfL &lt;55 pg/mL。<b>本邦では保険収載されておらず実務では使いにくい</b> <span class="pill flat">日本では使えない</span></td>
+            </tr>
+            <tr>
+              <td>予後予測スコア</td>
+              <td>MIRACLE2 ／ sCHAP ／ SLANT ／ <b>rCAST</b></td>
+              <td>rCAST は入力すれば即座に30日神経予後良好率が出る。<b>スコアは方針決定の根拠ではなく、層別化と説明の道具</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div><strong>てんかん様放電を薬で叩いても予後は変わらない（TELSTAR, NEJM 2022）。</strong>
+      cEEG で rhythmic/periodic pattern を抗てんかん薬で48時間以上抑制した群と標準治療群を比較し、
+      <strong>抑制は達成できた（56% vs 2%）が神経学的予後に差はなかった</strong>。
+      サブ解析では <strong>GPD（全般性周期性放電）は治療で不変、non-GPD では抗てんかん薬群が良さそう</strong>という違いがある。
+      ガイドラインは「予防的抗てんかん薬は非推奨／明らかな発作は治療推奨」で、<strong>TELSTAR以降の知見はまだ反映されていない</strong>。</div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">10</span>やってはいけないこと</h2>
+    <div class="card pad">
+      <ul class="clean warn">
+        <li><strong>72時間より前に、神経学的予後を理由に治療を中止する</strong> → 0%FPR の所見が揃うのは72時間以降</li>
+        <li><strong>単一指標（CTだけ・瞳孔だけ・ミオクローヌスだけ）で決める</strong> → multimodal が原則</li>
+        <li><strong>48時間以内のミオクローヌスを、EEGを見ずに予後不良の根拠にする</strong> → Lance-Adams のように予後良好な例がある</li>
+        <li><strong>「TTMをした」で満足して質を問わない</strong> → 開始時期・目標・持続・方法・復温の5要素が揃って初めて high-quality</li>
+        <li><strong>shivering を放置する</strong> → TTMが成立しないうえ、酸素消費が増える</li>
+        <li><strong>復温を急ぐ／復温後の発熱を許す</strong> → 復温後に発熱させないところまでがTTM</li>
+        <li><strong>病院前から冷やす</strong> → エビデンスがなく推奨されない</li>
+        <li><strong>GCS ≧ 8 の患者にTTMを行う</strong> → 適応がない</li>
+        <li><strong>ST上昇がないのに慌ててCAGへ送る</strong> → ACS疑いが強くなければ急がない</li>
+        <li><strong>ECMO症例で初期の心機能だけを見て見限る</strong> → 気絶心筋は24–72時間で回復しうる</li>
+        <li><strong>ECMO中に FiO<sub>2</sub> 1.0 のまま PaO<sub>2</sub> 300超を放置する</strong> → 下げる。ただし神経質に絞る必要もない</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質について</h3>
+    <p><b>比較的強い（RCT）</b>：33℃ vs 36℃／37.8℃以下で神経学的予後・死亡に差がないこと（TTM・TTM2）、TTMの持続時間を延ばしても差がないこと（TTH48・BOX）、
+    てんかん様放電の薬物抑制が予後を変えないこと（TELSTAR）、VA-ECMO で酸素目標を絞っても差がないこと（BLENDER）。</p>
+    <p><b>中等度</b>：non-shockable での33℃の有益性（HYPERION は陽性だが、TTM2 との統合解析では消える）。自動瞳孔計 NPi/qPLR の 0%FPR（前向きサブ解析）。</p>
+    <p><b>弱い（観察研究・post hoc・専門家意見）</b>：rCAST や PCAC による層別化と「中間層に33℃が効く」という仮説（<b>検証RCTが進行中であり、現時点では標準診療ではない</b>）、
+    血管内冷却の優位性（cooling performance では優位だが調整後の予後は差なし）、ECPR での高めのMAP目標、ECMO中の高酸素の害（交絡の可能性）、shivering に対する各介入。</p>
+    <p><b>講義の口頭補足のみでスライドに記載がなく、引用時に確認を要するもの</b>：復温を12〜24時間かけるという具体値、呼吸回数「20回程度」、
+    skin counterwarming の装着部位に関する私見、自施設のRCT参加状況。</p>
+    <p><b>未解決</b>：どの重症度層に低体温が有益なのか。高度脳浮腫を伴うGCS 3 にTTMを行うべきか。TELSTAR以降の脳波所見の扱いをガイドラインがどう定めるか。</p>
+  </div>
+
+  <footer>
+    2026-05-15 専攻医勉強会「PCAS / Post cardiac arrest management」（救急医学講座 和田健志郎先生・58分）の内容をベッドサイド用に再構成したカード。<br>
+    数値を対外的に引用する際は原講義および一次文献を確認すること。最終判断は施設プロトコルと患者の状態に基づいて行う。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
