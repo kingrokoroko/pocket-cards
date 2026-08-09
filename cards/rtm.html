@@ -625,8 +625,8 @@
             <tr>
               <td>国内第III相<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Saito 2007</span></td>
               <td>DIC 234例<br>ヘパリン対照</td>
-              <td><b>DIC離脱率 66.1% vs 49.9%</b><br>出血関連有害事象も rTM で少ない</td>
-              <td>承認の根拠。<b>主要評価は死亡ではなくDIC離脱率</b> <span class="pill go">RCT</span></td>
+              <td><b>DIC離脱率 66.1% vs 49.9%</b><br>差 16.2%（95%CI 3.3–29.1）<br>出血関連有害事象 <b>43.1% vs 56.5%</b>（p=0.0487）</td>
+              <td>承認の根拠。<b>主要評価は死亡ではなくDIC離脱率</b>／<b>対照はプラセボでなくヘパリン</b>。28日死亡は副次で原著抄録に実数なし <span class="pill go">RCT</span></td>
             </tr>
             <tr>
               <td>国際第2b相<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Vincent 2013</span></td>
@@ -637,20 +637,26 @@
             <tr>
               <td><b>SCARLET</b><br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Vincent 2019 JAMA</span></td>
               <td>敗血症関連凝固障害 800例</td>
-              <td>28日死亡 <b>26.8% vs 29.4%</b><br>差 2.55%（95%CI −3.68〜8.77）<b>p=0.32</b></td>
-              <td><b>陰性。</b>これが現在の最大のエビデンス <span class="pill stop">RCT</span></td>
+              <td>28日死亡 <b>26.8% vs 29.4%</b><br>差 2.55%（95%CI −3.68〜8.77）<b>p=0.32</b><br>重大出血 <b>5.8% vs 4.0%</b></td>
+              <td><b>陰性。</b>これが現在の最大のエビデンス。ヘパリン別は <b>prespecified</b>、凝固障害残存別は <b>post hoc</b> <span class="pill stop">RCT</span></td>
             </tr>
             <tr>
-              <td>メタ解析<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Umemura 2016 ほか</span></td>
-              <td>敗血症の抗凝固療法全般</td>
-              <td>敗血症全体では利益なし。<b>DIC合併例・重症例に限ると死亡低下の可能性</b></td>
-              <td>「誰に効くか」を絞る方向の示唆 <span class="pill care">メタ解析・サブグループ</span></td>
+              <td>メタ解析<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Umemura 2016</span></td>
+              <td>敗血症の抗凝固療法全般<br>24試験 14,767例</td>
+              <td>敗血症全体では利益なし。<b>DIC合併例では RR 0.72（0.62–0.85）</b></td>
+              <td>介入は rTM 単剤でなく抗凝固薬全般。「誰に効くか」を絞る方向の示唆 <span class="pill care">サブグループ</span></td>
+            </tr>
+            <tr>
+              <td>メタ解析<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Valeriani 2020</span></td>
+              <td>rTM の 3 RCT・1,633例</td>
+              <td><b>凝固障害あり RR 0.80（0.65–0.98）</b><br>なし 1.17（0.82–1.67）／全体 0.88（0.74–1.04）<br>大出血 1.25（0.80–1.96）</td>
+              <td>開発者と利害関係のない独立グループ。<b>絞れば下がる方向、絞らなければ下がらない</b> <span class="pill mid">メタ解析</span></td>
             </tr>
             <tr>
               <td>ガイドライン</td>
-              <td>—</td>
-              <td><b>J-SSCG 2024</b>：敗血症性DICに対し<b>弱い推奨</b>／<b>JSTH DIC治療GL</b>：<b>推奨</b></td>
-              <td>国内でも推奨の強さが割れている。<b>国際SSCではルーチン推奨されていない</b></td>
+              <td>同一の <b>4 RCT</b> に基づく</td>
+              <td><b>J-SSCG2024 CQ5-4</b>：<b>弱く推奨（GRADE 2B）</b><br><b>JSTH DIC診療GL2024 Q19</b>：<b>強く推奨（GRADE 1B）</b></td>
+              <td><b>同じメタ解析から推奨の強さが割れている</b>（差はエビデンスでなく価値判断）。<b>国際SSCG2021では記載自体が消滅</b> <span class="pill care">要注意</span></td>
             </tr>
           </tbody>
         </table>
@@ -660,9 +666,10 @@
     <div class="callout" style="margin-top:12px;">
       <span class="mk">!</span>
       <div><strong>SCARLET が陰性だった理由として挙げられているもの</strong>：
-      ①<strong>登録時に既にDIC基準を外れていた例が相当数</strong>含まれた（＝凝固が走っていない患者に投与した）、
-      ②<strong>ヘパリン併用が許容された</strong>（サブ解析ではヘパリン非併用群で差が大きい）、
-      ③プラセボ群の死亡率が想定より低かった。
+      ①試験途中のプロトコル改訂で<strong>適格INR測定から初回投与までの許容時間が15→40時間に延長</strong>され、
+      投与時点で<strong>約20〜22%がDIC基準を外れていた</strong>（＝凝固が走っていない患者に投与した）、
+      ②<strong>ヘパリン併用が許容された</strong>（800例中416例。ヘパリンなし群の差 6.25%〔−2.72〜15.22〕 vs あり群 −0.87%〔−9.52〜7.77〕）、
+      ③プラセボ群の死亡率が想定（24%）より高かった（29.4%）。
       これらは<strong>「rTM は効かない」ではなく「誰に、どういう条件で使うか」の問題</strong>だという読み方につながる。
       ただし<strong>この解釈自体は post hoc であり、検証されていない</strong>ことは押さえておく。</div>
     </div>
@@ -691,11 +698,16 @@
     <b>SCARLET が陰性であることが、この薬に関する最も確実な事実</b>である。</p>
     <p><b>弱い（post hoc・観察研究・専門家意見）</b>：「凝固が走っている患者にだけ効く」という患者選択の考え方、ヘパリン併用が効果を打ち消すという解釈、
     TATを効果判定に使う運用、出血時の減量継続、侵襲的手技前の調整、CRRT中の用量。<b>いずれも検証されたものではない</b>。</p>
-    <p><b>未解決</b>：どのフェノタイプの敗血症性DICが利益を得るのか。国内ガイドラインと国際ガイドラインの評価が一致していない状態が続いている。</p>
+    <p><b>未解決</b>：どのフェノタイプの敗血症性DICが利益を得るのか。<b>国内2つのガイドラインが同一の4 RCTから 1B と 2B に分かれ</b>、国際SSCG2021ではrTMの記載自体が消えている。</p>
+    <p><b>引用時の注意</b>：SCARLETの追加メタ解析（Crit Care 2019;23:302）の著者は <b>Yamakawa K, Levy JH, Iba T</b> であって Vincent ではなく、しかも <b>Letter</b>（二次資料に取り違えが流布）／
+    「TMと補体制御」の一次文献は <b>Delvaeye 2009 NEJM</b> と <b>Heurich 2016 Thromb Res</b> であり、<b>Shrestha 2019 Front Immunol はNET形成の論文で補体を扱っていない</b>／
+    Saito 2007 の主要評価項目は<b>死亡ではなくDIC離脱率</b>、対照は<b>プラセボでなくヘパリン</b>。</p>
   </div>
 
   <footer>
     2026-08 のリコモジュリン勉強会（侵襲性髄膜炎菌感染症の1例）に対応するベッドサイド用カード。<br>
+    根拠文献 34件は Obsidian <code>文献\DIC・リコモジュリン（rTM）\</code> および <code>文献\髄膜炎菌感染症（IMD・補体阻害薬）\</code> に登録済み
+    （med-literature ×6 → fact-checker ×3 → citation-verifier ×3 で照合、書誌・数値の誤り6件を訂正）。<br>
     用量・禁忌は必ず最新の添付文書で確認すること。最終判断は施設プロトコルと患者の状態に基づいて行う。
   </footer>
 </div>
