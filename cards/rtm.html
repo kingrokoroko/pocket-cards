@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>リコモジュリン（rTM）― 使うか / 用量 / 監視 / やめどき</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+  ul.clean.warn li::before { background: var(--sev); }
+
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: st; display: flex; flex-direction: column; gap: 10px; }
+  ol.steps li {
+    counter-increment: st; position: relative; padding-left: 34px; font-size: .88rem; color: var(--ink-2);
+  }
+  ol.steps li::before {
+    content: counter(st); position: absolute; left: 0; top: 0;
+    width: 23px; height: 23px; border-radius: 7px; display: grid; place-items: center;
+    font-size: .74rem; font-weight: 700; background: var(--accent-soft); color: var(--accent);
+  }
+  ol.steps li strong { color: var(--ink); font-weight: 600; }
+
+  .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .chain .step {
+    flex: 1 1 130px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 10px 12px; font-size: .82rem; color: var(--ink-2);
+  }
+  .chain .step b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 2px; }
+  .chain .step.end { background: var(--accent-soft); border-color: var(--accent); }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 104px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 80px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .87rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+  .rung-body .how { display: block; margin-top: 5px; font-size: .81rem; color: var(--ink-3); }
+  .rung-body .how b { color: var(--ink-2); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  table.narrow { min-width: 460px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout, .card + .callout, .callout + .card, .figure + .callout { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+  .callout.danger { background: var(--sev-soft); border-color: var(--sev); }
+  .callout.danger .mk { color: var(--sev); }
+  .callout.key { background: var(--accent-soft); border-color: var(--accent); }
+  .callout.key .mk { color: var(--accent); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+  @media (max-width: 660px) {
+    .figure { overflow-x: auto; }
+    .figure svg { min-width: 600px; }
+    .fig-cap::before {
+      content: "← 横にスクロールできます"; display: block;
+      font-size: .7rem; color: var(--accent); font-weight: 700; margin-bottom: 5px;
+    }
+  }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .dosebox {
+    background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 14px 17px;
+  }
+  .dosebox .big {
+    font-family: var(--mono); font-size: clamp(1.1rem, 3.4vw, 1.45rem); font-weight: 700;
+    color: var(--ink); letter-spacing: -.01em;
+  }
+  .dosebox .sub { font-size: .84rem; color: var(--ink-2); margin-top: 4px; }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>リコモジュリン（rTM）― 使うか / 用量 / 監視 / やめどき</h1>
+    <div class="subtitle">遺伝子組換えヒト可溶性トロンボモジュリン（トロンボモジュリン アルファ・ART-123） ／ 救急・集中治療 ／ 作成 2026-08-09</div>
+  </header>
+
+  <p class="lede">
+    判断の骨格は4つ。<strong>①適応は「敗血症」ではなく「DIC」</strong>。
+    <strong>②大規模RCT（SCARLET）は陰性</strong>で、効くとすれば「凝固が今まさに走っている患者」に限られる。
+    <strong>③トロンビンが出ている場所でしか働かない</strong>ので理屈の上では出血しにくいが、<strong>それでも最大の有害事象は出血</strong>。
+    <strong>④ヘパリン併用は効果を薄め出血を増やす</strong>（CRRT回路のヘパリンも含めて数える）。
+  </p>
+
+  <!-- 1. 30秒 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>30秒サマリー<span class="sec-note">迷ったらここだけ</span></h2>
+    <div class="card pad">
+      <div class="kv">
+        <div><span class="k">正体</span><span class="v">血管内皮の膜型トロンボモジュリンの<b>細胞外領域（D1–D3）だけを可溶化した組換え蛋白</b>。膜貫通部（D4）・細胞内部（D5）は持たない</span></div>
+        <div><span class="k">効能・効果</span><span class="v"><b>汎発性血管内血液凝固症（DIC）</b>。国内承認は2008年。<b>「敗血症」の適応ではない</b></span></div>
+        <div><span class="k">用量</span><span class="v"><b>380 U/kg/日</b>を1日1回・約30分で点滴静注。<b>重篤な腎障害では130 U/kg/日</b>。原則<b>6日以内</b></span></div>
+        <div><span class="k">効く理屈</span><span class="v">トロンビンと結合してその<b>基質特異性を切り替え</b>、凝固酵素をプロテインC活性化酵素に変える。加えて<b>抗炎症</b>（HMGB1・ヒストン中和）</span></div>
+        <div><span class="k">効果判定</span><span class="v"><b>TAT</b>（トロンビン産生そのもの）、フィブリノゲン・血小板の反転、FDP/Dダイマー。<b>PT・APTTでは判定しない</b></span></div>
+        <div><span class="k">やめどき</span><span class="v"><b>出血が起きた／凝固が止まった／6日</b>。頭蓋内出血が出たら中止</span></div>
+        <div><span class="k">エビデンス</span><span class="v">国内第III相は陽性、<b>国際第III相 SCARLET は陰性</b>。ガイドラインは「弱い推奨」〜「推奨」で割れている</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 機序 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>何をする薬か ― ドメインごとに役割が違う</h2>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 210" role="img" aria-label="トロンボモジュリンのドメイン構造と作用">
+        <defs>
+          <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+            <path d="M0,0 L7,3.2 L0,6.4 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+        <g fill="none" stroke="var(--line-strong)" stroke-width="1.5">
+          <rect x="18" y="30" width="150" height="52" rx="9" fill="var(--surface-2)"/>
+          <rect x="184" y="30" width="150" height="52" rx="9" fill="var(--surface-2)"/>
+          <rect x="350" y="30" width="150" height="52" rx="9" fill="var(--surface-2)"/>
+          <rect x="516" y="30" width="166" height="52" rx="9" fill="var(--surface-2)" stroke-dasharray="5 4"/>
+        </g>
+        <g font-size="13" font-weight="700" fill="var(--ink)">
+          <text x="93" y="52" text-anchor="middle">D1 レクチン様</text>
+          <text x="259" y="52" text-anchor="middle">D2 EGF様×6</text>
+          <text x="425" y="52" text-anchor="middle">D3 O型糖鎖</text>
+          <text x="599" y="52" text-anchor="middle">D4 膜貫通 / D5 細胞内</text>
+        </g>
+        <g font-size="11.5" fill="var(--ink-3)">
+          <text x="93" y="70" text-anchor="middle">抗炎症・補体制御</text>
+          <text x="259" y="70" text-anchor="middle">トロンビン＋PC 結合</text>
+          <text x="425" y="70" text-anchor="middle">親和性を高める</text>
+          <text x="599" y="70" text-anchor="middle">rTM には含まれない</text>
+        </g>
+        <g stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#ar)" color="var(--accent)">
+          <path d="M93,86 L93,116"/>
+          <path d="M259,86 L259,116"/>
+          <path d="M425,86 L425,116"/>
+        </g>
+        <g fill="var(--ink-2)" font-size="12">
+          <text x="93" y="134" text-anchor="middle">HMGB1・ヒストン・LPS を</text>
+          <text x="93" y="150" text-anchor="middle">つかまえて無害化</text>
+          <text x="259" y="134" text-anchor="middle">トロンビンを「凝固」から</text>
+          <text x="259" y="150" text-anchor="middle">「プロテインC活性化」へ転換</text>
+          <text x="425" y="134" text-anchor="middle">TAFI 活性化 →</text>
+          <text x="425" y="150" text-anchor="middle">過剰線溶を抑える</text>
+        </g>
+        <rect x="18" y="166" width="482" height="30" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="259" y="186" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">活性化プロテインC が FVa・FVIIIa を壊し、トロンビン産生を上流で止める</text>
+      </svg>
+      <p class="fig-cap">
+        <b>要点は「D1＝炎症」「D2＝凝固」と役割が分かれていること。</b>
+        rTM が「抗凝固薬なのに抗炎症薬でもある」と言われるのはこの構造による。膜型TMは血管内皮に発現しているので、
+        <b>内皮が壊れる病態（電撃性紫斑病・敗血症性DIC）では患者自身のTMが失われている</b>。rTM はその失われた分子を外から足す薬、という位置づけになる。
+      </p>
+    </div>
+
+    <div class="callout key">
+      <span class="mk">◆</span>
+      <div><strong>トロンビン依存性がこの薬の性格を決めている。</strong>rTM 単独では抗凝固作用を持たず、<strong>トロンビンが発生している場所でだけ</strong>働く。
+      ヘパリンやATのように全身を一律に抗凝固するのではない ―― これが「出血リスクが相対的に低い」と説明される根拠。
+      裏を返せば、<strong>トロンビンが出ていない患者に投与しても何も起きない</strong>。適応をDICに絞る理由でもある。</div>
+    </div>
+  </section>
+
+  <!-- 3. 使うか -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>使うか迷ったときの3ステップ</h2>
+
+    <div class="ladder">
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">step 1</span><span class="sev-name">DICか</span></div>
+        <div class="rung-body">
+          <b>スコアで DIC と診断されているか。</b>ISTH overt DIC ≥5点、あるいは JAAM 急性期DIC ≥4点。
+          <span class="how"><b>ここが出発点。</b>「敗血症性ショックだから」「凝固が悪そうだから」では投与理由にならない。適応はDICである。</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">step 2</span><span class="sev-name">今、走っているか</span></div>
+        <div class="rung-body">
+          <b>凝固活性化が現在進行形か。</b>TAT 高値、フィブリノゲンの低下、血小板の急速な減少、FDP/Dダイマー上昇、AT 低下、そして<b>臨床所見（紫斑・末梢壊死・出血）</b>。
+          <span class="how"><b>SCARLET が陰性だった最大の理由がここにある。</b>登録後に基準を外れた例が相当数含まれていた。
+          スコアは「あるところで切った点」に過ぎず、<b>2点の推移</b>のほうが「走っているか」をよく表す。</span>
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">step 3</span><span class="sev-name">出血して困らないか</span></div>
+        <div class="rung-body">
+          <b>禁忌に当たらないか、出血したら致命的な部位はないか。</b>頭蓋内・肺・消化管の活動性出血、頭蓋内/脊髄/眼の術後、止血処置を要する状態は<b>禁忌</b>。
+          <span class="how">併用抗凝固（ヘパリン・CRRT回路・抗血小板薬・血栓溶解薬）を<b>全部数え上げる</b>。腎障害があれば減量を忘れない。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>3つ揃わないなら、投与しないほうが筋が通る。</strong>とくに step 2 を飛ばして「DICスコアが立っているから」だけで入れると、
+      SCARLET と同じ「効かない患者に投与して出血だけ増やす」構図になる。</div>
+    </div>
+  </section>
+
+  <!-- 4. スコア -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>DICスコア（判定用）<span class="sec-note">どちらを使うかは施設の運用に従う</span></h2>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="pad"><p class="mini-h">ISTH overt DIC<span class="tag">≥5点でDIC</span></p></div>
+        <div class="table-scroll">
+          <table class="narrow">
+            <thead><tr><th>項目</th><th>値</th><th>点</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="3">血小板（/μL）</td><td>≥10万</td><td>0</td></tr>
+              <tr><td>5万〜10万未満</td><td>1</td></tr>
+              <tr><td>5万未満</td><td>2</td></tr>
+              <tr><td rowspan="3">FDP / Dダイマー</td><td>上昇なし</td><td>0</td></tr>
+              <tr><td>中等度上昇</td><td>2</td></tr>
+              <tr><td>高度上昇</td><td>3</td></tr>
+              <tr><td rowspan="3">PT 延長</td><td>3秒未満</td><td>0</td></tr>
+              <tr><td>3〜6秒未満</td><td>1</td></tr>
+              <tr><td>6秒以上</td><td>2</td></tr>
+              <tr><td rowspan="2">フィブリノゲン</td><td>100 mg/dL 以上</td><td>0</td></tr>
+              <tr><td>100 mg/dL 未満</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pad"><p class="mini-h">JAAM 急性期DIC<span class="tag">≥4点でDIC</span></p></div>
+        <div class="table-scroll">
+          <table class="narrow">
+            <thead><tr><th>項目</th><th>値</th><th>点</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="2">SIRS</td><td>0〜2項目</td><td>0</td></tr>
+              <tr><td>3項目以上</td><td>1</td></tr>
+              <tr><td rowspan="3">血小板（/μL）</td><td>12万以上</td><td>0</td></tr>
+              <tr><td>8万〜12万未満、または24時間で30%以上減少</td><td>1</td></tr>
+              <tr><td>8万未満、または24時間で50%以上減少</td><td>3</td></tr>
+              <tr><td rowspan="2">PT比</td><td>1.2 未満</td><td>0</td></tr>
+              <tr><td>1.2 以上</td><td>1</td></tr>
+              <tr><td rowspan="3">FDP（μg/mL）</td><td>10 未満</td><td>0</td></tr>
+              <tr><td>10〜25 未満</td><td>1</td></tr>
+              <tr><td>25 以上</td><td>3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>スコアは入口であって、点数が動かないことを「効いていない」と読まない。</strong>
+      JAAM は血小板とFDPの重みが大きいので、輸血や大量輸液の影響を受けやすい。
+      <strong>「本当にDICか」の最終判断は、TAT・フィブリノゲンの推移と紫斑・末梢循環という臨床像で行う。</strong></div>
+    </div>
+  </section>
+
+  <!-- 5. 用量 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>用量・投与法</h2>
+
+    <div class="dosebox">
+      <div class="big">380 U/kg/日 &nbsp;×&nbsp; 1日1回 &nbsp;/&nbsp; 約30分で点滴静注</div>
+      <div class="sub">重篤な腎障害（目安 CCr &lt; 30 mL/min）では <b>130 U/kg/日</b>。投与期間は<b>原則6日以内</b>。生理食塩液または5%ブドウ糖液で希釈する。</div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>状況</th><th>用量</th><th>考え方</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>通常</td>
+              <td><span class="dose">380 U/kg/日</span></td>
+              <td>体重あたりの固定用量。凝固検査で滴定する薬ではない <span class="pill mid">添付文書</span></td>
+            </tr>
+            <tr>
+              <td>重篤な腎障害</td>
+              <td><span class="dose">130 U/kg/日</span></td>
+              <td><b>rTM は腎排泄</b>で、減量しないと蓄積する。ICUでは<b>減量忘れが最も多い過誤</b> <span class="pill care">要注意</span></td>
+            </tr>
+            <tr>
+              <td>CRRT 施行中</td>
+              <td>腎障害に準じて判断</td>
+              <td>透析量に応じた確立した用量調節法はない。<b>回路のヘパリンを抗凝固の総量に必ず数える</b></td>
+            </tr>
+            <tr>
+              <td>出血が出た</td>
+              <td>減量 or 中止</td>
+              <td>減量継続の明確な基準はなく、<b>臨床判断</b>。部位が頭蓋内・肺なら中止に傾く <span class="pill care">慣習</span></td>
+            </tr>
+            <tr>
+              <td>投与期間</td>
+              <td><span class="dose">最大6日</span></td>
+              <td>それ以上の有効性・安全性データがない。<b>漫然と続けない</b>。DIC離脱すれば早期終了でよい</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout danger" style="margin-top:12px;">
+      <span class="mk">×</span>
+      <div><strong>禁忌（要点）</strong>：頭蓋内出血・肺出血・消化管出血など<strong>止血処置を必要とする出血のある患者</strong>／
+      <strong>頭蓋内・脊髄・眼の手術後日の浅い患者</strong>／本剤成分に過敏症の既往。
+      慎重投与：重篤な肝障害、脳出血・消化管出血の既往、抗凝固薬・抗血小板薬・血栓溶解薬の併用、腎障害。
+      <strong>投与前に必ず最新の添付文書を確認すること</strong>（このカードは要約である）。</div>
+    </div>
+  </section>
+
+  <!-- 6. モニタリング -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>何を見て「効いている／危ない」と判断するか</h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>指標</th><th>意味するもの</th><th>効いているときの動き</th><th>頻度</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>TAT（トロンビン-AT複合体）</td>
+              <td><b>トロンビンが実際に産生された量</b>。凝固活性化の直接指標</td>
+              <td><b>低下</b>。基準は概ね &lt;4.0 ng/mL <span class="pill go">最重要</span></td>
+              <td>連日</td>
+            </tr>
+            <tr>
+              <td>PIC（プラスミン-α2PI複合体）</td>
+              <td>線溶の活性化。<b>TATとの対比で病型（凝固優位／線溶優位）を読む</b></td>
+              <td>病型による。TATが下がってもPICが上がるなら<b>線溶が遅れて追いかけている</b></td>
+              <td>連日</td>
+            </tr>
+            <tr>
+              <td>フィブリノゲン</td>
+              <td>消費の程度</td>
+              <td><b>反転して上昇</b>。炎症で上がる急性期蛋白でもあるので絶対値でなく推移で見る</td>
+              <td>連日</td>
+            </tr>
+            <tr>
+              <td>血小板</td>
+              <td>消費の程度</td>
+              <td><b>底を打って上昇</b>。DIC離脱のいちばん分かりやすいサイン</td>
+              <td>連日〜1日2回</td>
+            </tr>
+            <tr>
+              <td>FDP / Dダイマー</td>
+              <td>フィブリン分解</td>
+              <td>遅れて低下。<b>改善の判定には鈍い</b></td>
+              <td>連日</td>
+            </tr>
+            <tr>
+              <td>AT 活性</td>
+              <td>消費と肝合成能</td>
+              <td>回復。低値が続くならAT製剤の適応を別途検討</td>
+              <td>連日</td>
+            </tr>
+            <tr>
+              <td>Hb・出血徴候</td>
+              <td><b>安全性の主指標</b></td>
+              <td>穿刺部・気道・消化管・術創・<b>意識と瞳孔（頭蓋内）</b>を毎日 <span class="pill stop">安全性</span></td>
+              <td>連日＋随時</td>
+            </tr>
+            <tr>
+              <td>PT-INR・APTT</td>
+              <td colspan="2"><b>効果判定には使わない。</b>rTM ではほとんど延長せず、「延びていないから効いていない」は誤り。逆に大きく延長したら肝不全や希釈を疑う</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout key" style="margin-top:12px;">
+      <span class="mk">◆</span>
+      <div><strong>TAT が下がったかどうかを、投与開始翌日に一度は確認する。</strong>
+      TAT はトロンビン産生そのものを見ているので、rTM の作用点に最も近い。
+      <strong>TAT が下がらないなら、凝固の駆動源（感染巣・壊死組織）が制御できていない</strong>と読むほうが正しく、rTM を増やす話ではない。</div>
+    </div>
+  </section>
+
+  <!-- 7. やめどき -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>やめどき・減量の判断</h2>
+    <div class="card pad">
+      <ul class="clean">
+        <li><strong>頭蓋内出血が出たら中止。</strong>迷う場面ではない。画像で新規出血を見たらその時点で止める</li>
+        <li><strong>他部位の出血は「減量して継続」か「中止」か。</strong>明確な基準はない。<b>凝固がまだ走っているか（TAT）</b>と<b>出血部位が致命的か</b>を天秤にかける</li>
+        <li><strong>DIC離脱（血小板の反転・フィブリノゲン回復・TAT正常化）が揃えば、6日を待たずに終了してよい</strong></li>
+        <li><strong>6日を超えて続けない。</strong>それ以上の有効性・安全性データがない</li>
+        <li><strong>侵襲的手技の前は投与間隔を考える。</strong>半減期を根拠にした確立した休薬時間はないため、<b>手技の翌日投与にずらす</b>などの実務的な調整を行う</li>
+        <li><strong>効いていないから増量、はしない。</strong>用量は体重あたり固定。上げる根拠がない</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. エビデンス -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>エビデンス ― 正直に見るとどうなっているか</h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>研究</th><th>対象・n</th><th>結果</th><th>読み方</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>国内第III相<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Saito 2007</span></td>
+              <td>DIC 234例<br>ヘパリン対照</td>
+              <td><b>DIC離脱率 66.1% vs 49.9%</b><br>出血関連有害事象も rTM で少ない</td>
+              <td>承認の根拠。<b>主要評価は死亡ではなくDIC離脱率</b> <span class="pill go">RCT</span></td>
+            </tr>
+            <tr>
+              <td>国際第2b相<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Vincent 2013</span></td>
+              <td>敗血症＋凝固障害 750例</td>
+              <td>28日死亡 <b>17.8% vs 21.6%（p=0.273）</b></td>
+              <td>有意差なし。ただし方向は良く、第III相へ進む根拠になった <span class="pill mid">RCT</span></td>
+            </tr>
+            <tr>
+              <td><b>SCARLET</b><br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Vincent 2019 JAMA</span></td>
+              <td>敗血症関連凝固障害 800例</td>
+              <td>28日死亡 <b>26.8% vs 29.4%</b><br>差 2.55%（95%CI −3.68〜8.77）<b>p=0.32</b></td>
+              <td><b>陰性。</b>これが現在の最大のエビデンス <span class="pill stop">RCT</span></td>
+            </tr>
+            <tr>
+              <td>メタ解析<br><span style="font-weight:400;color:var(--ink-3);font-size:.78rem;">Umemura 2016 ほか</span></td>
+              <td>敗血症の抗凝固療法全般</td>
+              <td>敗血症全体では利益なし。<b>DIC合併例・重症例に限ると死亡低下の可能性</b></td>
+              <td>「誰に効くか」を絞る方向の示唆 <span class="pill care">メタ解析・サブグループ</span></td>
+            </tr>
+            <tr>
+              <td>ガイドライン</td>
+              <td>—</td>
+              <td><b>J-SSCG 2024</b>：敗血症性DICに対し<b>弱い推奨</b>／<b>JSTH DIC治療GL</b>：<b>推奨</b></td>
+              <td>国内でも推奨の強さが割れている。<b>国際SSCではルーチン推奨されていない</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div><strong>SCARLET が陰性だった理由として挙げられているもの</strong>：
+      ①<strong>登録時に既にDIC基準を外れていた例が相当数</strong>含まれた（＝凝固が走っていない患者に投与した）、
+      ②<strong>ヘパリン併用が許容された</strong>（サブ解析ではヘパリン非併用群で差が大きい）、
+      ③プラセボ群の死亡率が想定より低かった。
+      これらは<strong>「rTM は効かない」ではなく「誰に、どういう条件で使うか」の問題</strong>だという読み方につながる。
+      ただし<strong>この解釈自体は post hoc であり、検証されていない</strong>ことは押さえておく。</div>
+    </div>
+  </section>
+
+  <!-- 9. 落とし穴 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>やってはいけないこと（要点の再掲）</h2>
+    <div class="card pad">
+      <ul class="clean warn">
+        <li><strong>「敗血症だから」で投与する</strong> → 適応はDIC。凝固が走っている証拠を確認する</li>
+        <li><strong>腎障害で減量を忘れる</strong> → 380 のまま入れると蓄積する。<b>130 U/kg/日</b></li>
+        <li><strong>CRRT回路のヘパリンを数えない</strong> → 出血リスクは合算。SCARLETの交絡そのもの</li>
+        <li><strong>PT・APTT で効果を判定する</strong> → 延びない薬。<b>TAT</b>で見る</li>
+        <li><strong>効かないから増量する</strong> → 用量は固定。増やす根拠がない</li>
+        <li><strong>6日を超えて漫然と続ける</strong> → データがない</li>
+        <li><strong>ヘパリンやATと同列の「抗凝固薬」として扱う</strong> → 作用機序も監視項目も違う</li>
+        <li><strong>頭蓋内出血が出ても「もったいない」と続ける</strong> → 中止する</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質について</h3>
+    <p><b>比較的強い（RCT）</b>：国内第III相のDIC離脱率、国際第2b相およびSCARLETの28日死亡（いずれも死亡に対しては有意差なし）。
+    <b>SCARLET が陰性であることが、この薬に関する最も確実な事実</b>である。</p>
+    <p><b>弱い（post hoc・観察研究・専門家意見）</b>：「凝固が走っている患者にだけ効く」という患者選択の考え方、ヘパリン併用が効果を打ち消すという解釈、
+    TATを効果判定に使う運用、出血時の減量継続、侵襲的手技前の調整、CRRT中の用量。<b>いずれも検証されたものではない</b>。</p>
+    <p><b>未解決</b>：どのフェノタイプの敗血症性DICが利益を得るのか。国内ガイドラインと国際ガイドラインの評価が一致していない状態が続いている。</p>
+  </div>
+
+  <footer>
+    2026-08 のリコモジュリン勉強会（侵襲性髄膜炎菌感染症の1例）に対応するベッドサイド用カード。<br>
+    用量・禁忌は必ず最新の添付文書で確認すること。最終判断は施設プロトコルと患者の状態に基づいて行う。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
