@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>レジオネラ肺炎 ― 疑い方・診断・治療</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .score { display: flex; flex-direction: column; gap: 8px; }
+  .score-row {
+    display: grid; grid-template-columns: 1fr 46px; gap: 10px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 12px; font-size: .87rem; color: var(--ink-2);
+  }
+  .score-row b { color: var(--ink); }
+  .score-row .pt {
+    text-align: center; font-weight: 700; font-size: .8rem; color: var(--accent);
+    background: var(--accent-soft); border-radius: 999px; padding: 2px 0;
+  }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>レジオネラ肺炎 ― 疑い方・診断・治療</h1>
+    <div class="subtitle">Legionnaires' disease ／ 救急・集中治療 ／ 作成 2026-08-16</div>
+  </header>
+
+  <p class="lede">
+    この疾患で予後を変えるのは薬剤選択ではなく<strong>投与の早さ</strong>。押さえるべきは3点。
+    <strong>①尿中抗原は陽性なら確定に近いが陰性で否定できない（血清群1限定・軽症で感度37.9%）</strong>
+    <strong>②相対的徐脈も低Naも予測スコアも「疑う契機」であって確定にも除外にも使えない（WUHスコアのPPV 42%）</strong>
+    <strong>③FQかマクロライドかは決着していない。重症CAPの経験的治療にどちらかを必ず含めておけばレジオネラは既にカバーされている。</strong>
+  </p>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>いつ疑い、誰に検査を出すか <span class="sec-note">ATS/IDSA 2019 は「全例には出さない」</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">検査の適応（ATS/IDSA 2019 CAP ガイドライン）</p>
+        <ul class="clean">
+          <li><strong>重症CAP（ICU入室・人工呼吸・昇圧薬）</strong> → <b>尿中抗原＋喀痰培養（BCYE）の両方</b>を提出。<span class="pill care">conditional / low quality</span></li>
+          <li><strong>アウトブレイク曝露歴・最近の渡航歴</strong> → 尿中抗原を提出。</li>
+          <li><strong>それ以外の軽症〜中等症CAP</strong> → ルーチンの病原体検索は<b>推奨しない</b>（2019年改訂の方針転換）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">必ず取る曝露歴 <span class="tag">問診</span></p>
+        <div class="grid2">
+          <ul class="clean">
+            <li><strong>温泉・循環式浴槽・スパ</strong> ― 日本では最重要の感染源。</li>
+            <li><strong>加湿器・給湯設備・シャワー</strong>（長期不使用後の再開を含む）。</li>
+            <li><strong>冷却塔の近傍</strong>（建物・工場・メンテナンス作業）。</li>
+          </ul>
+          <ul class="clean">
+            <li><strong>培養土・堆肥・園芸</strong> ― <b>豪州・NZ</b>渡航歴とセットで。<i>L. longbeachae</i> は尿中抗原で拾えない。</li>
+            <li><strong>潜伏期は2〜10日</strong>（アウトブレイクで最長16日）。この幅で曝露を遡る。</li>
+            <li><strong>免疫抑制</strong> ― ステロイド、TNF-α阻害薬、移植後、血液腫瘍。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　臨床予測スコアの立ち位置 ― 「疑う」ためのもので、「除外」には使えない</p>
+      <svg viewBox="0 0 660 250" role="img" aria-label="Winthrop-University HospitalスコアとFiumefreddoスコアの感度・特異度・陽性的中率の比較。いずれも感度が不十分で除外に使えない">
+        <!-- 軸 -->
+        <line x1="150" y1="30" x2="150" y2="196" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <g stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3">
+          <line x1="270" y1="30" x2="270" y2="196"/>
+          <line x1="390" y1="30" x2="390" y2="196"/>
+          <line x1="510" y1="30" x2="510" y2="196"/>
+          <line x1="630" y1="30" x2="630" y2="196"/>
+        </g>
+        <g fill="var(--ink-3)" font-size="11" text-anchor="middle">
+          <text x="150" y="212">0%</text>
+          <text x="270" y="212">25%</text>
+          <text x="390" y="212">50%</text>
+          <text x="510" y="212">75%</text>
+          <text x="630" y="212">100%</text>
+        </g>
+
+        <!-- WUH 感度 78% -->
+        <text x="140" y="49" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="end">WUH 感度</text>
+        <rect x="150" y="36" width="374" height="18" rx="4" fill="var(--accent)" opacity=".75"/>
+        <text x="534" y="49" fill="var(--ink-2)" font-size="11.5">78%</text>
+
+        <!-- WUH 特異度 65% -->
+        <text x="140" y="79" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="end">WUH 特異度</text>
+        <rect x="150" y="66" width="312" height="18" rx="4" fill="var(--mod)" opacity=".7"/>
+        <text x="472" y="79" fill="var(--ink-2)" font-size="11.5">65%</text>
+
+        <!-- WUH PPV 42% -->
+        <text x="140" y="109" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="end">WUH 陽性的中率</text>
+        <rect x="150" y="96" width="202" height="18" rx="4" fill="var(--sev)" opacity=".7"/>
+        <text x="362" y="109" fill="var(--sev)" font-size="11.5" font-weight="700">42%</text>
+
+        <!-- Fiumefreddo 感度 58.8% -->
+        <text x="140" y="145" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="end">Fiume. 感度</text>
+        <rect x="150" y="132" width="282" height="18" rx="4" fill="var(--sev)" opacity=".7"/>
+        <text x="442" y="145" fill="var(--sev)" font-size="11.5" font-weight="700">58.8%</text>
+
+        <!-- Fiumefreddo 特異度 93.1% -->
+        <text x="140" y="175" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="end">Fiume. 特異度</text>
+        <rect x="150" y="162" width="447" height="18" rx="4" fill="var(--mod)" opacity=".7"/>
+        <text x="607" y="175" fill="var(--ink-2)" font-size="11.5">93.1%</text>
+
+        <!-- 注記帯 -->
+        <rect x="150" y="226" width="480" height="20" rx="5" fill="var(--sev-soft)"/>
+        <text x="160" y="240" fill="var(--sev)" font-size="11.5" font-weight="700">感度がこの水準では、スコア陰性を根拠にレジオネラを外すことはできない</text>
+      </svg>
+      <p class="fig-cap">
+        <b>WUH基準</b>（Chest 2001）＝感度78%（95%CI 61–90）、特異度65%（45–80）、<b>PPV 42%（25–61）</b>、NPV 90%（74–97）。
+        <b>Fiumefreddoスコア</b>＝カットオフ≥4点で感度58.8%・特異度93.1%・AUC 0.89（0.86–0.93）。
+        特異度は高いので<b>高得点は強く疑う根拠になる</b>が、感度が足りないため<b>低得点でも検査は出す</b>。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">日本版 診断予測スコア（Miyashita ら／成人肺炎診療ガイドライン2024 採用）<span class="tag">各1点</span></p>
+        <div class="score">
+          <div class="score-row"><span><b>男性</b></span><span class="pt">1</span></div>
+          <div class="score-row"><span><b>咳嗽がない</b></span><span class="pt">1</span></div>
+          <div class="score-row"><span><b>呼吸困難がある</b></span><span class="pt">1</span></div>
+          <div class="score-row"><span><b>CRP ≥ 18 mg/dL</b></span><span class="pt">1</span></div>
+          <div class="score-row"><span><b>LDH ≥ 260 U/L</b></span><span class="pt">1</span></div>
+          <div class="score-row"><span><b>Na &lt; 134 mmol/L</b></span><span class="pt">1</span></div>
+        </div>
+        <p class="fig-cap" style="margin-top:11px">
+          <b>3点以上でレジオネラを疑う</b>とされる。ただし推奨の強さ・エビデンスの質のグレード表記は原文で未照合（下の注記を参照）。
+          <b>「疑う契機」であって、点数が低いことを除外根拠にしてはならない</b>のは他スコアと同じ。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>診断 ― 尿中抗原の2つの落とし穴 <span class="sec-note">陰性で否定できない理由</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図②　尿中抗原が拾えるのは全体の一部にすぎない</p>
+      <svg viewBox="0 0 660 300" role="img" aria-label="尿中抗原はLegionella pneumophila血清群1のみを検出し、非血清群1や非pneumophila種は検出できない。また軽症例では感度が大きく下がる">
+        <!-- 左: カバレッジ -->
+        <text x="20" y="22" fill="var(--ink)" font-size="13" font-weight="700">① 菌種・血清群のカバレッジ</text>
+
+        <rect x="20" y="36" width="290" height="150" rx="10" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="30" y="56" fill="var(--ink-3)" font-size="11.5">Legionella 属 全体</text>
+
+        <!-- pneumophila -->
+        <rect x="32" y="66" width="200" height="108" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"/>
+        <text x="42" y="84" fill="var(--accent)" font-size="11.5" font-weight="700">L. pneumophila</text>
+        <!-- sg1 -->
+        <rect x="42" y="94" width="120" height="70" rx="7" fill="var(--accent)" opacity=".82"/>
+        <text x="102" y="122" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">血清群 1</text>
+        <text x="102" y="140" fill="#fff" font-size="10.5" text-anchor="middle" opacity=".92">尿中抗原で検出可</text>
+        <text x="102" y="156" fill="#fff" font-size="10.5" text-anchor="middle" opacity=".92">感度 0.86</text>
+        <!-- non-sg1 -->
+        <rect x="170" y="94" width="56" height="70" rx="7" fill="var(--sev)" opacity=".45"/>
+        <text x="198" y="120" fill="var(--ink)" font-size="10" text-anchor="middle" font-weight="700">非</text>
+        <text x="198" y="134" fill="var(--ink)" font-size="10" text-anchor="middle" font-weight="700">sg1</text>
+        <!-- non-pneumophila -->
+        <rect x="240" y="66" width="60" height="108" rx="8" fill="var(--sev)" opacity=".45"/>
+        <text x="270" y="106" fill="var(--ink)" font-size="10.5" text-anchor="middle" font-weight="700">非</text>
+        <text x="270" y="120" fill="var(--ink)" font-size="10.5" text-anchor="middle" font-weight="700">pneumo.</text>
+        <text x="270" y="140" fill="var(--ink)" font-size="9.5" text-anchor="middle">longbeachae</text>
+        <text x="270" y="152" fill="var(--ink)" font-size="9.5" text-anchor="middle">など</text>
+
+        <rect x="20" y="196" width="290" height="22" rx="5" fill="var(--sev-soft)"/>
+        <text x="30" y="211" fill="var(--sev)" font-size="11" font-weight="700">赤の領域は原理的に偽陰性 → 培養・PCR が必要</text>
+
+        <!-- 右: 重症度と感度 -->
+        <text x="360" y="22" fill="var(--ink)" font-size="13" font-weight="700">② 重症度で感度が変わる</text>
+
+        <!-- 軽症 -->
+        <text x="360" y="62" fill="var(--ink-2)" font-size="12" font-weight="700">軽症肺炎</text>
+        <rect x="360" y="70" width="270" height="26" rx="5" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1"/>
+        <rect x="360" y="70" width="102" height="26" rx="5" fill="var(--sev)" opacity=".7"/>
+        <text x="411" y="88" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">37.9%</text>
+
+        <!-- 重症 -->
+        <text x="360" y="130" fill="var(--ink-2)" font-size="12" font-weight="700">重症肺炎</text>
+        <rect x="360" y="138" width="270" height="26" rx="5" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1"/>
+        <rect x="360" y="138" width="231" height="26" rx="5" fill="var(--mild)" opacity=".8"/>
+        <text x="475" y="156" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">85.7%</text>
+
+        <path d="M470 104 L470 128" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="3 3"/>
+        <text x="360" y="192" fill="var(--ink-3)" font-size="11">重症例ほど抗原量が多く感度が上がる。</text>
+        <text x="360" y="208" fill="var(--ink-3)" font-size="11">逆に言えば<tspan fill="var(--sev)" font-weight="700">軽症では4割弱しか拾えない</tspan>。</text>
+
+        <!-- 下段 結論帯 -->
+        <rect x="20" y="240" width="610" height="44" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+        <text x="36" y="260" fill="var(--accent)" font-size="12.5" font-weight="700">陽性 → ほぼ確定（特異度 1.00）　／　陰性 → 除外できない</text>
+        <text x="36" y="277" fill="var(--ink-2)" font-size="11.5">重症例では尿中抗原の結果にかかわらず、喀痰培養（BCYE）と下気道検体PCRを併走させる。</text>
+      </svg>
+      <p class="fig-cap">
+        メタ解析（Respir Investig 2022、21研究5,772例）：<b>プール感度 0.79（95%CI 0.71–0.85）、特異度 1.00（0.99–1.00）</b>。血清群1に限れば感度 0.86（0.78–0.91）。
+        重症度別データはスペインの大規模アウトブレイク解析（Eur J Clin Microbiol Infect Dis 2005）。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">検査法の使い分け</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>検査</th><th>性能</th><th>強み</th><th>限界 / 注意</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>尿中抗原<br><span class="pill mid">まず出す</span></td>
+                <td>感度 <b>0.79</b>（0.71–0.85）<br>特異度 <b>1.00</b>（0.99–1.00）</td>
+                <td>迅速。陽性なら確定に近い。抗菌薬投与後も陽性が保たれる。</td>
+                <td><b>血清群1のみ</b>。軽症で感度37.9%。治療後も<b>数週〜数か月陽性が持続</b>し得る（＝既往を拾う）。</td>
+              </tr>
+              <tr>
+                <td>喀痰培養<br>（BCYE培地）<br><span class="pill mid">重症では必須</span></td>
+                <td>感度 10%未満〜80%<br>（検体の質に強く依存）</td>
+                <td><b>全菌種・全血清群を検出</b>。感受性検査と<b>遺伝子型別（環境株との照合）が可能な唯一の検査</b>。</td>
+                <td>専用培地なので<b>「レジオネラ疑い」と明記して出さないと培養されない</b>。抗菌薬投与前の採取が望ましい。</td>
+              </tr>
+              <tr>
+                <td>PCR<br>（喀痰・BAL）</td>
+                <td>感度 91–99%<br>特異度 94–99%</td>
+                <td>全菌種を検出可能。尿中抗原よりカバレッジが広い。</td>
+                <td>multiplexパネルは<b>製品ごとに対象菌種が違う</b>ので仕様確認が要る。尿PCR・血清PCRは補助的。</td>
+              </tr>
+              <tr>
+                <td>ペア血清<br>（4倍上昇）</td>
+                <td>―</td>
+                <td>後方視的な確定・疫学調査。</td>
+                <td>回復期採血が<b>4〜6週後</b>。<b>急性期の判断には使えない</b>。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>培養は「疫学のため」ではなく自分のためにも出す。</strong>
+      アウトブレイク時に感染源を特定できるのは、症例由来株と環境水由来株の遺伝子型を照合できたときだけ。
+      尿中抗原しか出していないと、施設・温泉・冷却塔の同定が原理的に不可能になる。</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>臨床像 ― 古典的所見の実力 <span class="sec-note">肺炎球菌性肺炎とは臨床像で鑑別できない</span></h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">下痢・消化器症状</div>
+        <div class="num">25〜50%</div>
+        <div class="sub">消化器症状全体では<b>約半数</b>。ただし他の肺炎でも起こる。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">意識障害・神経症状</div>
+        <div class="num">約 50%</div>
+        <div class="sub">見当識障害を含む。<b>肺炎＋意識障害</b>は疑う契機になる。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">相対的徐脈</div>
+        <div class="num">評価不能</div>
+        <div class="sub"><b>標準化された感度・特異度データが存在しない</b>。定義自体が研究間で不統一。</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">×</span>
+      <div><strong>相対的徐脈は過大評価されている。</strong>
+      Cunha らが「最も一貫した所見」と強調したが、その後の系統的レビューでは定義・カットオフが研究間で統一されておらず（Cunha基準／Østergaard基準／Ye基準が混在）、
+      <b>個々の患者において感染症の種類を予測する価値を持たない</b>と結論されている。
+      加えて<b>β遮断薬内服中の患者では発熱時に相対的徐脈が生じる</b>ため、レジオネラに誤帰属しやすい。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">△</span>
+      <div><strong>低Na血症・低P血症・CK上昇は「診断」には弱く、「予後」には強い。</strong>
+      低Na血症はレジオネラで頻度が高い（44.4% vs CAP全体25.3%）が単独では鑑別できない。
+      一方で予後因子としては、ICU入室84例の多変量解析で <b>Na ≤136 mEq/L が死亡の独立予測因子（RR 21.3, 95%CI 1.11–408, p=0.023）</b>、APACHE II &gt;15（RR 11.5, 1.75–76.1）。
+      <b>ただし信頼区間が 1.11–408 と極端に広く、点推定値は信用しない</b>。
+      低P血症は1976年の初回報告以来の「特徴」だが、他の重症肺炎でも起こる非特異的所見。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">×</span>
+      <div><strong>画像でも鑑別できない。</strong>
+      急速に進行する区域性〜多分葉性コンソリデーション＋GGOが典型だが、
+      <b>レジオネラ肺炎と他の細菌性CAPでCT所見に有意差はなかった</b>とする研究がある。空洞形成は稀だが<b>高用量ステロイド使用中では比較的多い</b>。
+      画像の消退には6〜12か月を要し、最大25%で線維化が残存する（＝退院時に影が残っていても治療失敗とは限らない）。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>治療 ― 第一選択と用量 <span class="sec-note">薬剤選択より投与の早さ</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>薬剤</th><th>用量（成人・重症）</th><th>位置づけ</th><th>注意</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>レボフロキサシン<br><span class="pill go">第一選択</span></td>
+                <td><span class="dose">750 mg IV 24時間毎</span><br>または <span class="dose">500 mg IV 12時間毎</span></td>
+                <td>細胞内移行が良好。重症例で選好されることが多い。</td>
+                <td><b>腎排泄型 ― CrClに応じて減量</b>。CRRT下では過少投与に注意。QT延長。<b>750 mg vs 500 mg の比較RCTはレジオネラでは存在しない</b>（PK/PDからの外挿）。</td>
+              </tr>
+              <tr>
+                <td>アジスロマイシン<br><span class="pill go">第一選択</span></td>
+                <td><span class="dose">500 mg IV 24時間毎</span></td>
+                <td>FQと同等。FQ使用が避けたい状況（痙攣リスク、大動脈瘤、腱障害既往）で有利。</td>
+                <td>肝・胆道排泄で<b>腎機能による調整は通常不要</b>。組織半減期が長い。QT延長。</td>
+              </tr>
+              <tr>
+                <td>モキシフロキサシン</td>
+                <td><span class="dose">400 mg IV 24時間毎</span></td>
+                <td>代替のFQ。</td>
+                <td>腎機能調整不要だがQT延長リスクはより高い。</td>
+              </tr>
+              <tr>
+                <td>ドキシサイクリン</td>
+                <td><span class="dose">100 mg 12時間毎</span></td>
+                <td>上記が使えない場合の代替。</td>
+                <td>重症例での使用を支持するデータは乏しい。第一選択にしない。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図③　FQ vs マクロライド ― メタ解析2件が真っ向から対立している</p>
+      <svg viewBox="0 0 660 236" role="img" aria-label="Kato 2021とJasper 2021のメタ解析はフルオロキノロン対マクロライドの死亡率について逆の結論を出している">
+        <!-- 中央線 OR=1 -->
+        <line x1="380" y1="34" x2="380" y2="164" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="380" y="182" fill="var(--ink-3)" font-size="11" text-anchor="middle">OR 1.0</text>
+        <text x="230" y="182" fill="var(--mild)" font-size="11" text-anchor="middle" font-weight="700">← FQ 有利</text>
+        <text x="540" y="182" fill="var(--mod)" font-size="11" text-anchor="middle" font-weight="700">マクロライド有利 →</text>
+
+        <!-- Kato 全体死亡 OR 0.59 (0.35-0.98) -->
+        <text x="16" y="52" fill="var(--ink)" font-size="12" font-weight="700">Kato 2021 全死亡</text>
+        <line x1="196" y1="47" x2="378" y2="47" stroke="var(--mild)" stroke-width="2.4"/>
+        <line x1="196" y1="40" x2="196" y2="54" stroke="var(--mild)" stroke-width="2.4"/>
+        <line x1="378" y1="40" x2="378" y2="54" stroke="var(--mild)" stroke-width="2.4"/>
+        <circle cx="266" cy="47" r="6.5" fill="var(--mild)"/>
+        <text x="440" y="51" fill="var(--ink-2)" font-size="11.5">0.59（0.35–0.98）</text>
+
+        <!-- Kato 30日死亡 OR 0.41 (0.20-0.85) -->
+        <text x="16" y="88" fill="var(--ink)" font-size="12" font-weight="700">Kato 2021 30日死亡</text>
+        <line x1="140" y1="83" x2="344" y2="83" stroke="var(--mild)" stroke-width="2.4"/>
+        <line x1="140" y1="76" x2="140" y2="90" stroke="var(--mild)" stroke-width="2.4"/>
+        <line x1="344" y1="76" x2="344" y2="90" stroke="var(--mild)" stroke-width="2.4"/>
+        <circle cx="222" cy="83" r="6.5" fill="var(--mild)"/>
+        <text x="440" y="87" fill="var(--ink-2)" font-size="11.5">0.41（0.20–0.85）</text>
+
+        <!-- Jasper 全体死亡 OR 0.94 (0.71-1.25) -->
+        <text x="16" y="124" fill="var(--ink)" font-size="12" font-weight="700">Jasper 2021 全死亡</text>
+        <line x1="326" y1="119" x2="430" y2="119" stroke="var(--ink-3)" stroke-width="2.4"/>
+        <line x1="326" y1="112" x2="326" y2="126" stroke="var(--ink-3)" stroke-width="2.4"/>
+        <line x1="430" y1="112" x2="430" y2="126" stroke="var(--ink-3)" stroke-width="2.4"/>
+        <circle cx="366" cy="119" r="6.5" fill="var(--ink-3)"/>
+        <text x="450" y="123" fill="var(--ink-2)" font-size="11.5">0.94（0.71–1.25）</text>
+
+        <!-- Jasper ICU OR 1.27 (0.18-9.01) -->
+        <text x="16" y="160" fill="var(--ink)" font-size="12" font-weight="700">Jasper 2021 ICU群</text>
+        <line x1="120" y1="155" x2="636" y2="155" stroke="var(--sev)" stroke-width="2.4" opacity=".65"/>
+        <line x1="120" y1="148" x2="120" y2="162" stroke="var(--sev)" stroke-width="2.4" opacity=".65"/>
+        <line x1="636" y1="148" x2="636" y2="162" stroke="var(--sev)" stroke-width="2.4" opacity=".65"/>
+        <circle cx="396" cy="155" r="6.5" fill="var(--sev)" opacity=".75"/>
+        <text x="120" y="140" fill="var(--sev)" font-size="11" font-weight="700">1.27（0.18–9.01）＝検出力ゼロ</text>
+
+        <rect x="16" y="200" width="620" height="28" rx="7" fill="var(--warn-bg)" stroke="var(--warn-line)" stroke-width="1.2"/>
+        <text x="30" y="218" fill="var(--ink-2)" font-size="11.5">対象研究が大きく重複しているのに結論が逆転する＝組み入れ基準と統計モデルで結果が飛ぶ不安定な領域。<tspan font-weight="700" fill="var(--ink)">質の高いRCTは存在しない。</tspan></text>
+      </svg>
+      <p class="fig-cap">
+        <b>Kato 2021</b>（J Infect Chemother、17研究）＝FQ優位（在院日数も MD −3.58日, −5.48〜−1.69）。
+        <b>Jasper 2021</b>（Clin Infect Dis、21研究 n=3,525）＝差なし（FQ 6.88% vs マクロライド 7.43%, I²=0%, P=.661）。
+        単施設の傾向スコア解析（Clin Microbiol Infect 2017, n=446）でも解熱・臨床的安定化・在院日数・死亡すべて有意差なし。
+        <b>結論：使い慣れた方を、遅らせずに投与する。</b>
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="mk">◎</span>
+      <div><strong>予後を変えるのは投与の早さ。</strong>
+      ICU入室後<b>8時間以内のFQ投与</b>が死亡リスク低下と関連（<b>OR 0.16, 95%CI 0.03–0.96</b>、Intensive Care Med 2002）。
+      入院24時間以内のマクロライド/LVFX投与も保護的（OR 0.20, 0.05–0.73）。死亡例では治療開始までの中央値11日 vs 生存例6日（p&lt;0.001）。
+      <b>したがって重症CAPでは尿中抗原の結果を待たない</b>。ATS/IDSA の重症CAP経験的治療（β-ラクタム＋マクロライド、またはβ-ラクタム＋FQ）は、この時点で既にレジオネラをカバーしている。</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>併用療法 ― 足す根拠がない <span class="sec-note">むしろ害の方が示されている</span></h2>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">キノロン ＋ マクロライド <span class="pill care">ルーチンには非推奨</span></p>
+          <p style="font-size:.87rem;color:var(--ink-2);margin:0 0 10px">日本の全国DPCデータ（n=3,560、IPTW調整後）</p>
+          <div class="table-scroll">
+            <table style="min-width:0">
+              <thead><tr><th></th><th>キノロン単剤<br>2,221例</th><th>マクロライド単剤<br>775例</th><th>併用<br>564例</th></tr></thead>
+              <tbody>
+                <tr><td>院内死亡</td><td>4.6%</td><td>3.1%</td><td>4.5%</td></tr>
+                <tr><td>在院日数</td><td>12日</td><td>11日</td><td>13日</td></tr>
+                <tr><td>入院費用</td><td>53.4万</td><td>50.9万</td><td>55.7万</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="fig-cap" style="margin-top:10px">
+            <b>いずれも有意差なし。</b>「併用に単剤を上回る有効性は示されず、有害事象増加を踏まえ慎重に選択すべき」（Int J Infect Dis 2024）。
+            敗血症性ショック合併の最重症例で有利とする観察研究の示唆はあるが仮説段階。
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">＋ リファンピシン <span class="pill stop">追加しない</span></p>
+          <ul class="clean">
+            <li>CAM単剤11例 vs CAM＋RFP 21例で<strong>両群とも全例治癒</strong>（上乗せ効果なし）。</li>
+            <li>一方で<strong>RFP併用群は在院日数が50%長い（P=0.035）</strong>。在院日数とRFP投与期間に正相関（P=0.001）。<span style="color:var(--ink-3)">Int J Antimicrob Agents 2006</span></li>
+            <li><strong>CYP誘導による相互作用</strong>（免疫抑制薬、抗凝固薬、抗てんかん薬）と肝障害のリスクを負うだけになる。</li>
+            <li>効果を示した対照試験は<strong>1件も存在しない</strong>。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>治療期間 <span class="sec-note">最もエビデンスが薄い部分</span></h2>
+
+    <div class="callout" style="margin-bottom:12px">
+      <span class="mk">!</span>
+      <div><strong>ATS/IDSA 2019 には、レジオネラに特化した治療期間の推奨は存在しない。</strong>
+      記載されているのは一般CAPの原則「<b>臨床的安定化を達成し、かつ最低合計5日間</b>」のみ。
+      以下の期間はいずれも<b>「細胞内寄生菌は反応が遅く再燃しうる」という病態生理学的推論と専門家意見（レベルIV〜V）</b>に基づくもので、比較試験の裏付けはない。</div>
+    </div>
+
+    <div class="ladder">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">standard</span><span class="sev-name">5〜10日</span></div>
+        <div class="rung-body">
+          <b>免疫正常・非重症</b>。臨床的安定化を達成していることが前提。
+          アジスロマイシンは組織半減期が長く、<b>5日で足りうる</b>。
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">severe</span><span class="sev-name">14日</span></div>
+        <div class="rung-body">
+          <b>ICU入室・人工呼吸・昇圧薬を要した重症例</b>。ここを基本線にする。
+          解熱しても短縮しない。
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">extended</span><span class="sev-name">21日</span></div>
+        <div class="rung-body">
+          <b>免疫抑制</b>（ステロイド、TNF-α阻害薬、移植後、血液腫瘍）／
+          <b>肺外病変</b>（膿胸、心内膜炎、脳膿瘍、関節炎）／<b>空洞形成</b>。
+          肺外病変ではドレナージの要否を必ず評価する。
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <p class="mini-h">IV → 経口スイッチ</p>
+        <ul class="clean">
+          <li><strong>レジオネラ特有の切替基準は存在しない</strong>。一般CAP基準（血行動態安定・解熱・臨床的改善・経口摂取可能・消化管機能正常）を準用する。</li>
+          <li>LVFX・AZM とも<strong>経口バイオアベイラビリティが高い</strong>ので、条件を満たせば躊躇せず切り替える。</li>
+          <li><strong>総投与期間は経路にかかわらず上記の日数で数える</strong>（IV日数だけで期間を満たしたことにしない）。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>重症例の管理と、反応が悪いとき <span class="sec-note">まず疑うのは診断であって薬剤ではない</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">治療反応不良時のチェック順序</p>
+        <div class="flow">
+          <div class="q">① 診断は本当に正しいか</div>
+          <div class="a"><span class="yn no">再検</span><div>尿中抗原<b>陰性でもレジオネラは否定できない</b>。逆に<b>陽性でも数か月前の感染</b>を拾っている可能性がある。培養・下気道検体PCRで確認し、他病原体（インフルエンザ、他の細菌、真菌）の重複感染も評価する。</div></div>
+          <div class="q">② 肺外病変・ドレナージ対象を見落としていないか</div>
+          <div class="a"><span class="yn no">検索</span><div><b>膿胸、肺膿瘍、心内膜炎、脳膿瘍、化膿性関節炎</b>。抗菌薬を足す前に画像で探す。</div></div>
+          <div class="q">③ 用量・腎機能調整は適正か</div>
+          <div class="a"><span class="yn no">確認</span><div>CRRT下でのLVFXの<b>過少投与</b>は起こりやすい。</div></div>
+          <div class="q">④ ここまで潰してから抗菌薬を再考する</div>
+          <div class="a"><span class="yn yes">最後</span><div>FQ↔マクロライドの変更・併用に切り替える。ただし<b>この段階の対応を支持するエビデンスは症例集積・専門家意見のみ</b>。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">ステロイド</p>
+          <ul class="clean">
+            <li><strong>レジオネラに特化したRCTは存在しない。</strong></li>
+            <li>CAPE COD（NEJM 2023）は重症CAP全体で<strong>ヒドロコルチゾンの28日死亡率 6.2% vs 11.9%（P=0.006）</strong>。<b>レジオネラのサブグループは症例数不足で結論が出せない</b>。</li>
+            <li>実務的には<strong>「レジオネラだから」ではなく「CAPE COD の重症CAP基準を満たすから」使う</strong>という整理になる。</li>
+            <li>ただし<strong>慢性ステロイド使用はレジオネラ重症化の既知のリスク因子</strong>。急性期の短期ヒドロコルチゾンとは文脈が違うので混同しない。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">ECMO</p>
+          <ul class="clean">
+            <li>レジオネラ関連ARDSでのECMO生存率は<strong>70%台</strong>（ELSOレジストリ等）。一般的なARDS-ECMO集団と同等かそれ以上。</li>
+            <li>ただし<strong>すべて症例集積・レジストリで対照群がなく</strong>、若年・基礎疾患の少ない層への<b>選択バイアスが強い</b>と考えるべき。</li>
+            <li><strong>導入基準・タイミングのRCTは存在しない</strong>。一般的な重症ARDSの基準に従う。</li>
+            <li>「レジオネラだから予後が良い」と読み替えないこと。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>疫学と届出 <span class="sec-note">頻度は低いが、外すと致命的</span></h2>
+
+    <div class="grid4">
+      <div class="stat">
+        <div class="lab">CAPに占める割合</div>
+        <div class="num">4.6%</div>
+        <div class="sub">95%CI 4.4–4.7%（219研究のメタ解析）。<b>重症CAP/ICUでは2〜15%</b>とおおむね倍。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">日本の届出数</div>
+        <div class="num">約2,300/年</div>
+        <div class="sub">2023年2,290例。<b>4類・全数把握</b>で診断医に届出義務。夏〜秋にピーク。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">患者背景（日本）</div>
+        <div class="num">男性 82%</div>
+        <div class="sub">平均69.4歳、<b>50歳以上が93.0%</b>。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">院内発症の致死率</div>
+        <div class="num">31.7%</div>
+        <div class="sub">市中発症6.8%との対比。ICU入室例の死亡率は<b>36%程度</b>。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <p class="mini-h">地域差 ― 渡航歴で菌種が変わる</p>
+        <div class="kv">
+          <div><span class="k">日本</span><span class="v"><b>L. pneumophila 血清群1が大半</b>。<i>L. longbeachae</i> は主流でない。感染源は<b>循環式浴槽・温泉</b>が中心。</span></div>
+          <div><span class="k">豪州・NZ</span><span class="v">NZの2013年届出は <b><i>L. longbeachae</i> 51% ／ L. pneumophila 28%</b>。感染源は<b>培養土・堆肥</b>（松樹皮・おがくずを含む製品）。<b>尿中抗原では拾えない</b>。</span></div>
+          <div><span class="k">検出バイアス</span><span class="v">「血清群1が7〜9割」という数字自体、<b>尿中抗原が血清群1しか拾わないことによる見かけ</b>である可能性が指摘されている（2024年スコーピングレビュー）。</span></div>
+          <div><span class="k">ヒト-ヒト</span><span class="v">2016年NEJMにポルトガルの "probable" 症例が<b>1例のみ</b>（換気の悪い部屋で息子を8時間看病した母親、同一株）。<b>極めて稀で、標準予防策以上は不要</b>。</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>1枚でのまとめ <span class="sec-note">ベッドサイドでの動き</span></h2>
+    <div class="card">
+      <div class="pad">
+        <div class="flow">
+          <div class="q">重症CAP（ICU入室・人工呼吸・昇圧薬）</div>
+          <div class="a"><span class="yn yes">する</span><div><b>尿中抗原＋喀痰培養（BCYE、疑いと明記）</b>を提出。可能なら下気道検体PCRも。<b>結果を待たずに</b>β-ラクタム＋マクロライド（またはβ-ラクタム＋FQ）を開始する。</div></div>
+          <div class="q">レジオネラが確定した</div>
+          <div class="a"><span class="yn yes">する</span><div><b>LVFX 750 mg/日</b> または <b>AZM 500 mg/日</b> の単剤に整理。β-ラクタムは他病原体が否定できれば中止を検討。</div></div>
+          <div class="a"><span class="yn no">しない</span><div><b>リファンピシンを足さない。</b>キノロン＋マクロライドの併用もルーチンには行わない。</div></div>
+          <div class="q">期間を決める</div>
+          <div class="a"><span class="yn yes">する</span><div>重症なら<b>14日</b>。免疫抑制・肺外病変・空洞なら<b>21日</b>。安定したらIVにこだわらず経口へ。</div></div>
+          <div class="q">尿中抗原が陰性だった</div>
+          <div class="a"><span class="yn no">しない</span><div><b>それだけで否定しない。</b>疑いが続くなら培養・PCRを追わせ、FQ／マクロライドは継続する。特に<b>軽症例・非血清群1・豪NZ渡航歴</b>で偽陰性が起こる。</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>RCTが存在しない領域</b>：①重症例に限ったFQ vs マクロライドの直接比較、②併用療法の有効性、③治療期間（14〜21日 vs 短期）、④レジオネラに限定したステロイド、⑤ECMOの導入基準。この5つはすべて観察研究・専門家意見どまりであり、「標準治療」と呼ばれるものの大半がその上に載っている。</p>
+    <p><b>主要な出典</b>：ATS/IDSA CAP guideline（Am J Respir Crit Care Med 2019;200:e45-e67）／Kato H et al. J Infect Chemother 2021;27:424-433／Jasper AS et al. Clin Infect Dis 2021;72:1979-1989／Clin Microbiol Infect 2017（傾向スコア解析 n=446）／Kutsuna S et al. Int J Infect Dis 2024（全国DPC n=3,560）／Grau S et al. Int J Antimicrob Agents 2006;28:249-252／Gacouin A et al. Intensive Care Med 2002;28:686-691／Kawasaki T et al. Respir Investig 2022;60:205-214／Sopena N et al. Eur J Clin Microbiol Infect Dis 2005／Gupta SK et al. Chest 2001;120:1064-1071／Sabria M et al. Am J Respir Crit Care Med 1997;156:1467-1472／Dequin PF et al. N Engl J Med 2023;388:1931-1941（CAPE COD）／日本呼吸器学会 成人肺炎診療ガイドライン2024。</p>
+    <p><b>未照合の項目（このカード作成時点で一次文献に当たれていないもの）</b>：日本呼吸器学会ガイドライン2024の治療期間およびレジオネラ診断スコアのCQ番号・推奨の強さ・エビデンスの質のグレード表記／ECMO生存率の母数と原典／尿中抗原の陽性持続期間の中央値／個別リスク因子のオッズ比／低Na血症の頻度データ（44.4% vs 25.3%）の出典。学会発表・論文への引用時は再確認が要る。</p>
+    <p><b>意図的に載せなかったもの</b>：重症サブグループの死亡率として流通している「72.8% vs 30.7%」（Eur J Intern Med 2023）は、情報源間で群の割当が逆転しておりアウトカムの定義も不明のため除外した。CAPE CODのレジオネラ・サブグループの具体的死亡率も、総説からの孫引きで原著補遺を確認できていないため除外した。</p>
+  </div>
+
+  <footer>
+    レジオネラ肺炎ポケットカード ／ 作成 2026-08-16<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

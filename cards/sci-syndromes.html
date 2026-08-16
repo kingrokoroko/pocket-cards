@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>脊髄損傷症候群 ― 局在・鑑別・初動</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .chain .step {
+    flex: 1 1 130px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 10px 12px; font-size: .82rem; color: var(--ink-2);
+  }
+  .chain .step b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 2px; }
+  .chain .step.end { background: var(--accent-soft); border-color: var(--accent); }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 84px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .93rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 82px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>脊髄損傷症候群 ― 局在・鑑別・初動</h1>
+    <div class="subtitle">Spinal cord injury syndromes ／ 救急・集中治療 ／ 作成 2026-08-10</div>
+  </header>
+
+  <p class="lede">
+    症候群の名前を覚えるより、<strong>横断面の3本の走行路</strong>を置ければ所見から局在が読める。
+    臨床判断で本当に効くのは <strong>①仙髄温存（S4-5感覚・DAP・VAC）を必ず取る ②円錐か馬尾かで初動は変わらない ③馬尾は48時間、SCI全体は24時間</strong> の3点。
+  </p>
+
+  <!-- 1. 走行路 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>横断面の3原則 <span class="sec-note">これだけで症候群は読める</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　脊髄横断面と3本の走行路（後方が上）</p>
+      <svg viewBox="0 0 620 330" role="img" aria-label="脊髄横断面。後索は同側の深部感覚、外側皮質脊髄路は同側の運動、脊髄視床路は対側の温痛覚を伝える">
+        <!-- 脊髄外形 -->
+        <ellipse cx="250" cy="165" rx="150" ry="118" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="2"/>
+        <!-- 後正中溝・前正中裂 -->
+        <line x1="250" y1="47" x2="250" y2="108" stroke="var(--line-strong)" stroke-width="2"/>
+        <path d="M250 283 L250 240" stroke="var(--line-strong)" stroke-width="6" stroke-linecap="round"/>
+
+        <!-- 灰白質（蝶形） -->
+        <path d="M250 108
+                 C238 108 230 116 224 126
+                 L206 112 C197 105 186 112 190 124
+                 L204 160
+                 C186 164 174 176 174 192
+                 C174 210 188 222 206 222
+                 C224 222 238 211 240 194
+                 L242 172
+                 C245 166 247 162 250 160
+                 C253 162 255 166 258 172
+                 L260 194
+                 C262 211 276 222 294 222
+                 C312 222 326 210 326 192
+                 C326 176 314 164 296 160
+                 L310 124
+                 C314 112 303 105 294 112
+                 L276 126
+                 C270 116 262 108 250 108 Z"
+              fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6" opacity=".9"/>
+
+        <!-- 後索 -->
+        <path d="M205 78 A150 118 0 0 1 250 66 L250 108 C238 108 230 116 224 126 L206 112 Z"
+              fill="var(--mild)" opacity=".5"/>
+        <path d="M295 78 A150 118 0 0 0 250 66 L250 108 C262 108 270 116 276 126 L294 112 Z"
+              fill="var(--mild)" opacity=".5"/>
+
+        <!-- 外側皮質脊髄路 -->
+        <ellipse cx="134" cy="140" rx="30" ry="24" fill="var(--sev)" opacity=".55"/>
+        <ellipse cx="366" cy="140" rx="30" ry="24" fill="var(--sev)" opacity=".55"/>
+
+        <!-- 脊髄視床路 -->
+        <ellipse cx="146" cy="222" rx="28" ry="22" fill="var(--mod)" opacity=".6"/>
+        <ellipse cx="354" cy="222" rx="28" ry="22" fill="var(--mod)" opacity=".6"/>
+
+        <!-- リード線 -->
+        <g stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" fill="none">
+          <path d="M250 68 L250 30 L430 30"/>
+          <path d="M366 140 L430 118"/>
+          <path d="M354 222 L430 250"/>
+        </g>
+        <g fill="var(--ink)" font-size="15" font-weight="700">
+          <text x="438" y="26">後索</text>
+          <text x="438" y="114">外側皮質脊髄路</text>
+          <text x="438" y="246">外側脊髄視床路</text>
+        </g>
+        <g fill="var(--ink-2)" font-size="13">
+          <text x="438" y="46">同側・深部感覚（振動・位置覚）</text>
+          <text x="438" y="134">同側・運動</text>
+          <text x="438" y="266">対側・温痛覚（交叉は 1〜2 分節上）</text>
+        </g>
+
+        <!-- 凡例スウォッチ -->
+        <g>
+          <rect x="414" y="14" width="14" height="14" rx="3" fill="var(--mild)" opacity=".6"/>
+          <rect x="414" y="102" width="14" height="14" rx="3" fill="var(--sev)" opacity=".6"/>
+          <rect x="414" y="234" width="14" height="14" rx="3" fill="var(--mod)" opacity=".65"/>
+        </g>
+
+        <!-- 前後表示 -->
+        <text x="250" y="24" fill="var(--ink-3)" font-size="12" text-anchor="middle">後</text>
+        <text x="250" y="318" fill="var(--ink-3)" font-size="12" text-anchor="middle">前</text>
+      </svg>
+      <p class="fig-cap">
+        <b>3原則</b>：後索＝<b>同側・深部感覚</b>／外側皮質脊髄路＝<b>同側・運動</b>／脊髄視床路＝<b>対側・温痛覚</b>。
+        脊髄視床路だけが脊髄内で交叉済みなので、片側病変では「同側の運動＋深部感覚 × 対側の温痛覚」という分離が起きる（＝Brown-Séquard）。
+        前脊髄動脈は<b>後索を除く前2/3</b>を灌流するため、その虚血では「運動と温痛覚は落ちるが位置覚は残る」。
+      </p>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図②　症候群ごとの障害部位</p>
+      <svg viewBox="0 0 640 200" role="img" aria-label="中心性・前脊髄動脈・ブラウンセカール・後索症候群の障害部位の比較">
+        <!-- 1 中心性 -->
+        <g>
+          <ellipse cx="80" cy="86" rx="66" ry="52" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.6"/>
+          <ellipse cx="46" cy="72" rx="19" ry="16" fill="var(--sev)" opacity=".65"/>
+          <ellipse cx="114" cy="72" rx="19" ry="16" fill="var(--sev)" opacity=".65"/>
+          <text x="80" y="164" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle">中心性</text>
+          <text x="80" y="184" fill="var(--ink-3)" font-size="12" text-anchor="middle">上肢 ≫ 下肢</text>
+        </g>
+        <!-- 2 前脊髄動脈 -->
+        <g>
+          <ellipse cx="240" cy="86" rx="66" ry="52" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.6"/>
+          <path d="M240 34 A66 52 0 1 0 240 138 Z" fill="var(--sev)" opacity=".45"/>
+          <path d="M240 34 A66 52 0 1 1 240 138 Z" fill="var(--sev)" opacity=".45"/>
+          <path d="M196 47 A66 52 0 0 1 284 47 L284 60 A66 52 0 0 0 196 60 Z" fill="var(--surface-2)"/>
+          <ellipse cx="240" cy="86" rx="66" ry="52" fill="none" stroke="var(--line-strong)" stroke-width="1.6"/>
+          <text x="240" y="164" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle">前脊髄動脈</text>
+          <text x="240" y="184" fill="var(--ink-3)" font-size="12" text-anchor="middle">位置覚のみ残る</text>
+        </g>
+        <!-- 3 Brown-Sequard -->
+        <g>
+          <ellipse cx="400" cy="86" rx="66" ry="52" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.6"/>
+          <path d="M400 34 A66 52 0 0 0 400 138 Z" fill="var(--sev)" opacity=".45"/>
+          <line x1="400" y1="34" x2="400" y2="138" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <text x="400" y="164" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle">Brown-Séquard</text>
+          <text x="400" y="184" fill="var(--ink-3)" font-size="12" text-anchor="middle">同側運動 × 対側温痛覚</text>
+        </g>
+        <!-- 4 後索 -->
+        <g>
+          <ellipse cx="560" cy="86" rx="66" ry="52" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.6"/>
+          <path d="M516 47 A66 52 0 0 1 604 47 L604 62 A66 52 0 0 0 516 62 Z" fill="var(--sev)" opacity=".5"/>
+          <text x="560" y="164" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle">後索</text>
+          <text x="560" y="184" fill="var(--ink-3)" font-size="12" text-anchor="middle">感覚性運動失調</text>
+        </g>
+      </svg>
+      <p class="fig-cap">
+        中心性は「中心灰白質の壊死」ではなく<b>側索の皮質脊髄路の軸索障害</b>が主体（§5参照）。前脊髄動脈症候群は後索だけが白く残るのが本質。
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. 症候群早見 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>症候群早見 <span class="sec-note">所見 → 局在 → 予後</span></h2>
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th style="width:15%">症候群</th><th style="width:30%">臨床像</th><th style="width:24%">典型的な機転</th><th style="width:31%">予後</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>中心性</td>
+              <td><b>上肢 ≫ 下肢</b>の麻痺。遠位手内筋が最強。「歩けるのに手が使えない」</td>
+              <td>高齢者の転倒・過伸展。頸椎症性狭窄が基盤。<b>骨折合併は10%のみ</b></td>
+              <td><span class="pill mid">年齢依存</span> 50歳未満は歩行自立ほぼ全例、70歳超は4割</td>
+            </tr>
+            <tr>
+              <td>Brown-Séquard</td>
+              <td><b>同側</b>の運動＋深部感覚障害、<b>対側</b>の温痛覚脱失（1〜2分節下から）</td>
+              <td>刺創・銃創、片側性圧迫。純粋型は稀で "plus" が多い</td>
+              <td><span class="pill go">良好</span> 歩行自立 75〜90%（ただし中心性と差なしとの反証あり）</td>
+            </tr>
+            <tr>
+              <td>前脊髄動脈</td>
+              <td>運動麻痺＋温痛覚脱失、<b>深部感覚は温存</b></td>
+              <td>大動脈手術・解離、屈曲損傷、椎体後方骨片</td>
+              <td><span class="pill stop">最不良</span> 24時間以内に改善傾向がなければ不良（定性的コンセンサス）</td>
+            </tr>
+            <tr>
+              <td>後索</td>
+              <td>振動・位置覚脱失 → 感覚性運動失調、Romberg陽性</td>
+              <td>後方脊髄動脈梗塞、亜急性連合性変性。外傷では稀</td>
+              <td>原因疾患による</td>
+            </tr>
+            <tr>
+              <td>脊髄円錐</td>
+              <td><b>早期・対称性</b>の膀胱直腸／性機能障害、サドル型感覚障害。下肢運動は軽度</td>
+              <td>胸腰椎移行部骨折、上衣腫、脊髄梗塞、係留症候群</td>
+              <td>膀胱障害が遷延。中枢神経のため再生に乏しい（機序的説明）</td>
+            </tr>
+            <tr>
+              <td>馬尾</td>
+              <td><b>非対称・弛緩性</b>、反射消失、強い神経根性疼痛。膀胱障害は遅れて出る</td>
+              <td>巨大椎間板ヘルニア（約45%）、血腫、膿瘍、腫瘍、医原性</td>
+              <td>末梢神経なので再生余地あり。<b>術前膀胱機能が最大の規定因子</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 円錐 vs 馬尾 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>円錐 vs 馬尾 <span class="sec-note">試験に出るが、初動は変わらない</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図③　レベル解剖</p>
+      <svg viewBox="0 0 620 210" role="img" aria-label="胸腰椎移行部の縦断。上円錐、脊髄円錐、馬尾の位置関係">
+        <!-- 椎体 -->
+        <g fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.4">
+          <rect x="40" y="60" width="70" height="86" rx="8"/>
+          <rect x="122" y="60" width="70" height="86" rx="8"/>
+          <rect x="204" y="60" width="70" height="86" rx="8"/>
+          <rect x="286" y="60" width="70" height="86" rx="8"/>
+          <rect x="368" y="60" width="70" height="86" rx="8"/>
+          <rect x="450" y="60" width="70" height="86" rx="8"/>
+        </g>
+        <g fill="var(--ink-3)" font-size="13" text-anchor="middle">
+          <text x="75" y="168">T11</text>
+          <text x="157" y="168">T12</text>
+          <text x="239" y="168">L1</text>
+          <text x="321" y="168">L2</text>
+          <text x="403" y="168">L3</text>
+          <text x="485" y="168">L4</text>
+        </g>
+
+        <!-- 脊髄本体 -->
+        <path d="M40 92 L196 92 L196 116 L40 116 Z" fill="var(--accent)" opacity=".35"/>
+        <path d="M196 92 L268 92 C286 92 292 100 292 104 C292 108 286 116 268 116 L196 116 Z"
+              fill="var(--accent)" opacity=".75"/>
+        <!-- 馬尾 -->
+        <g stroke="var(--mod)" stroke-width="2.2" fill="none" opacity=".85" stroke-linecap="round">
+          <path d="M290 106 L520 96"/>
+          <path d="M290 106 L520 106"/>
+          <path d="M290 106 L520 116"/>
+          <path d="M290 106 L520 126"/>
+          <path d="M290 106 L520 136"/>
+        </g>
+
+        <!-- ラベル -->
+        <g stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" fill="none">
+          <path d="M150 92 L150 40"/>
+          <path d="M250 92 L250 26"/>
+          <path d="M420 120 L420 178"/>
+        </g>
+        <g font-size="14" font-weight="700" fill="var(--ink)">
+          <text x="150" y="34" text-anchor="middle">上円錐（epiconus）</text>
+          <text x="250" y="20" text-anchor="middle">脊髄円錐</text>
+          <text x="420" y="196" text-anchor="middle">馬尾</text>
+        </g>
+        <g font-size="12" fill="var(--ink-3)">
+          <text x="150" y="52" text-anchor="middle">L4–S1 髄節</text>
+          <text x="562" y="100" text-anchor="middle">神経根</text>
+        </g>
+      </svg>
+      <p class="fig-cap">
+        成人の脊髄終末は<b>L1が最多</b>だが T11中央〜L3中央と個人差が大きい。円錐にはS2–S5＋尾髄節が凝縮するため、
+        <b>小さな病変でも膀胱直腸障害が高度に出る</b>。すぐ頭側の上円錐（L4–S1）では足関節・足部の筋力低下とアキレス腱反射消失が前景に立つ。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="table-scroll">
+        <table style="min-width:560px">
+          <thead>
+            <tr><th style="width:22%">項目</th><th style="width:39%">脊髄円錐（中枢神経）</th><th style="width:39%">馬尾（末梢神経）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>発症</td><td>急激・<b>対称性</b></td><td>緩徐・<b>非対称性</b></td></tr>
+            <tr><td>疼痛</td><td>軽度（腰部痛主体）</td><td><b>高度</b>な神経根性疼痛が前景</td></tr>
+            <tr><td>膀胱直腸障害</td><td><b>早期・高度</b></td><td>遅れて出現・不均一</td></tr>
+            <tr><td>下肢運動</td><td>軽度（保たれやすい）</td><td>高度・弛緩性</td></tr>
+            <tr><td>反射</td><td>UMN＋LMN の<b>混在</b></td><td>純粋にLMN（低下・消失）</td></tr>
+            <tr><td>感覚障害</td><td>サドル型・対称</td><td>サドル型・非対称</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div>
+        実際は<strong>純粋型は稀で overlap が大半</strong>。<strong>緊急MRI・残尿測定・脊椎外科コンサルトという初動はどちらでも同じ</strong>なので、
+        鑑別に時間をかけて画像を遅らせてはいけない。鑑別が効くのは病因診断と術式選択の段階（髄内腫瘍 vs 神経根腫瘍など）。
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 閾値 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>覚えるべき閾値</h2>
+    <div class="grid4">
+      <div class="stat">
+        <div class="lab">馬尾の減圧</div>
+        <div class="num tnum">≤ 48 時間</div>
+        <div class="sub"><b>24h以内 vs 24–48h に差なし</b>。48時間超で転帰悪化<br>Ahn 2000／DeLong 2008</div>
+      </div>
+      <div class="stat">
+        <div class="lab">残尿量（PVR）</div>
+        <div class="num tnum">≥ 200 mL</div>
+        <div class="sub">感度94% / <b>NPV 98.7%</b>。100 mLは特異度不足<br>Katzouraki 2020</div>
+      </div>
+      <div class="stat">
+        <div class="lab">SCI全般の減圧</div>
+        <div class="num tnum">≤ 24 時間</div>
+        <div class="sub">AIS≥2改善 <b>RR 2.76</b>／運動 +4.50点<br>AOSpine 2024（強い推奨）</div>
+      </div>
+      <div class="stat">
+        <div class="lab">MAP目標（2024改訂）</div>
+        <div class="num tnum">75–95 mmHg</div>
+        <div class="sub"><b>3–7日間</b>。旧「85–90×7日」から緩和<br>Kwon 2024（弱い推奨）</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div>
+        <strong>高用量メチルプレドニゾロンはルーチン投与しない</strong>。AOSpine 2017は「8時間以内なら選択肢として提示してよい」という<strong>弱い推奨</strong>にとどまり、
+        8時間以降・48時間投与は<strong>非推奨</strong>（48時間群で重症肺炎が増加）。有効性の主張は NASCIS-2 の <strong>post-hoc サブグループ解析</strong>由来で、事前規定の主要解析は陰性。
+        高齢の中心性損傷では誤嚥・肺炎リスクが元々高く、上乗せは慎重に。
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 中心性 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>中心性脊髄損傷 <span class="sec-note">予後は年齢で決まる／病態生理は書き換わった</span></h2>
+
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">退院時の自立歩行率<span class="tag">Newey 2000</span></p>
+        <svg viewBox="0 0 320 130" role="img" aria-label="年齢別の自立歩行率。50歳未満100%、50から70歳69%、70歳超40%">
+          <g font-size="13" fill="var(--ink-2)" text-anchor="end">
+            <text x="62" y="26">&lt; 50 歳</text>
+            <text x="62" y="66">50–70 歳</text>
+            <text x="62" y="106">&gt; 70 歳</text>
+          </g>
+          <g>
+            <rect x="72" y="12" width="200" height="20" rx="4" fill="var(--surface-2)"/>
+            <rect x="72" y="12" width="200" height="20" rx="4" fill="var(--accent)" opacity=".85"/>
+            <rect x="72" y="52" width="200" height="20" rx="4" fill="var(--surface-2)"/>
+            <rect x="72" y="52" width="138" height="20" rx="4" fill="var(--accent)" opacity=".6"/>
+            <rect x="72" y="92" width="200" height="20" rx="4" fill="var(--surface-2)"/>
+            <rect x="72" y="92" width="80" height="20" rx="4" fill="var(--accent)" opacity=".38"/>
+          </g>
+          <g font-size="13" font-weight="700" fill="var(--ink)">
+            <text x="280" y="26">100%</text>
+            <text x="280" y="66">69%</text>
+            <text x="280" y="106">40%</text>
+          </g>
+        </svg>
+        <ul class="clean" style="margin-top:12px;">
+          <li>良好な膀胱機能も <strong>&lt;50歳 100% → &gt;70歳 20%</strong> と同じ勾配。</li>
+          <li>Penrod 1990 でも <strong>50歳未満 97%（29/30）vs 50歳以上 41%（7/17）</strong>。死亡例は全て50歳超。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">回復の順序</p>
+        <div class="chain">
+          <div class="step"><b>① 下肢運動</b>最も早く戻る</div>
+          <div class="step"><b>② 膀胱直腸</b></div>
+          <div class="step"><b>③ 上肢近位</b></div>
+          <div class="step end"><b>④ 手指巧緻性</b>最後まで残る</div>
+        </div>
+        <ul class="clean" style="margin-top:13px;">
+          <li><strong>歩けるようになる＝機能的自立ではない</strong>。手指巧緻性障害と神経因性疼痛が残存し、退院計画に直結する。</li>
+          <li>早期手術（≤24h）は<strong>合併症 OR 0.53</strong>・在院日数短縮で一致するが、<strong>運動予後の改善は2つの2024年メタ解析で結論が割れている</strong>（Sattari 5,619例は有意、Bin-Alamer 488例は非有意）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div>
+        <strong>「錐体路の体部位局在（上肢が内側）」説は否定されている</strong>。霊長類の軸索追跡で頸髄に体部位局在は存在せず（Morecraft 2021）、
+        剖検では灰白質の運動ニューロン減少を伴わずに<strong>側索皮質脊髄路の軸索障害＋Wallerian変性</strong>を認めた（Jimenez/Levi 2000）。
+        上肢優位となるのは<strong>上肢の随意運動が皮質脊髄路に強く依存する</strong>ため（下肢は網様体脊髄路など他の下行路も使える）。
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 馬尾の初動 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>馬尾症候群の初動 <span class="sec-note">稀だが訴訟の 20–23% を占める</span></h2>
+
+    <div class="ladder">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">CESS</span><span class="sev-name">疑い</span></div>
+        <div class="rung-body">両側坐骨神経痛や下肢の運動・感覚障害はあるが、<b>膀胱・腸・会陰症状なし</b>。</div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">CESI</span><span class="sev-name">不完全</span></div>
+        <div class="rung-body">膀胱の感覚・機能に変化があるが <b>随意排尿は保持</b>。<b>この段階で拾えるかが勝負</b>。</div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">CESR</span><span class="sev-name">尿閉</span></div>
+        <div class="rung-body"><b>無痛性尿閉＋溢流性失禁</b>。CESIより明確に予後不良（Fair/Poor転帰 RR 2.58）。両者を同一群として扱わない。</div>
+      </div>
+    </div>
+
+    <div class="card pad" style="margin-top:12px;">
+      <p class="mini-h">評価と閾値</p>
+      <div class="kv">
+        <div><span class="k">問診</span><span class="v">サドル型感覚障害・排尿の勢い/尿意の感覚・両側坐骨神経痛。<b>発症時刻を必ず記録</b></span></div>
+        <div><span class="k">残尿</span><span class="v"><b>PVR ≥ 200 mL</b> をトリガーに（感度94%・NPV 98.7%）。100 mLでは特異度59%で偽陽性が多すぎる</span></div>
+        <div><span class="k">画像</span><span class="v"><b>疑ったら時間帯を問わず緊急MRI</b>。MRI禁忌ならCTミエログラフィー</span></div>
+        <div><span class="k">手術</span><span class="v">診断がつき次第すみやかに。<b>48時間が実質的な上限</b></span></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div>
+        <strong>直腸診が陰性でも除外できない</strong>。肛門括約筋緊張の感度は <strong>0.23–0.53</strong>（Hutton 2022）、red flags全般が
+        「特異度は高いが感度が低い」（Dionne 2019）。<strong>陰性所見を根拠に画像を見送った判断が、後から見落としと評価される</strong>——これが訴訟化の構造。
+        施行の有無と所見、説明した再受診指示（safety-netting）まで記録する。
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div>
+        <strong>手術＝治癒ではない</strong>。術後中央値13.8年で膀胱障害 <strong>37.8%</strong>・排便障害 <strong>43.2%</strong>・性機能障害 <strong>54.3%</strong> が残存（Korse 2017）。
+        患者が最も治してほしい症状は<strong>疼痛（57%）</strong>。退院後に泌尿器・疼痛外来へ繋ぐところまでが初期対応の射程。
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. ASIA/AIS -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>ISNCSCI（ASIA）判定 <span class="sec-note">仙髄温存を取らないと A と B が壊れる</span></h2>
+
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">key muscle（左右10筋ずつ・MMT 0–5）</p>
+        <div class="table-scroll">
+          <table style="min-width:0">
+            <tbody>
+              <tr><td>C5</td><td>肘屈曲</td><td>L2</td><td>股屈曲</td></tr>
+              <tr><td>C6</td><td>手関節伸展</td><td>L3</td><td>膝伸展</td></tr>
+              <tr><td>C7</td><td>肘伸展</td><td>L4</td><td>足関節背屈</td></tr>
+              <tr><td>C8</td><td>手指屈曲</td><td>L5</td><td>母趾伸展</td></tr>
+              <tr><td>T1</td><td>小指外転</td><td>S1</td><td>足関節底屈</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="clean" style="margin-top:12px;">
+          <li>T2〜L1・S2以下は key muscle がなく、運動レベルは<strong>感覚レベルに準じて推定</strong>。</li>
+          <li>感覚は28点×左右を触覚・痛覚で <strong>0/1/2</strong> 採点。</li>
+          <li><strong>運動レベル</strong>＝筋力3以上かつ上位が全て5である最尾側。<strong>NLI</strong>＝左右×感覚運動の4つのうち<strong>最も頭側</strong>。</li>
+        </ul>
+      </div>
+
+      <div class="card pad">
+        <p class="mini-h">AIS 判定フロー</p>
+        <div class="flow">
+          <div class="q">S4-5 の感覚 or DAP / VAC はあるか？</div>
+          <div class="a"><span class="yn no">なし</span><span><b>AIS A（完全）</b> → ZPP を記載</span></div>
+          <div class="a"><span class="yn yes">あり</span><span>不全損傷 ↓</span></div>
+          <div class="q">NLI より下位に随意運動はあるか？</div>
+          <div class="a"><span class="yn no">なし</span><span><b>AIS B（感覚不全）</b></span></div>
+          <div class="a"><span class="yn yes">あり</span><span>運動レベルより<b>3レベルを超えて下位</b>に運動 ↓</span></div>
+          <div class="q">NLI 以下 key muscle の筋力3以上は？</div>
+          <div class="a"><span class="yn no">半数未満</span><span><b>AIS C</b></span></div>
+          <div class="a"><span class="yn yes">半数以上</span><span><b>AIS D</b>（歩行自立に至る例が多い）</span></div>
+        </div>
+        <ul class="clean" style="margin-top:12px;">
+          <li><strong>AIS E</strong> は「欠損があって回復した」場合に使う。もともと正常な人には使わない。</li>
+          <li><strong>ZPP</strong> は AIS A のときだけ記載する。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px;">
+      <span class="mk">!</span>
+      <div>
+        <strong>球海綿体反射（BCR）に急性期の予後予測価値はない</strong>。「BCR再出現＝脊髄ショック終了＝予後判定可能」という通念は、
+        北米多施設前向きレジストリで否定された（Ali 2023）。脊髄ショック期（受傷後24〜72時間）は評価が定まらないため、<strong>再評価を前提に</strong>初回所見を扱う。
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 罠 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>見落としの罠</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <p class="mini-h">円錐：歩けるから帰す</p>
+        <p style="margin:0;font-size:.88rem;color:var(--ink-2);">円錐病変は下肢運動が保たれやすく、緊急性が過小評価される。<b>下肢が動くことは除外根拠にならない</b>。サドル感覚と排尿を必ず取る。</p>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">MRIが軽症に見える方が危ない</p>
+        <p style="margin:0;font-size:.88rem;color:var(--ink-2);">中心性でT2高信号があると初期は重症だが増悪しにくい。逆に<b>T2信号がない例の方が遅発性増悪リスクが高い</b>。画像が軽い＝経過観察でよい、ではない。</p>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">骨傷なし＝軽症ではない</p>
+        <p style="margin:0;font-size:.88rem;color:var(--ink-2);">中心性の<b>約9割は頸椎骨折を伴わない</b>。脊柱管狭窄・靱帯損傷を背景に重篤な不全麻痺を来す。</p>
+      </div>
+      <div class="card pad">
+        <p class="mini-h">サドル感覚が残ることがある</p>
+        <p style="margin:0;font-size:.88rem;color:var(--ink-2);">円錐・馬尾病変でも<b>サドル感覚が温存される例がある</b>（Podnar 2007）。「サドル感覚が正常だから違う」は成り立たない。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>根拠と、その強さ</h3>
+    <p><b>この領域にRCTはほぼ存在しない。</b>手術タイミング・MAP目標・症候群別予後のいずれも、根拠は観察研究とそのメタ解析である。</p>
+    <p><b>比較的確からしい</b>：早期減圧（STASCIS / AOSpine 2024, PMID 22384132・38526922）、中心性の年齢別予後（Newey 2000 PMID 10990310・Penrod 1990 PMID 2241542）、体部位局在説の否定（Jimenez/Levi 2000 PMID 11035473・Morecraft 2021）、馬尾の48時間（Ahn 2000 PMID 10851100・DeLong 2008 PMID 18377315）、PVR 200 mL（Katzouraki 2020 PMID 32475252）、red flagsの低感度（Dionne 2019 PMID 31132655・Hutton 2022 PMID 35180641）、馬尾術後の長期転帰（Korse 2017 PMID 28423044）。</p>
+    <p><b>弱い／議論中</b>：MAP目標（Kwon 2024 PMID 38526923、エビデンスの質は「非常に低い」）、ステロイド（AOSpine 2017 PMID 29164025、弱い推奨）、中心性の早期手術による運動予後改善（2024年の2メタ解析で不一致：Sattari PMID 37890727 は有意、Bin-Alamer PMID 38335527 は非有意）。</p>
+    <p><b>出所未確定として本カードに載せなかった数値</b>：CESI 90% vs CESR 20% の回復率、前脊髄動脈症候群の病因別回復率、中心性の手指巧緻性の長期残存率。いずれも二次情報でしか確認できず、学会発表等で使うなら原著確認が必要。</p>
+  </div>
+
+  <footer>
+    脊髄損傷症候群ポケットカード ／ 2026-08-10 作成<br>
+    最終判断は施設プロトコルと指導医の確認のもとで。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
