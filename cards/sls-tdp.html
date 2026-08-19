@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Short-Long-Short 配列 ― pause依存性TdPの読み方</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>Short-Long-Short 配列 ― pause依存性TdPの読み方</h1>
+    <div class="subtitle">SLS sequence / pause-dependent torsades de pointes ／ 救急・集中治療 ／ 作成 2026-08-19</div>
+  </header>
+
+  <p class="lede">
+    <strong>PVC（short）→ 代償性休止（long）→ pause後の短結合PVC（short）</strong>という3心拍のR-R配列。
+    これが見えたら診断は「pause依存性TdP」で、押さえるべきは3点。
+    <strong>①治療の主眼は薬でなく "long"（pause）を消すこと ― ペーシング90〜110/分</strong>
+    <strong>②MgSO₄ 2gは血中Mgが正常でも効く（欠乏の是正ではなくEAD抑制）</strong>
+    <strong>③SLSの有無で治療が正反対に分岐する ― SLSあり＝イソプロテレノールで加速、SLSなし（LQT1型）＝β遮断薬でイソプロは禁忌相当。</strong>
+    そして<strong>AFのAshman現象も同じR-R配列に見えるが完全に別物・良性</strong>。
+  </p>
+
+  <div class="grid4">
+    <div class="stat">
+      <div class="lab">後天性TdPの開始様式</div>
+      <div class="num tnum">41/44 <span style="font-size:.9rem;color:var(--ink-3)">(93%)</span></div>
+      <div class="sub">TdP 32例44エピソードで<b>SLS配列が先行</b>。平均QTc <b>0.59秒</b>（Kay 1983）</div>
+    </div>
+    <div class="stat">
+      <div class="lab">先天性LQTSでも同じ</div>
+      <div class="num tnum">65%</div>
+      <div class="sub">111エピソードの<b>72件がSLS型</b>。洞頻脈型25%／脱分極変化型10%（Noda 2004）</div>
+    </div>
+    <div class="stat">
+      <div class="lab">MgSO₄ 2g 単回静注</div>
+      <div class="num tnum">9/12例</div>
+      <div class="sub"><b>1〜5分</b>でTdP消失。残る3例も2回目ボルスで消失（Tzivoni 1988）</div>
+    </div>
+    <div class="stat">
+      <div class="lab">ペーシング目標</div>
+      <div class="num tnum">90〜110<span style="font-size:.85rem;color:var(--ink-3)">/分</span></div>
+      <div class="sub">pauseを機械的に作らせない。Kay論文では<b>「唯一一貫して有効」</b></div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>何を見ているのか ― 配列の定義 <span class="sec-note">"long" が原因、"最後のshort" が引き金</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　SLS配列からTdPが起こるまで ― モニタ上の3心拍</p>
+      <svg viewBox="0 0 660 245" role="img" aria-label="心電図模式図。洞調律の後に心室期外収縮が出て短い間隔となり、続く代償性休止で長い間隔となる。休止後の拍はQTが著明に延長し、その T 波の上に短結合の期外収縮が乗って torsades de pointes が始まる">
+        <!-- ECG trace -->
+        <polyline fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linejoin="round"
+          points="18,110 34,110 40,102 46,110 52,110 54,117 60,56 66,121 70,110 80,110 88,98 100,110 116,110
+                  120,110 126,66 134,63 142,141 150,131 158,110 164,110 172,124 182,110 196,110
+                  250,110 254,110 260,101 266,110 268,110 270,117 274,52 278,123 282,110 300,110 312,110 322,90 334,92 348,110
+                  352,110 356,58 364,56 372,151 380,120 386,110
+                  392,110 400,70 410,141 420,64 430,147 440,72 450,139 460,86 470,129 480,95 490,121 500,78
+                  510,143 520,66 530,149 540,74 550,137 560,88 570,127 580,97 590,119 600,82 610,141 620,70 630,145 642,110"/>
+
+        <!-- markers -->
+        <g fill="var(--ink-3)" font-size="10.5">
+          <text x="60" y="140" text-anchor="middle">洞調律</text>
+          <text x="272" y="140" text-anchor="middle">洞（pause後）</text>
+        </g>
+        <g font-size="11" font-weight="700">
+          <text x="136" y="34" fill="var(--sev)" text-anchor="middle">PVC</text>
+          <text x="200" y="90" fill="var(--mod)">pause</text>
+          <text x="330" y="72" fill="var(--mod)" text-anchor="middle">QT著明延長</text>
+          <text x="364" y="34" fill="var(--sev)" text-anchor="middle">R-on-T</text>
+          <text x="515" y="42" fill="var(--sev)" text-anchor="middle">torsades de pointes</text>
+        </g>
+        <line x1="330" y1="78" x2="330" y2="88" stroke="var(--mod)" stroke-width="1.2"/>
+        <line x1="364" y1="40" x2="360" y2="54" stroke="var(--sev)" stroke-width="1.2"/>
+        <line x1="136" y1="40" x2="132" y2="60" stroke="var(--sev)" stroke-width="1.2"/>
+
+        <!-- interval brackets -->
+        <g stroke="var(--line-strong)" stroke-width="1.3">
+          <line x1="60" y1="168" x2="60" y2="186"/>
+          <line x1="130" y1="168" x2="130" y2="186"/>
+          <line x1="274" y1="168" x2="274" y2="186"/>
+          <line x1="360" y1="168" x2="360" y2="186"/>
+        </g>
+        <g stroke-width="2.4" stroke-linecap="round">
+          <line x1="60" y1="180" x2="130" y2="180" stroke="var(--accent)"/>
+          <line x1="130" y1="180" x2="274" y2="180" stroke="var(--mod)"/>
+          <line x1="274" y1="180" x2="360" y2="180" stroke="var(--sev)"/>
+        </g>
+        <g font-size="11.5" font-weight="700" text-anchor="middle">
+          <text x="95" y="203" fill="var(--accent)">SHORT</text>
+          <text x="202" y="203" fill="var(--mod)">LONG</text>
+          <text x="317" y="203" fill="var(--sev)">SHORT</text>
+        </g>
+        <g font-size="10" fill="var(--ink-3)" text-anchor="middle">
+          <text x="95" y="219">期外収縮の結合期</text>
+          <text x="202" y="219">代償性休止 ＝ 真の原因</text>
+          <text x="317" y="219">短結合PVC 約300〜600ms</text>
+        </g>
+        <text x="330" y="240" font-size="10.5" fill="var(--ink-2)" text-anchor="middle" font-weight="700">
+          pauseを消せば配列は成立しない ― だからペーシングが根本治療になる
+        </text>
+      </svg>
+      <p class="fig-cap">
+        <b>読み方の順序</b>：TdPを見たら遡って「その直前に長いR-Rがあったか」を必ず確認する。あれば pause依存＝後天性LQTS/LQT2型のパターン、なければ交感神経依存＝LQT1型のパターン（→ §6）。
+        先天性LQTSでのSLS型の実測値は<b>先行PVCの結合期 平均587 ms、TdPの周期長 295 ms</b>（Noda 2004）。<b>絶対値のカットオフは存在せず</b>、long と short の相対関係が本質。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">"long" はPVCの代償性休止だけではない <span class="tag">見落としやすい</span></p>
+        <ul class="clean">
+          <li><strong>完全房室ブロック・高度AVブロック</strong> ― pauseが延々と供給され続ける状態。最も危険。</li>
+          <li><strong>洞機能不全・洞停止・徐脈</strong>（β遮断薬、ジゴキシン、高齢、下壁梗塞後）。</li>
+          <li><strong>AFのDCカルディオバージョン直後・薬理学的除細動直後のpause</strong> ― 抗不整脈薬でQTを延ばしたところにpauseが乗る最悪の組み合わせ。</li>
+          <li><strong>rapid AFが自然停止した直後</strong>、ペーシング停止後、ATP負荷後。</li>
+          <li><strong>PVCの二段脈（bigeminy）</strong> ― SLSが1拍おきに繰り返し供給される。TdP直前の警告所見として扱う。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>QT延長がなければSLSは無害。</strong>SLS配列は「QT延長＋TDR増大という基質」の上でのみ致死的になる。基質のない患者のPVC＋代償性休止はただの期外収縮であり、この配列を見ただけで騒ぐ話ではない。<strong>配列と基質（QTc・K・Mg・薬剤）を必ずセットで評価する。</strong></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>機序 ― なぜ pause が不整脈を作るのか <span class="sec-note">reverse rate-dependence → TDR → EAD → reentry</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図②　pause から TdP への連鎖（4段）</p>
+      <svg viewBox="0 0 660 300" role="img" aria-label="pauseから torsades de pointes に至る機序の連鎖図。pauseによりM細胞優位に活動電位持続時間が延長し、貫壁性再分極不均一が増大、早期後脱分極が閾値に達してtriggered activityが生じ、これが機能的リエントリーに移行してTdPとなる">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,1 L9,5 L0,9 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+
+        <!-- step 1 -->
+        <rect x="8" y="18" width="150" height="86" rx="9" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="83" y="40" font-size="11" font-weight="700" fill="var(--mod)" text-anchor="middle">① pause（long）</text>
+        <text x="83" y="60" font-size="10" fill="var(--ink-2)" text-anchor="middle">心拍数が急に落ちる</text>
+        <text x="83" y="78" font-size="10" fill="var(--ink-2)" text-anchor="middle">reverse rate-dependence</text>
+        <text x="83" y="94" font-size="10" fill="var(--ink-2)" text-anchor="middle">で APD が延長</text>
+
+        <!-- step 2 -->
+        <rect x="176" y="18" width="150" height="86" rx="9" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="251" y="40" font-size="11" font-weight="700" fill="var(--accent)" text-anchor="middle">② TDR 増大</text>
+        <text x="251" y="60" font-size="10" fill="var(--ink-2)" text-anchor="middle">M細胞のAPD延長が</text>
+        <text x="251" y="78" font-size="10" fill="var(--ink-2)" text-anchor="middle">epi/endoより大きい</text>
+        <text x="251" y="94" font-size="10" fill="var(--ink-2)" text-anchor="middle">→ 貫壁性の不均一</text>
+
+        <!-- step 3 -->
+        <rect x="344" y="18" width="150" height="86" rx="9" fill="var(--sev-soft)" stroke="var(--sev)" stroke-opacity=".45"/>
+        <text x="419" y="40" font-size="11" font-weight="700" fill="var(--sev)" text-anchor="middle">③ EAD → triggered</text>
+        <text x="419" y="60" font-size="10" fill="var(--ink-2)" text-anchor="middle">plateau/phase3 で</text>
+        <text x="419" y="78" font-size="10" fill="var(--ink-2)" text-anchor="middle">早期後脱分極が閾値到達</text>
+        <text x="419" y="94" font-size="10" fill="var(--ink-2)" text-anchor="middle">＝ 最後の short（PVC）</text>
+
+        <!-- step 4 -->
+        <rect x="512" y="18" width="140" height="86" rx="9" fill="var(--sev-soft)" stroke="var(--sev)" stroke-opacity=".45"/>
+        <text x="582" y="40" font-size="11" font-weight="700" fill="var(--sev)" text-anchor="middle">④ reentry</text>
+        <text x="582" y="60" font-size="10" fill="var(--ink-2)" text-anchor="middle">TDRを基質に</text>
+        <text x="582" y="78" font-size="10" fill="var(--ink-2)" text-anchor="middle">機能的リエントリー</text>
+        <text x="582" y="94" font-size="10" fill="var(--ink-2)" text-anchor="middle">＝ TdP の持続</text>
+
+        <g stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ar)">
+          <line x1="160" y1="61" x2="172" y2="61"/>
+          <line x1="328" y1="61" x2="340" y2="61"/>
+          <line x1="496" y1="61" x2="508" y2="61"/>
+        </g>
+
+        <!-- AP diagram -->
+        <line x1="60" y1="248" x2="640" y2="248" stroke="var(--line-strong)" stroke-width="1.2"/>
+        <text x="52" y="252" font-size="9.5" fill="var(--ink-3)" text-anchor="end">−85 mV</text>
+        <text x="52" y="152" font-size="9.5" fill="var(--ink-3)" text-anchor="end">+20 mV</text>
+
+        <!-- normal AP (fast rate) -->
+        <path d="M70,248 L76,150 L92,162 L120,168 L152,238 L160,248 L280,248"
+              fill="none" stroke="var(--mild)" stroke-width="2.1"/>
+        <text x="112" y="140" font-size="10" font-weight="700" fill="var(--mild)" text-anchor="middle">通常心拍時のAP</text>
+
+        <!-- post-pause AP with EAD -->
+        <path d="M300,248 L306,148 L322,160 L370,166 L406,178 L418,158 L432,186 L470,232 L482,248 L640,248"
+              fill="none" stroke="var(--sev)" stroke-width="2.1"/>
+        <text x="392" y="140" font-size="10" font-weight="700" fill="var(--sev)" text-anchor="middle">pause後のAP ― 延長＋EAD</text>
+        <circle cx="418" cy="158" r="4.2" fill="none" stroke="var(--sev)" stroke-width="1.8"/>
+        <text x="450" y="150" font-size="10" font-weight="700" fill="var(--sev)">EAD</text>
+        <line x1="447" y1="152" x2="425" y2="157" stroke="var(--sev)" stroke-width="1.1"/>
+
+        <!-- APD brackets -->
+        <g stroke-width="2" stroke-linecap="round">
+          <line x1="76" y1="266" x2="156" y2="266" stroke="var(--mild)"/>
+          <line x1="306" y1="266" x2="476" y2="266" stroke="var(--sev)"/>
+        </g>
+        <text x="116" y="282" font-size="10" fill="var(--mild)" text-anchor="middle" font-weight="700">APD</text>
+        <text x="391" y="282" font-size="10" fill="var(--sev)" text-anchor="middle" font-weight="700">APD 延長（≒ QT延長）</text>
+      </svg>
+      <p class="fig-cap">
+        <b>三次元マッピングでの裏付け</b>：anthopleurin-A誘発犬LQTSモデルの256点マルチプレクス電極で、<b>TdPの第1拍はsubendocardialのfocal activity（EAD由来のtriggered activity）、後続拍はscroll wave reentry</b>と証明されている（El-Sherif 1997）。
+        つまり<b>「起こす機序」と「続ける機序」が違う</b>。だからMgでEADを抑えると起こらなくなるが、いったん始まったTdPは電気的除細動でしか止まらないことがある。
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>Tpeak-Tend が TDR の心電図的対応物。</strong>QTcだけでなくTpeak-Tendの開大に注意する。IKr遮断薬は用量依存的にQT延長とTDR増大を起こし、<strong>TDRが閾値を超えたところでreentryが成立する</strong>（Antzelevitchのウェッジ標本）。QT延長の程度とTdPリスクが必ずしも比例しないのは、効いている変数がQTではなくTDRだから。</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>Ashman現象との鑑別 <span class="sec-note">同じR-R配列に見えて、片方は完全に良性</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図③　R-Rだけ見ると区別できない ― 決め手はQRS形態と先行QT</p>
+      <svg viewBox="0 0 660 290" role="img" aria-label="上段はAshman現象。心房細動で長い周期の後に短い周期が来ると右脚ブロック型の幅広いQRSが1拍だけ出る。QTは正常で良性。下段はSLS配列によるpause依存性TdP。QT延長があり短結合期外収縮からTdPに移行する">
+        <!-- row 1: Ashman -->
+        <rect x="8" y="10" width="644" height="118" rx="9" fill="var(--mild-soft)" fill-opacity=".45" stroke="var(--mild)" stroke-opacity=".35"/>
+        <text x="20" y="30" font-size="11.5" font-weight="700" fill="var(--mild)">Ashman現象（AF下の変行伝導）― 良性</text>
+        <polyline fill="none" stroke="var(--mild)" stroke-width="1.8" stroke-linejoin="round"
+          points="20,78 30,80 40,76 50,78 54,79 58,44 62,88 66,78 74,78 80,72 90,78 100,80 108,76 116,78
+                  120,79 124,46 128,86 132,78 140,78 146,71 156,78 168,76 178,80 186,78
+                  240,78 244,79 248,58 252,50 258,72 264,36 270,92 278,84 286,78 296,72 306,78 316,80
+                  322,78 326,79 330,45 334,87 338,78 346,78 352,71 362,78 372,80 382,76 392,78
+                  396,79 400,46 404,86 408,78 416,78 422,71 432,78 444,80 452,76 462,78
+                  466,79 470,45 474,87 478,78 486,78 492,71 502,78 514,80 524,76 534,78
+                  538,79 542,46 546,86 550,78 558,78 564,71 574,78 586,80 598,76 610,78 640,78"/>
+        <g stroke-width="2.2" stroke-linecap="round">
+          <line x1="126" y1="104" x2="266" y2="104" stroke="var(--mod)"/>
+          <line x1="266" y1="104" x2="332" y2="104" stroke="var(--accent)"/>
+        </g>
+        <text x="196" y="119" font-size="10" font-weight="700" fill="var(--mod)" text-anchor="middle">LONG</text>
+        <text x="299" y="119" font-size="10" font-weight="700" fill="var(--accent)" text-anchor="middle">SHORT</text>
+        <text x="266" y="26" font-size="10.5" font-weight="700" fill="var(--mild)" text-anchor="middle">rsR′（RBBB型）1拍だけ</text>
+        <line x1="266" y1="30" x2="266" y2="34" stroke="var(--mild)" stroke-width="1.2"/>
+        <text x="450" y="119" font-size="10" fill="var(--ink-3)">QTは正常・P波なし・不整な基線</text>
+
+        <!-- row 2: SLS -->
+        <rect x="8" y="140" width="644" height="118" rx="9" fill="var(--sev-soft)" fill-opacity=".45" stroke="var(--sev)" stroke-opacity=".35"/>
+        <text x="20" y="160" font-size="11.5" font-weight="700" fill="var(--sev)">SLS配列（pause依存性TdP）― 致死的</text>
+        <polyline fill="none" stroke="var(--sev)" stroke-width="1.8" stroke-linejoin="round"
+          points="20,208 34,208 40,201 46,208 52,208 54,214 60,166 66,218 70,208 80,208 88,198 100,208 116,208
+                  120,208 126,176 134,174 142,236 150,228 158,208 164,208 172,220 182,208 196,208
+                  250,208 254,208 260,201 266,208 268,208 270,214 274,164 278,220 282,208 300,208 312,208 322,192 334,193 348,208
+                  352,208 356,170 364,168 372,242 380,220 386,208
+                  392,208 400,180 410,236 420,174 430,240 440,182 450,234 460,192 470,228 480,198 490,222 500,186
+                  512,238 522,176 532,240 542,184 552,232 562,194 572,226 582,200 592,220 602,188 614,236 626,180 640,208"/>
+        <g stroke-width="2.2" stroke-linecap="round">
+          <line x1="60" y1="234" x2="130" y2="234" stroke="var(--accent)"/>
+          <line x1="130" y1="234" x2="274" y2="234" stroke="var(--mod)"/>
+          <line x1="274" y1="234" x2="360" y2="234" stroke="var(--sev)"/>
+        </g>
+        <text x="95" y="249" font-size="10" font-weight="700" fill="var(--accent)" text-anchor="middle">SHORT</text>
+        <text x="202" y="249" font-size="10" font-weight="700" fill="var(--mod)" text-anchor="middle">LONG</text>
+        <text x="317" y="249" font-size="10" font-weight="700" fill="var(--sev)" text-anchor="middle">SHORT</text>
+        <text x="330" y="185" font-size="10.5" font-weight="700" fill="var(--mod)" text-anchor="middle">QT延長</text>
+        <text x="520" y="160" font-size="10.5" font-weight="700" fill="var(--sev)" text-anchor="middle">TdP へ移行</text>
+
+        <text x="330" y="280" font-size="10.5" fill="var(--ink-2)" text-anchor="middle" font-weight="700">
+          R-R配列は同型。分けるのは ①QRS形態（RBBB型 vs PVC）②先行QT ③基礎調律（AF か 洞）
+        </text>
+      </svg>
+      <p class="fig-cap">
+        Ashman現象の機序は<b>「long cycle後に不応期（特に右脚）が生理的に延長し、続くshort cycleが変行伝導する」だけ</b>。EAD・TDR・QT延長とは無関係で、原著は Gouaux &amp; Ashman 1947（AF下の変行伝導が心室性頻拍に見える、という報告）。
+        <b>幅広いQRSがwide QRS tachycardiaに見えてVTと誤診される</b>のが救急での実害。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>鑑別点</th><th>Ashman現象</th><th>SLS配列（pause依存性TdP）</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>pause後に出るもの</td>
+              <td><b>変行伝導した順行性QRS</b>（先行P/f波あり、AVを通っている）</td>
+              <td><b>心室期外収縮</b>（先行P波なし、triggered activity由来）</td>
+            </tr>
+            <tr>
+              <td>QRS形態</td>
+              <td>古典的に<b>RBBB型（rsR′、V1）</b>。右脚の不応期が最長だから</td>
+              <td>PVC形態（LBBB型もRBBB型もあり）。<b>形態は一定しない</b></td>
+            </tr>
+            <tr>
+              <td>先行するQT/QTc</td>
+              <td><b>正常</b></td>
+              <td><b>延長</b>（Kay 1983で平均QTc 0.59秒）。pause後にさらに延びる</td>
+            </tr>
+            <tr>
+              <td>基礎調律</td>
+              <td><b>心房細動が典型</b>（不整なR-Rが long-short を自動生成する）</td>
+              <td>洞調律＋PVC、AVブロック、洞停止、除細動後</td>
+            </tr>
+            <tr>
+              <td>持続性</td>
+              <td><b>1〜数拍で自然に戻る</b>。連続しても血行動態は不変</td>
+              <td><b>多形性VT/TdPへ発展</b>し、VFに移行しうる</td>
+            </tr>
+            <tr>
+              <td>背景の代謝・薬剤</td>
+              <td>不問</td>
+              <td><b>低K・低Mg・QT延長薬・徐脈</b>が高率（Kay 1983で20/32例が投薬前から保有）</td>
+            </tr>
+            <tr>
+              <td>対応</td>
+              <td><span class="pill go">経過観察</span> 何もしない。VTと誤診して抗不整脈薬を打たないこと</td>
+              <td><span class="pill stop">直ちに介入</span> Mg・ペーシング・原因薬中止（→ §5）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>AFではlong-shortが常に供給されている。</strong>だからAF＋QT延長薬（ソタロール、アミオダロン導入期、抗菌薬・制吐薬）＋低Kという組み合わせは、<strong>Ashmanの温床とpause依存性TdPの温床を同時に持っている</strong>。この状況でwide QRSを見たら、まず先行QTを測る。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>どこで遭遇するか <span class="sec-note">機序が同じもの／似て見えて違うもの</span></h2>
+
+    <div class="ladder">
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">典型</span><span class="sev-name">後天性LQTS<br>LQT2型</span></div>
+        <div class="rung-body">
+          <b>SLSが主たる開始様式</b>。薬剤性（クラスIA/III、マクロライド、FQ、アゾール、制吐薬、抗精神病薬、メサドン）＋<b>低K・低Mg</b>＋<b>徐脈</b>の重畳で発症する。
+          Kay 1983では<b>31/32例に基礎心疾患</b>があり、<b>20/32例（63%）が投薬前からQT延長・低K・低Mgのいずれかを保有</b>していた。＝ <b>薬だけが原因のことはむしろ少ない</b>。
+          <span class="pill care">症例集積 / Level C</span>
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">典型</span><span class="sev-name">先天性LQTS<br>LQT2/3型</span></div>
+        <div class="rung-body">
+          先天性でも<b>SLS型が65%（72/111エピソード）</b>で最多（Noda 2004）。洞頻脈漸増中の発症25%、脱分極変化型10%。
+          <b>SLS型のTdP周期長 295 ms は洞頻脈型の256 msより長い（P&lt;0.05）</b>。Viskin 1996も同様の所見。
+          <span class="pill mid">観察研究 / Level B</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">併存</span><span class="sev-name">急性心筋梗塞</span></div>
+        <div class="rung-body">
+          AMI急性期の<b>徐脈・AVブロック合併例</b>で pause依存性TdP が起こる。「後天性LQTSの亜型」として症例集積が報告されている。
+          虚血自体の再分極異常＋pause供給源（ブロック）＋電解質異常が揃うため。<span class="pill care">症例集積</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">併存</span><span class="sev-name">ICD植込み例</span></div>
+        <div class="rung-body">
+          rapid AFの停止後pause、ペーシング停止後pause、PVCの代償性休止が<b>VT/VFの起点</b>になる。ICD遠隔記録の解析で示されている。
+          <b>徐脈ペーシングの下限レートを上げることがそのまま予防になる</b>ため、プログラミングの見直しが介入手段になる。<span class="pill mid">観察研究</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">要注意</span><span class="sev-name">Brugada症候群</span></div>
+        <div class="rung-body">
+          ICD 19例の自然発生VF 46エピソード（7例＝37%に発生）の多くが<b>SLS配列を伴う短結合PVCで開始</b>（Kakishita 2000, JACC 36:1646）。
+          <b>ただし機序は別物</b>。LQT2型のTDR増大／pause依存EADではなく<b>epicardial phase 2 reentry</b>が主体で、<b>短結合PVCそのものが本質、SLSは必ずしも普遍的でない</b>。
+          → だから<b>治療も別</b>（イソプロテレノール／キニジンで、Mgやovedrive pacingの位置づけはLQT2型とは異なる）。<span class="pill mid">観察研究</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">要注意</span><span class="sev-name">早期再分極症候群<br>特発性VF</span></div>
+        <div class="rung-body">
+          VFを誘発する短結合PVCの<b>結合期は平均 326±41 ms（範囲260〜400 ms）</b>（Haissaguerre 2008, NEJM）。<b>post-extrasystolic pause後にJ波が増強</b>する症例が報告されている。
+          機序は phase 2 reentry。<b>SLSという心電図所見は共有するが、病態は非LQT系</b>という整理が要る。<span class="pill mid">症例対照研究</span>
+        </div>
+      </div>
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">良性</span><span class="sev-name">Ashman現象</span></div>
+        <div class="rung-body">
+          R-R上はSLSだが<b>機序も予後もまったく別（→ §3）</b>。介入不要。<b>これをVTと読んで抗不整脈薬を投与することが唯一の害</b>。<span class="pill go">介入不要</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>急性期治療 ― "long" を消しにいく <span class="sec-note">薬でEADを抑え、ペーシングでpauseを断つ</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>介入</th><th>具体</th><th>ねらい・根拠</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>① 原因薬剤の即時中止</td>
+              <td>QT延長薬の全面棚卸し。<b>併用による相互作用（CYP3A4阻害でのQT延長薬濃度上昇）も含めて</b></td>
+              <td>大前提。これをやらずに薬を足しても再発する。<span class="pill mid">ガイドラインClass I相当</span></td>
+            </tr>
+            <tr>
+              <td>② 電解質補正</td>
+              <td><span class="dose">K 4.5〜5.0 mmol/L</span> を目標に補正（低め正常域で満足しない）。<b>Mgも同時に</b></td>
+              <td>低Kは IKr を直接抑制する。「正常範囲内」では不足。<span class="pill care">専門家意見 / 生理学的根拠</span></td>
+            </tr>
+            <tr>
+              <td>③ MgSO₄ 静注</td>
+              <td><span class="dose">2 g ボルス静注</span>。効果不十分なら<b>5〜15分後に2回目</b>。以後 <span class="dose">3〜20 mg/分</span> 持続（QTc&lt;0.50秒まで、7〜48時間）</td>
+              <td><b>9/12例が1〜5分で消失、残る3例も2回目で消失</b>（Tzivoni 1988）。<b>血中Mgが正常でも効く</b> ＝ 欠乏の是正ではなくEAD抑制の薬理作用。<span class="pill care">症例集積 / Level C</span></td>
+            </tr>
+            <tr>
+              <td>④ 一時ペーシング</td>
+              <td><b>心房ペーシング／overdrive、目標 <span class="dose">90〜110/分</span></b>。経静脈が入るまでは経皮ペーシング</td>
+              <td><b>これが根本治療</b>。心拍数を上げてQTを短縮し、かつ<b>pauseそのものを発生させない</b>＝配列が成立しなくなる。Kay 1983で「唯一一貫して有効」。<span class="pill mid">Class IIa相当</span></td>
+            </tr>
+            <tr>
+              <td>⑤ イソプロテレノール</td>
+              <td><span class="dose">1〜4 µg/分</span> 持続、<b>目標心拍数 〜100/分</b></td>
+              <td>ペーシングが入るまでの化学的ペーシング。<b>後天性・徐脈依存性に限る。先天性LQT1には禁忌相当（→ §6）</b>。<span class="pill care">症例集積</span></td>
+            </tr>
+            <tr>
+              <td>⑥ 血行動態が崩れたら</td>
+              <td><b>非同期の電気的除細動</b></td>
+              <td>いったん成立したTdPはreentryなので薬では止まらない。<b>持続TdP／VF移行は即除細動</b>。<span class="pill mid">Class I</span></td>
+            </tr>
+            <tr>
+              <td>やらないこと</td>
+              <td><b>クラスIA / III抗不整脈薬</b>（プロカインアミド、ジソピラミド、ソタロール、ニフェカラント、アミオダロン導入）</td>
+              <td>QTをさらに延ばして悪化させる。<b>多形性VTを見て反射的に抗不整脈薬に手が伸びるのが最大の落とし穴</b>。<span class="pill stop">禁忌</span></td>
+            </tr>
+            <tr>
+              <td>やらないこと</td>
+              <td><b>β遮断薬</b>（この病型では）</td>
+              <td>徐脈を悪化させ pause を増やす。<b>SLSがあるなら方向は逆</b>。ただし LQT1型なら第一選択（→ §6）。<span class="pill stop">病型を確認</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>「Mgを打ったのに再発する」は失敗ではなく想定内。</strong>MgはEADを抑えるがpauseの供給源（AVブロック・徐脈・PVC）は残る。<strong>再発するなら薬を足すのではなくペーシングに移る</strong>のが正しい次の一手。Kay 1983がペーシングを唯一一貫して有効と結論したのはこの構造ゆえ。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>治療が正反対に分岐する ― pause依存 vs 交感神経依存 <span class="sec-note">SLSの有無で決める</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図④　開始様式から治療を決める</p>
+      <svg viewBox="0 0 660 320" role="img" aria-label="TdPの開始様式による治療分岐図。short-long-short配列があればpause依存性で、ペーシングとイソプロテレノールとマグネシウムを用いる。配列がなく運動や情動で発症すれば交感神経依存性のLQT1型で、ベータ遮断薬が第一選択でイソプロテレノールは禁忌相当">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,1 L9,5 L0,9 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+
+        <rect x="200" y="10" width="260" height="46" rx="9" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="330" y="30" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">TdP／多形性VT を見た</text>
+        <text x="330" y="47" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">直前3拍のR-Rを遡って見る</text>
+
+        <path d="M290,58 L290,80 L120,80 L120,100" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ar2)"/>
+        <path d="M370,58 L370,80 L540,80 L540,100" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#ar2)"/>
+
+        <!-- left: pause dependent -->
+        <rect x="14" y="104" width="212" height="196" rx="10" fill="var(--sev-soft)" fill-opacity=".5" stroke="var(--sev)" stroke-opacity=".4"/>
+        <text x="120" y="126" font-size="11.5" font-weight="700" fill="var(--sev)" text-anchor="middle">SLS配列 あり</text>
+        <text x="120" y="143" font-size="10" fill="var(--ink-2)" text-anchor="middle">pause依存性</text>
+        <text x="120" y="158" font-size="10" fill="var(--ink-2)" text-anchor="middle">後天性LQTS・LQT2型・徐脈</text>
+        <line x1="34" y1="168" x2="206" y2="168" stroke="var(--sev)" stroke-opacity=".3"/>
+        <text x="34" y="187" font-size="10.5" font-weight="700" fill="var(--ink)">やる</text>
+        <text x="34" y="204" font-size="10" fill="var(--ink-2)">・MgSO₄ 2 g 静注</text>
+        <text x="34" y="220" font-size="10" fill="var(--ink-2)">・ペーシング 90〜110/分</text>
+        <text x="34" y="236" font-size="10" fill="var(--ink-2)">・イソプロテレノール 1〜4 µg/分</text>
+        <text x="34" y="252" font-size="10" fill="var(--ink-2)">・K 4.5〜5.0、原因薬中止</text>
+        <text x="34" y="273" font-size="10.5" font-weight="700" fill="var(--sev)">やらない</text>
+        <text x="34" y="290" font-size="10" fill="var(--ink-2)">・β遮断薬（pauseを増やす）</text>
+
+        <!-- right: adrenergic dependent -->
+        <rect x="434" y="104" width="212" height="196" rx="10" fill="var(--accent-soft)" fill-opacity=".5" stroke="var(--accent)" stroke-opacity=".4"/>
+        <text x="540" y="126" font-size="11.5" font-weight="700" fill="var(--accent)" text-anchor="middle">SLS配列 なし</text>
+        <text x="540" y="143" font-size="10" fill="var(--ink-2)" text-anchor="middle">交感神経依存性</text>
+        <text x="540" y="158" font-size="10" fill="var(--ink-2)" text-anchor="middle">先天性LQT1型・運動/情動で発症</text>
+        <line x1="454" y1="168" x2="626" y2="168" stroke="var(--accent)" stroke-opacity=".3"/>
+        <text x="454" y="187" font-size="10.5" font-weight="700" fill="var(--ink)">やる</text>
+        <text x="454" y="204" font-size="10" fill="var(--ink-2)">・β遮断薬（プロプラノロール等）</text>
+        <text x="454" y="220" font-size="10" fill="var(--ink-2)">・運動制限・トリガー回避</text>
+        <text x="454" y="236" font-size="10" fill="var(--ink-2)">・MgSO₄・電解質補正は共通で可</text>
+        <text x="454" y="252" font-size="10" fill="var(--ink-2)">・左心臓交感神経節切除／ICDを検討</text>
+        <text x="454" y="273" font-size="10.5" font-weight="700" fill="var(--sev)">やらない</text>
+        <text x="454" y="290" font-size="10" fill="var(--ink-2)">・イソプロテレノール（増悪させる）</text>
+
+        <!-- center note -->
+        <rect x="240" y="150" width="180" height="112" rx="9" fill="var(--surface)" stroke="var(--line-strong)" stroke-dasharray="4 3"/>
+        <text x="330" y="171" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">なぜ逆になるか</text>
+        <text x="330" y="192" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">IKr低下（LQT2）では</text>
+        <text x="330" y="206" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">pauseがTDRを開く</text>
+        <text x="330" y="226" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">IKs低下（LQT1）では</text>
+        <text x="330" y="240" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">β刺激がTDRを開く</text>
+        <text x="330" y="256" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">（Shimizu &amp; Antzelevitch）</text>
+      </svg>
+      <p class="fig-cap">
+        <b>臨床データでの裏付け</b>（Schwartz 2001, Circulation, n=670）：致死的不整脈のトリガーは
+        <b>LQT1（n=371）で運動中 62% / 安静・睡眠中 3%</b>、<b>LQT2（n=234）で 13% / 29%</b>、<b>LQT3（n=65）で 13% / 39%</b>。
+        LQT1は心拍数上昇そのものが引き金で<b>pauseを必要としない ＝ SLSを伴わない</b>。
+        細胞レベルでは<b>IKs低下（LQT1）モデルでβ作動薬がTDRを最も増大させ、LQT3では逆にβ作動薬がTDRを減少</b>させる（Shimizu &amp; Antzelevitch, JACC 2000;35:778）。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th></th><th>pause依存性（後天性・LQT2型）</th><th>交感神経依存性（LQT1型）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>開始様式</td><td><b>SLS配列</b>（pause＋短結合PVC）</td><td><b>SLSなし</b>。運動・情動中の心拍数上昇そのもの</td></tr>
+            <tr><td>発症状況</td><td>安静／睡眠中が多い（LQT2で29%、LQT3で39%）</td><td><b>運動中62%</b>、安静睡眠中はわずか3%</td></tr>
+            <tr><td>典型トリガー</td><td>薬剤、低K/低Mg、AVブロック、除細動後pause</td><td><b>水泳、運動、驚愕、情動</b></td></tr>
+            <tr><td>イソプロテレノール</td><td><span class="pill go">有効</span> pauseを消す目的で使う</td><td><span class="pill stop">禁忌相当</span> TDRを増大させ増悪</td></tr>
+            <tr><td>β遮断薬</td><td><span class="pill stop">方向が逆</span> 徐脈でpauseが増える</td><td><span class="pill go">第一選択</span></td></tr>
+            <tr><td>ペーシング</td><td><span class="pill go">根本治療</span> 90〜110/分</td><td>単独では不十分（心拍数上昇が引き金なので）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>遺伝子型が分からない救急の現場では、心電図の開始様式が代わりの指標になる。</strong>SLSがあるなら pause依存として扱ってよく、イソプロテレノールを使える。<strong>若年者の運動中の失神／家族歴／SLSを伴わないTdP</strong>なら先天性LQT1を疑い、イソプロテレノールに手を出さない。</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>1枚でのまとめ <span class="sec-note">ベッドサイドでの動き</span></h2>
+    <div class="card">
+      <div class="pad">
+        <div class="flow">
+          <div class="q">多形性VT／TdP を見た</div>
+          <div class="a"><span class="yn yes">する</span><div><b>直前3拍のR-Rを遡る。</b>long（pause）があればSLS配列＝pause依存。同時に<b>QTc・K・Mg・投薬歴</b>を確認する。</div></div>
+          <div class="a"><span class="yn no">しない</span><div><b>反射的にクラスIA/III抗不整脈薬を打たない。</b>QTをさらに延ばして悪化させる。</div></div>
+          <div class="q">SLS配列がある（pause依存と判断）</div>
+          <div class="a"><span class="yn yes">する</span><div><b>MgSO₄ 2 g 静注</b>（血中Mgが正常でも打つ）→ 不十分なら5〜15分後に2回目 → <b>3〜20 mg/分で持続</b>。並行して<b>原因薬を全部止める</b>、<b>K 4.5〜5.0</b>に補正。</div></div>
+          <div class="q">Mgでも再発する</div>
+          <div class="a"><span class="yn yes">する</span><div><b>薬を足さずペーシングに移る。心房／overdrive、目標90〜110/分。</b>経静脈が入るまでは<b>イソプロテレノール1〜4 µg/分（目標HR 〜100）</b>または経皮ペーシングでつなぐ。</div></div>
+          <div class="q">若年、運動中の失神、家族歴、SLSを伴わない</div>
+          <div class="a"><span class="yn no">しない</span><div><b>イソプロテレノールを使わない。</b>先天性LQT1（交感神経依存性）を疑う病型で、増悪させる。<b>β遮断薬の方向</b>で、専門医にコンサルト。</div></div>
+          <div class="q">AF患者でwide QRSが1〜数拍出た</div>
+          <div class="a"><span class="yn yes">する</span><div><b>まず先行QTを測る。</b>QT正常＋RBBB型＋long-short なら<b>Ashman現象で介入不要</b>。QT延長があればpause依存性TdPの前段階として扱う。</div></div>
+          <div class="q">血行動態が崩れた／VFに移行した</div>
+          <div class="a"><span class="yn yes">する</span><div><b>非同期の電気的除細動。</b>成立したTdPはreentryなので薬では止まらない。除細動後も<b>pauseの供給源（AVブロック・徐脈）を潰す</b>までは再発する。</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>RCTは1本も存在しない。</b>この領域の「標準治療」は全て1980年代の症例集積の上に載っている ― MgSO₄は<b>n=12</b>（Tzivoni 1988）、ペーシングは<b>n=32</b>（Kay 1983）。イソプロテレノールに至っては症例集積レベル。機序側（EAD・TDR・reentry）は動物・ウェッジ標本実験で強固に確立しているが、<b>「機序が確立している」ことと「臨床アウトカムが検証されている」ことは別</b>である点を、教育・発表で述べる際は分けて扱うこと。</p>
+    <p><b>主要な出典</b>：Kay GN et al. J Am Coll Cardiol 1983;2:806-817（PMID 6630761、SLSの原著、n=32/44エピソード）／Noda T, Shimizu W et al. Eur Heart J 2004;25:2149-2154（PMID 15571831、先天性LQTS 111エピソードの開始様式分類）／Viskin S et al. J Am Coll Cardiol 1996;28:1262-1268（PMID 8890825）／Cranefield PF, Aronson RS. Pacing Clin Electrophysiol 1988;11:670-678（PMID 2456546、SLSとEADの理論的統合）／El-Sherif N et al. Circulation 1997;96:4392-4399（PMID 9416909、256点マッピング）／Antzelevitch C. Heart Rhythm 2005;2(2 Suppl):S9-S15（PMID 16253930、TDR）／Tzivoni D et al. Circulation 1988;77:392-397（PMID 3338130、MgSO₄）／Kakishita M, Kurita T et al. J Am Coll Cardiol 2000;36:1646-1653（Brugada症候群のVF開始様式）／Haissaguerre M et al. N Engl J Med 2008;358:2016-2023（PMID 18463377、早期再分極、結合期326±41 ms）／Schwartz PJ et al. Circulation 2001;103:89-95（PMID 11136691、遺伝子型別トリガー、n=670）／Shimizu W, Antzelevitch C. J Am Coll Cardiol 2000;35:778-786（LQT1/2/3でのβ作動薬・遮断薬の差）／Gouaux JL, Ashman R. Am Heart J 1947（Ashman現象の原著）／2017 AHA/ACC/HRS 室性不整脈・SCDガイドライン（PMID 29084731）。</p>
+    <p><b>未照合の項目（このカード作成時点で一次文献に当たれていないもの）</b>：①<b>2017 AHA/ACC/HRSガイドラインでのMgSO₄・ペーシング・イソプロテレノールの正確なClass of Recommendation / Level of Evidence表記</b> ― 二次資料間で「IIa/B」と「I/C-LD」が併存し、原文Table（Circulation 2018;138:e272-e391 / Heart Rhythm 2018;15:e73-e189）に到達できなかったため、本カードでは「Class I相当／IIa相当」という表記に留めた。<b>学会発表・論文への引用時は原文Tableで再確認が必要</b>。②ESC 2022室性不整脈・SCDガイドラインにおけるpause依存性TdP急性期対応の具体的推奨文（本文未到達）。③Gouaux &amp; Ashman 1947 の全文（複数総説からの孫引き）。④pause長・結合期の「診断的カットオフ」は文献上存在しないため、本カードでも数値カットオフとしては提示していない（Noda 2004の平均値を参考値として記載）。</p>
+    <p><b>意図的に区別して書いたこと</b>：Brugada症候群・早期再分極症候群でのSLS/短結合PVCは<b>心電図所見を共有するだけで機序が異なる</b>（epicardial phase 2 reentry）。したがって §5 の治療（Mg・overdrive pacing）をそのままこれらの疾患に適用してはならない。この点を混ぜている二次資料が多い。</p>
+  </div>
+
+  <footer>
+    Short-Long-Short 配列ポケットカード ／ 作成 2026-08-19<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

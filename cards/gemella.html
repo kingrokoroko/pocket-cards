@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Gemella 菌血症 ― 拾い方・心内膜炎の追い方・治療</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .score { display: flex; flex-direction: column; gap: 8px; }
+  .score-row {
+    display: grid; grid-template-columns: 1fr 46px; gap: 10px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 12px; font-size: .87rem; color: var(--ink-2);
+  }
+  .score-row b { color: var(--ink); }
+  .score-row .pt {
+    text-align: center; font-weight: 700; font-size: .8rem; color: var(--accent);
+    background: var(--accent-soft); border-radius: 999px; padding: 2px 0;
+  }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>Gemella 菌血症 ― 拾い方・心内膜炎の追い方・治療</h1>
+    <div class="subtitle"><i>Gemella morbillorum / haemolysans / sanguinis / bergeri</i> ／ 救急・集中治療 ／ 作成 2026-08-19</div>
+  </header>
+
+  <p class="lede">
+    かつて <i>Streptococcus morbillorum</i> と呼ばれた菌で、<strong>臨床上はずっと「viridans group streptococci の仲間」として扱われてきた</strong>。
+    治療も感受性のブレイクポイントも全部そこからの外挿である一方、<strong>2023年に IE の診断基準だけが独立して変わった</strong>。押さえるのは3点。
+    <strong>①グラム染色を信用しない ― グラム陰性桿菌に見えることがある</strong>
+    <strong>②Duke-ISCVID 2023 で typical pathogen になった。旧基準の感覚だと definite を取り逃がす</strong>
+    <strong>③βラクタムは全株効くが、レボフロキサシン耐性が36%ある</strong>
+  </p>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>検査室での落とし穴 <span class="sec-note">同定が付かない fastidious 菌として来る</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">グラム染色が裏切る <span class="tag">最重要</span></p>
+        <ul class="clean">
+          <li>本来は<strong>カタラーゼ陰性・通性嫌気性のグラム陽性球菌</strong>。対・四連・短連鎖で並び、streptococci に似る。</li>
+          <li>ところが<strong>細胞壁が薄く脱色されやすい</strong>ため、培養条件や継代で <b>gram-variable</b>、ときに <b>グラム陰性桿菌様</b>に染まる。</li>
+          <li>La Scola &amp; Raoult の3例では、1株が <b><i>small, fastidious, gram-negative rod</i></b> と初報され <b>Bartonella を疑った精査が走った</b>。標準的なGNR同定系でも同定不能となり、最終的に 16S rRNA で <i>G. morbillorum</i> と確定。残る2例も "gram-variable cocci and coccobacilli"。</li>
+          <li><strong>→ 「発育が悪く、どの同定系にも乗らないGNR様の菌」を見たら、Gemella を鑑別に入れて 16S を回す。</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">どこまで同定できるか</p>
+        <div class="kv">
+          <div><span class="k">生化学</span><span class="v">API 系などの表現型同定は<b>viridans 群との相互誤同定</b>が起こる。属レベルの目安どまり。</span></div>
+          <div><span class="k">MALDI-TOF</span><span class="v">属は取れるが<b>種まで行けないことがある</b>。DB 収載外で「同定不能」と返る株も報告あり。</span></div>
+          <div><span class="k">16S rRNA</span><span class="v">属の確定には有用。ただし <b><i>haemolysans</i> group（<i>G. haemolysans</i> / <i>parahaemolysans</i> / <i>taiwanensis</i>）は相互に 99.77〜100% の相同性</b>で、<b>16S では種を分けられない</b>（種の閾値は 98.65%）。</span></div>
+          <div><span class="k">WGS</span><span class="v">種の確定が臨床的に要るならこれ。現状これが最も識別能が高い。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>血液培養の陽性化までの時間（time to positivity）を報告した一次文献は見つからない。</strong>「発育が遅い」は教科書的記載どまりで、通常の好気・嫌気ボトルで検出されている症例報告から間接的に推し量るしかない。<b>「遅れて生えたから汚染」という判断の根拠にはならない。</b></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>汚染菌として捨てていいか <span class="sec-note">答えは「捨てられない」</span></h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">真の菌血症</div>
+        <div class="num tnum">67.6%</div>
+        <div class="sub">Mayo Clinic コホート 238例中 <b>161例</b>が臨床的に意義ありと判定（Abiotrophia / Granulicatella / Gemella 合計）</div>
+      </div>
+      <div class="stat">
+        <div class="lab">うち Gemella</div>
+        <div class="num tnum">111例</div>
+        <div class="sub">全238例の <b>46.6%</b>。Granulicatella 107例、Abiotrophia 20例</div>
+      </div>
+      <div class="stat">
+        <div class="lab">好中球減少</div>
+        <div class="num tnum">38.5%</div>
+        <div class="sub">62例。<b>この群の IE はゼロ</b>。感染源は消化管</div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　宿主で振り分ける ― 「Gemella が生えたら即 IE」ではない</p>
+      <svg viewBox="0 0 660 268" role="img" aria-label="Gemella血液培養陽性を宿主背景で二分する模式図。好中球減少・化学療法中では消化管由来の一過性菌血症で心内膜炎はゼロ、弁膜症・人工弁・静注薬物使用では心内膜炎を追う">
+        <rect x="230" y="10" width="200" height="40" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="330" y="35" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">血培から Gemella</text>
+
+        <line x1="330" y1="50" x2="330" y2="66" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="150" y1="66" x2="510" y2="66" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="150" y1="66" x2="150" y2="84" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="510" y1="66" x2="510" y2="84" stroke="var(--line-strong)" stroke-width="1.5"/>
+
+        <rect x="24" y="84" width="252" height="72" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+        <text x="150" y="105" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--mild)">好中球減少・化学療法中・粘膜炎</text>
+        <text x="150" y="124" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">消化管由来の一過性菌血症として扱う</text>
+        <text x="150" y="142" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">この群の IE 報告はゼロ（62例）</text>
+
+        <rect x="384" y="84" width="252" height="72" rx="9" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.2"/>
+        <text x="510" y="105" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--sev)">弁膜症・人工弁・先天性心疾患・IVDU</text>
+        <text x="510" y="124" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">IE を積極的に追う。エコーは必須で考える</text>
+        <text x="510" y="142" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">Duke-ISCVID では major criterion</text>
+
+        <line x1="150" y1="156" x2="150" y2="176" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="510" y1="156" x2="510" y2="176" stroke="var(--line-strong)" stroke-width="1.5"/>
+
+        <rect x="24" y="176" width="252" height="52" rx="9" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width="1.2"/>
+        <text x="150" y="196" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">感染源として下部消化管・粘膜炎を精査</text>
+        <text x="150" y="214" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">βラクタムで治療、期間は感染巣次第</text>
+
+        <rect x="384" y="176" width="252" height="52" rx="9" fill="var(--sev-soft)" stroke="var(--sev)" stroke-width="1.2"/>
+        <text x="510" y="196" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">TTE →（陰性でも疑いが残れば）TEE</text>
+        <text x="510" y="214" text-anchor="middle" font-size="11.5" fill="var(--ink-2)">4〜6週の viridans 準拠レジメンへ</text>
+
+        <text x="330" y="252" text-anchor="middle" font-size="11" fill="var(--ink-3)">Mayo Clinic 2011-2020（Abiotrophia/Granulicatella/Gemella 血培陽性 238例）の層別から</text>
+      </svg>
+      <p class="fig-cap"><b>この分岐が実務上いちばん効く。</b>同じ「Gemella 菌血症」でも、好中球減少患者では IE を探しに行く意味が乏しく（62例で IE ゼロ）、弁膜症・人工物のある患者では逆に major criterion として扱う対象になる。<b>菌名ではなく宿主で動きを決める。</b></p>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">汚染を疑う所見（原著本文での定義・妥当性検証は未確認）</p>
+        <ul class="clean">
+          <li>複数ボトルのうち<strong>1本のみ</strong>陽性で、他セットと一致しない。</li>
+          <li><strong>カテーテル採血からのみ</strong>陽性で、末梢血が陰性。</li>
+          <li>臨床像が合わず、<strong>標的抗菌薬なしで悪化しない</strong>。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>2023年に診断基準が変わった <span class="sec-note">ここだけは viridans からの外挿ではない</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">typical microorganism（major criterion）のリスト</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>基準</th><th>Gemella の扱い</th><th>リストの内容</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>modified Duke<br>（Li 2000 / AHA 2015）</td>
+                <td><span class="pill stop">非収載</span></td>
+                <td>viridans streptococci、<i>S. gallolyticus (bovis)</i>、HACEK 群、<i>S. aureus</i>、市中発症 enterococci（他に感染巣なし）。<b>Gemella の名前はない</b> → minor にしかできず、エコー所見（major）への依存度が高かった。</td>
+              </tr>
+              <tr>
+                <td>Duke-ISCVID 2023<br>（Clin Infect Dis 2023;77:518-526）</td>
+                <td><span class="pill go">typical に収載</span></td>
+                <td><i>S. aureus</i>、<i>S. lugdunensis</i>、<i>E. faecalis</i>、<b>全 Streptococcus 属</b>（<i>S. pneumoniae</i>・<i>S. pyogenes</i> を除く）、<i>Granulicatella</i>、<i>Abiotrophia</i>、<b><i>Gemella</i></b>、HACEK 群。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <p class="mini-h">模式図②　同じ29症例が、基準を変えるだけで判定が変わる</p>
+      <svg viewBox="0 0 660 232" role="img" aria-label="スウェーデン感染性心内膜炎レジストリのGemella 29例で、modified Duke基準ではdefinite 13例45パーセントだったものがDuke-ISCVID 2023基準では21例72パーセントに増えることを示す棒グラフ">
+        <text x="20" y="24" font-size="12" font-weight="700" fill="var(--ink-2)">definite IE と判定される割合（スウェーデン IE レジストリ・Gemella 29例）</text>
+
+        <text x="20" y="70" font-size="12" fill="var(--ink-2)">modified Duke</text>
+        <rect x="150" y="54" width="440" height="26" rx="5" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1"/>
+        <rect x="150" y="54" width="198" height="26" rx="5" fill="var(--mod)"/>
+        <text x="249" y="72" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">45%（13/29）</text>
+        <text x="469" y="72" text-anchor="middle" font-size="11" fill="var(--ink-3)">possible / rejected へ</text>
+
+        <text x="20" y="128" font-size="12" fill="var(--ink-2)">Duke-ISCVID 2023</text>
+        <rect x="150" y="112" width="440" height="26" rx="5" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1"/>
+        <rect x="150" y="112" width="317" height="26" rx="5" fill="var(--mild)"/>
+        <text x="308" y="130" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">72%（21/29）</text>
+
+        <line x1="348" y1="84" x2="348" y2="108" stroke="var(--line-strong)" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <line x1="467" y1="84" x2="467" y2="108" stroke="var(--line-strong)" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <path d="M352 96 L463 96" stroke="var(--accent)" stroke-width="1.6"/>
+        <path d="M463 96 l-7 -4 v8 z" fill="var(--accent)"/>
+        <text x="408" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="var(--accent)">+8例</text>
+
+        <text x="20" y="176" font-size="11.5" fill="var(--ink-3)">同じ患者・同じ所見。<tspan font-weight="700" fill="var(--ink-2)">変わったのは基準だけ</tspan>で、血培陽性がそのまま major criterion 1点になる。</text>
+        <text x="20" y="198" font-size="11.5" fill="var(--ink-3)">旧基準のまま「血培は minor」と読むと、<tspan font-weight="700" fill="var(--ink-2)">definite に届く症例が possible で止まる</tspan>。</text>
+        <text x="20" y="220" font-size="11.5" fill="var(--ink-3)">Gemella IE は全 IE 7,677例中 29例（0.4%）と稀。<tspan font-weight="700" fill="var(--ink-2)">稀だからこそ基準変更が知られにくい。</tspan></text>
+      </svg>
+      <p class="fig-cap">Popova A, Snygg-Martin U, Rasmussen M. <i>Infect Dis (Lond)</i> 2025;57:428-432（スウェーデン IE レジストリ SRIE）。<b>Gemella IE の存在そのものより、この判定シフトのほうが日常診療への影響が大きい。</b></p>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">Gemella IE の臨床像（レジストリ n=29／単施設 n=13）</p>
+        <div class="kv">
+          <div><span class="k">菌種</span><span class="v">レジストリでは <b><i>G. morbillorum</i> 47%・<i>G. bergeri</i> 27%</b>。症例報告の集積（52例）では <i>G. morbillorum</i> 46.3%・<i>G. haemolysans</i> 25.9%・<i>G. sanguinis</i> 13.0%。</span></div>
+          <div><span class="k">背景</span><span class="v">年齢中央値 <b>70歳</b>、女性40%、<b>自己弁 90%</b>。単施設集積では既存弁膜症54%・先天性心疾患46%が素因、直近3か月の歯科処置3例、IVDU 2例。</span></div>
+          <div><span class="k">罹患弁</span><span class="v">僧帽弁・大動脈弁がほぼ同率（各43%前後）、二弁膜 18.5%。単施設13例は<b>全例が左心系</b>。</span></div>
+          <div><span class="k">診断</span><span class="v">単施設13例では血培陽性69%、<b>31% は摘出弁の 16S rRNA PCR のみで診断</b>（弁培養陽性は0例）。<b>血培陰性 IE の原因菌として想起する価値がある。</b></span></div>
+          <div><span class="k">転帰</span><span class="v">レジストリで<b>手術率33%・死亡率3%（1例）</b>。単施設13例は手術率100%（選択バイアス）・<b>死亡率0%</b>、追跡中央値2.2年で再発なし。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">?</span>
+      <div><strong>「Gemella IE は viridans より侵襲性が高い」は根拠が薄い。</strong>両者を直接比較したコホート研究は見つからない。この通説の出所は症例報告の蓄積で、<b>重症例ほど論文になる出版バイアス</b>がかかっている。最も質の高いレジストリ（n=29）の結論はむしろ「非β溶血性連鎖球菌による IE と臨床像が類似し、予後は比較的良好」。<b>劇症型として身構える理由はない。</b></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>心エコーをどこまでやるか <span class="sec-note">明文の強い推奨はない。だが実務は決まる</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <ul class="clean">
+          <li><strong>「Gemella 菌血症を検出したら必ずエコー」という明文規定はガイドライン原文に見当たらない。</strong>AHA 2015 の「IE を疑う全例に速やかに TTE」は<b>「疑う臨床像がある」が前提</b>で、そもそも当時 Gemella は typical pathogen ですらなかった。</li>
+          <li>ただし <strong>2023年以降は typical pathogen である</strong>以上、<b>他に明確な感染巣がなければエコーを行う</b>のが論理的帰結。これはガイドラインの明文ではなく<b>基準変更からの推論</b>である点は区別しておく。</li>
+          <li>現実の実施率は低い。<strong>Mayo コホートで、臨床的に意義ありと判定された161例のうちエコー施行は88例（54.7%）</strong>にとどまる。<b>半分近くが評価されないまま終わっている。</b></li>
+          <li><strong>→ 実務上の落としどころ</strong>：好中球減少で消化管由来が明らかなら省略しうる。<b>弁膜症・人工弁・先天性心疾患・IVDU・持続菌血症・塞栓症状のいずれかがあれば TTE、陰性でも疑いが残れば TEE。</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>感受性 <span class="sec-note">βラクタムは効く。キノロンは効かないことがある</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">58株（臨床分離52＋タイプ株6）の MIC 分布 <span class="tag">Antibiotics 2023</span></p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>薬剤</th><th>MIC50</th><th>MIC90</th><th>耐性率</th><th>使い方</th></tr></thead>
+            <tbody>
+              <tr><td>ペニシリンG</td><td class="dose">≤0.06</td><td class="dose">≤0.06</td><td><span class="pill go">0%</span></td><td>第一選択。MIC ≤0.12 なら単剤4週で完結する。</td></tr>
+              <tr><td>セフトリアキソン</td><td class="dose">≤0.06</td><td class="dose">≤0.06</td><td><span class="pill go">0%</span></td><td>外来静注に切り替えやすく、実務上はこちらが多い。</td></tr>
+              <tr><td>バンコマイシン</td><td class="dose">0.5</td><td class="dose">0.5</td><td><span class="pill go">0%</span></td><td>βラクタムアレルギー時の代替。第一選択にはしない。</td></tr>
+              <tr><td>ゲンタマイシン</td><td class="dose">2</td><td class="dose">8</td><td><span class="pill mid">―</span></td><td>単剤では使わない。相対耐性株・人工弁で最初の2週の併用に。</td></tr>
+              <tr><td>クリンダマイシン</td><td class="dose">≤0.25</td><td class="dose">&gt;2</td><td><span class="pill care">12.1%</span></td><td>二峰性。感受性判明前に頼らない。</td></tr>
+              <tr><td>レボフロキサシン</td><td class="dose">0.5</td><td class="dose">&gt;128</td><td><span class="pill stop">36.2%</span></td><td><b>エンピリックに当てると外す。</b>MIC90 が振り切れている＝耐性株は完全に耐性。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>レボフロキサシンの MIC50 0.5 と MIC90 &gt;128 の乖離が意味するもの。</strong>これは「やや効きにくい」ではなく<b>二峰性分布</b>で、感受性株は十分効き、耐性株には全く効かない。<b>菌種によっても偏り</b>があり（<i>G. morbillorum</i> では 9.1% と報告される一方、他菌種でより高率）。<b>口腔内常在菌カバーのつもりでレスピラトリーキノロンを選んでいると、3株に1株を外す。</b></div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">ブレイクポイントは自前のものではない</p>
+        <ul class="clean">
+          <li><strong>CLSI M45（fastidious 菌）に <i>Gemella</i> の項目は存在する</strong>が、その解釈基準の中身は <b>M100 の viridans group streptococci 基準の準用</b>。名目上は専用項目、実体は外挿。</li>
+          <li><strong>EUCAST に <i>Gemella</i> 固有のブレイクポイントは見当たらない。</strong></li>
+          <li><strong>→ 報告された S/I/R は「viridans として読んだ結果」</strong>であることを意識して解釈する。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>治療 <span class="sec-note">すべて viridans group streptococci IE からの外挿</span></h2>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong><i>Gemella</i> 特異的なレジメン推奨も RCT も存在しない。</strong>以下は AHA 2015（Circulation 2015;132:1435-1486）の viridans streptococci IE レジメンをそのまま当てたもの。<b>「ガイドラインに書いてある」ではなく「外挿している」と理解して使う。</b></div>
+    </div>
+
+    <div class="ladder" style="margin-top:12px">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">自己弁</span><span class="sev-name">感性</span></div>
+        <div class="rung-body"><b>ペニシリン MIC ≤0.12 µg/mL</b>　→　ペニシリンG <span class="dose">1,200〜1,800万単位/日</span>（持続 or 分割）<b>単剤 4週</b>、またはセフトリアキソン <span class="dose">2 g/日</span> 4週。非合併例に限り <b>+GM 3 mg/kg/日 の2週間短縮法</b>も選択肢。</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">自己弁</span><span class="sev-name">相対耐性</span></div>
+        <div class="rung-body"><b>MIC 0.12〜0.5 µg/mL</b>　→　ペニシリンG <span class="dose">1,800万単位/日 4週</span>　＋　<b>ゲンタマイシン 最初の2週のみ併用</b>。</div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">人工弁</span><span class="sev-name">全例</span></div>
+        <div class="rung-body">ペニシリン（±セフトリアキソン）<b>6週</b>　＋　<b>ゲンタマイシン 最初の2週</b>。</div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">代替</span><span class="sev-name">βL アレルギー</span></div>
+        <div class="rung-body">バンコマイシン <b>自己弁4週／人工弁6週</b>。<b>キノロンで代替しない</b>（耐性36%）。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <p class="mini-h">IE を伴わない菌血症単独の期間</p>
+        <ul class="clean">
+          <li><strong>明文のガイドライン推奨は存在しない。</strong>「7〜14日」といった数字も <i>Gemella</i> に特化した根拠はない。</li>
+          <li>実務は<strong>感染巣とデバイスの有無で決める</strong>。除去可能な感染源（歯性・カテーテル・膿瘍ドレナージ後）で、<b>フォロー血培が陰転し IE が否定できていれば短期で足りる</b>という一般原則を当てるほかない。</li>
+          <li><strong>→ 期間を決める前に、まず IE を否定したかを確認する。</strong>ここが未評価のまま短期で切ると再燃する。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>侵入門戸 <span class="sec-note">口から入るか、腸から入るか</span></h2>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">口腔（最頻）</p>
+          <ul class="clean">
+            <li><strong>歯周病・不良な口腔衛生・歯科処置</strong>が IE 症例の共通背景として繰り返し報告される。</li>
+            <li>口腔内でも定着部位が種で分かれる：<b><i>G. morbillorum</i> は歯肉縁上/縁下プラーク</b>、<i>G. haemolysans</i> は頬粘膜・角化歯肉、<i>G. sanguinis</i> は舌背・咽頭・扁桃。</li>
+            <li><strong>→ 菌血症を見たら口腔内を実際に見る。</strong>歯科コンサルトの閾値を下げる。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="pad">
+          <p class="mini-h">消化管</p>
+          <ul class="clean">
+            <li>好中球減少・化学療法後の<strong>粘膜炎</strong>、消化管穿孔、腸間膜静脈血栓性静脈炎などからの報告がある。</li>
+            <li>Mayo コホートで<strong>好中球減少群の感染源は消化管</strong>とされ、この群に IE はゼロ。</li>
+            <li><strong>→ 好中球減少患者では IE を追うより、粘膜炎・腸管病変を探すほうが当たる。</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <p class="mini-h">大腸腫瘍との関連 ― <i>S. gallolyticus</i> と同列に扱わない <span class="tag">要注意</span></p>
+        <ul class="clean">
+          <li>香港の菌血症 <strong>13,096例</strong>コホートで、<strong><i>G. morbillorum</i> 菌血症は後の大腸癌診断と関連（HR 15.2, 95%CI 1.54–150, p=0.020）</strong>。<i>Fusobacterium nucleatum</i>（HR 6.89）、<i>Clostridium septicum</i>（HR 17.1）と並んで挙げられている。</li>
+          <li><strong>ただし 95%CI が 1.54〜150 と極端に広い</strong>＝分母となる症例数が極めて少ない。点推定値 15.2 を額面どおり受け取れる精度ではない。</li>
+          <li><strong>大腸内視鏡を必須とするガイドライン推奨は存在しない。</strong>「原因不明例では考慮する」という<b>専門家意見レベル</b>にとどまる。</li>
+          <li><strong>→ ルーチンでは出さない。ただし侵入門戸が同定できない <i>G. morbillorum</i> 菌血症で、貧血・便潜血・体重減少が揃うなら下部消化管精査に進む。</strong></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>IE 以外の病型と予後 <span class="sec-note">数字はあるが母数が小さい</span></h2>
+
+    <div class="grid4">
+      <div class="stat"><div class="lab">IE（レジストリ n=29）</div><div class="num tnum">3%</div><div class="sub">死亡。手術率 <b>33%</b></div></div>
+      <div class="stat"><div class="lab">IE（単施設 n=13）</div><div class="num tnum">0%</div><div class="sub">死亡。<b>全例手術</b>の選択バイアスあり</div></div>
+      <div class="stat"><div class="lab">中枢神経感染 n=22</div><div class="num tnum">9%</div><div class="sub">死亡。後遺症残存 <b>9%</b>、完全回復 <b>77%</b></div></div>
+      <div class="stat"><div class="lab">全 IE に占める割合</div><div class="num tnum">0.4%</div><div class="sub">7,677例中 <b>29例</b>。稀な菌である</div></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <ul class="clean">
+          <li><strong>CNS 感染</strong>（1980〜2022年の22例レビュー）：髄膜炎単独 59%、脳膿瘍/脳炎合併 41%。<b>IE より死亡率が高い（9%）</b>。</li>
+          <li><strong>化膿性関節炎・椎体炎/椎間板炎・肝膿瘍・腹腔内感染</strong>は<b>すべて個別の症例報告どまり</b>で、頻度を示すデータはない。</li>
+          <li><strong>臨床症候群の分布を%で示せる質の高いコホートは存在しない。</strong>「菌血症単独が最多、IE・CNS・骨関節・膿瘍が散発」という定性的把握にとどまる。</li>
+          <li><strong>→ 死亡率の数字を額面どおり引用しない。</strong>母数が二桁、対象の選び方で 0% と 43% の間を動く。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>1枚でのまとめ <span class="sec-note">ベッドサイドでの動き</span></h2>
+    <div class="card">
+      <div class="pad">
+        <div class="flow">
+          <div class="q">同定不能な fastidious 菌／GNR 様と報告された</div>
+          <div class="a"><span class="yn yes">する</span><div><b>Gemella を鑑別に入れて 16S rRNA を依頼</b>する。グラム染色の見た目でグラム陰性菌として扱わない。種の確定が要るなら WGS。</div></div>
+
+          <div class="q">Gemella と確定した ― まず宿主を見る</div>
+          <div class="a"><span class="yn yes">する</span><div><b>弁膜症・人工弁・先天性心疾患・IVDU・持続菌血症・塞栓症状</b>があれば <b>TTE、疑いが残れば TEE</b>。<b>Duke-ISCVID 2023 では血培陽性が major criterion 1点になる</b>ことを忘れない。</div></div>
+          <div class="a"><span class="yn no">しない</span><div><b>好中球減少・化学療法中</b>なら IE を追うより<b>粘膜炎・消化管病変</b>を探す（この群の IE 報告はゼロ）。</div></div>
+
+          <div class="q">抗菌薬を選ぶ</div>
+          <div class="a"><span class="yn yes">する</span><div><b>ペニシリンG または セフトリアキソン</b>。相対耐性（MIC 0.12〜0.5）・人工弁なら <b>GM を最初の2週だけ併用</b>。βラクタムアレルギーは <b>VCM</b>。</div></div>
+          <div class="a"><span class="yn no">しない</span><div><b>レボフロキサシンをエンピリックに当てない（耐性36%）。</b>クリンダマイシンも 12% 耐性。</div></div>
+
+          <div class="q">期間を決める</div>
+          <div class="a"><span class="yn yes">する</span><div>IE なら<b>自己弁4週／人工弁6週</b>（viridans からの外挿）。<b>菌血症単独の期間には推奨がない</b>ので、感染巣の制御とフォロー血培の陰転で決める。</div></div>
+
+          <div class="q">侵入門戸を探す</div>
+          <div class="a"><span class="yn yes">する</span><div>まず<b>口腔内を実際に見る</b>（歯周病・歯科処置歴）。<b>侵入門戸不明の <i>G. morbillorum</i></b> で貧血・便潜血・体重減少があれば下部消化管精査へ。</div></div>
+          <div class="a"><span class="yn no">しない</span><div><b>ルーチンの大腸内視鏡は不要。</b><i>S. gallolyticus</i> と同じ扱いにはしない（HR 15.2 だが 95%CI 1.54–150）。</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>この領域に RCT は一つも存在しない。</b>最上位のエビデンスが後ろ向きレジストリ研究（n=29）と単施設コホート（n=238、3属合計）であり、その下は症例集積と症例報告。<i>Gemella</i> に特化した治療ガイドラインも学会推奨も存在しない。<b>治療レジメン・投与期間・ブレイクポイントはすべて viridans group streptococci からの外挿</b>である。唯一 viridans からの外挿でないのは <b>Duke-ISCVID 2023 の typical pathogen 収載</b>だけ。</p>
+    <p><b>主要な出典</b>：Fowler VG Jr et al. <i>Clin Infect Dis</i> 2023;77:518-526（Duke-ISCVID 2023）／Popova A, Snygg-Martin U, Rasmussen M. <i>Infect Dis (Lond)</i> 2025;57:428-432（SRIE レジストリ n=29）／Chesdachai S et al. <i>J Infect</i> 2022;84:511-517（Mayo Clinic n=238）／Furugaito M et al. <i>Antibiotics (Basel)</i> 2023;12:1538（58株の感受性）／La Scola B, Raoult D. <i>J Clin Microbiol</i> 1998;36:866-871（グラム染色の誤読）／Kwong TNY et al. <i>Gastroenterology</i> 2018;155:383-390（大腸癌 HR 15.2）／Torres-Morales J et al. <i>J Oral Microbiol</i> 2023;15:2225261（口腔内の部位特異性）／Gonzalez GN et al. <i>Cureus</i> 2024;16:e58802（症例報告 52例のレビュー）／Ramanathan A, Gordon SM, Shrestha NK. <i>Open Forum Infect Dis</i> 2019;6(Suppl 2):S103（Cleveland Clinic 13例、<b>学会抄録</b>）／Baddour LM et al. <i>Circulation</i> 2015;132:1435-1486（外挿元の IE レジメン）／CLSI M45。</p>
+    <p><b>未照合の項目（このカード作成時点で fact-check・書誌照合を通していないもの）</b>：本カードの数値は文献調査エージェントの抽出結果であり、<b>原典との突き合わせ（fact-checker）と PMID/DOI の照合（citation-verifier）を実施していない</b>。特に次は要再確認 ―― ①Mayo コホートの各内訳と <i>Gemella</i> 単独のペニシリン非感性率（原著本文未確認）／②Cureus レビュー52例の塞栓率・手術率・死亡率（原著に全体集計値の記載がない）／③ESC 2023 ガイドライン原文での <i>Gemella</i> の記載文言（未確認）／④CLSI M45 の <i>Gemella</i> 項目が viridans 基準の準用であることの原文確認／⑤Cleveland Clinic 13例は<b>査読フルペーパーではなく学会抄録</b>。<b>学会発表・論文への引用時は必ず原典に当たること。</b></p>
+    <p><b>意図的に載せなかったもの</b>：単一施設横断研究で報告された死亡率 43.6%（17/39）は、掲載誌の PubMed 収載が確認できず、対象の41%が ICU 入室例という強い選択バイアスがあるため除外した。血液培養の time to positivity は一次文献が見つからないため記載していない。「Gemella IE は viridans より侵襲性が高い」という記述も、直接比較した研究が存在しないため主張として載せていない。</p>
+  </div>
+
+  <footer>
+    Gemella 菌血症ポケットカード ／ 作成 2026-08-19<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
