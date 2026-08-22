@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DKA・HHS ― 補正Naと血漿浸透圧の使い分け</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td b, tbody td strong { color: var(--ink); }
+  table.narrow { min-width: 420px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .formula {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 12px 15px; font-family: var(--mono); font-size: .88rem; color: var(--ink);
+    text-align: center; letter-spacing: .01em; overflow-x: auto; white-space: nowrap;
+  }
+  .formula + .formula { margin-top: 8px; }
+  .formula .em { color: var(--accent); font-weight: 700; }
+  .formula .no { color: var(--sev); text-decoration: line-through; }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>DKA・HHS ― 補正Naと血漿浸透圧の使い分け</h1>
+    <div class="subtitle">corrected sodium / effective osmolality / Na correction rate ／ 救急・集中治療 ／ 作成 2026-08-19</div>
+  </header>
+
+  <p class="lede">
+    補正Naは<strong>実測Naを Δ だけ右へずらす平行移動</strong>にすぎず、<strong>Δ は血糖だけで決まる</strong>。この一点から4つの使い分けが全部出てくる。
+    <strong>①浸透圧の計算には必ず実測Na</strong>（補正Naを入れるとグルコースの二重計上で <b>2×Δ</b> だけ過大評価）。
+    <strong>②Na補正速度の上限（≤10 mmol/L/24h）も実測Na</strong>（ガイドラインの数値は全て実測ベース。「補正Naの速度」を規定した推奨は存在しない）。
+    <strong>③補正Naの出番は自由水欠乏の評価だけ</strong>。
+    <strong>④補正Naは3つの別々の問いに答える</strong> ―「自由水欠乏はあるか（検出）」「どれだけか（定量）」「実測Naはどこへ着地するか（予測）」。<strong>検出だけは実測Na ≥145 なら計算不要だが、定量と予測には安全な帯が無く常に必要</strong>。
+  </p>
+
+  <div class="grid4">
+    <div class="stat">
+      <div class="lab">補正量 Δ ＝ k×(BG−100)/100</div>
+      <div class="num tnum">+8 〜 +12</div>
+      <div class="sub">血糖600 mg/dLのとき。<b>k=1.6（Katz）／2.4（Hillier）</b>で12 mEq/Lもずれる</div>
+    </div>
+    <div class="stat">
+      <div class="lab">補正Naを浸透圧式に入れた場合</div>
+      <div class="num tnum">+24 <span style="font-size:.85rem;color:var(--ink-3)">mOsm/kg</span></div>
+      <div class="sub">血糖600・k=2.4での<b>過大評価（＝2×Δ）</b>。320の閾値を偽陽性で跨ぐ</div>
+    </div>
+    <div class="stat">
+      <div class="lab">Na低下速度の上限（実測Na）</div>
+      <div class="num tnum">≤10<span style="font-size:.85rem;color:var(--ink-3)">/24h</span></div>
+      <div class="sub">ADA/EASD 2024。浸透圧低下は<b>3.0〜8.0 mOsm/kg/h</b></div>
+    </div>
+    <div class="stat">
+      <div class="lab">HHS 90日死亡（補正低Na血症）</div>
+      <div class="num tnum">HR 3.56</div>
+      <div class="sub">95%CI <b>1.44–8.80</b>。実測高Na HR 2.86（1.39–5.87）／n=755（Chuang 2020）</div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>補正Naとは何か ― 血糖だけで決まる平行移動 <span class="sec-note">実測Naには依存しない</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="formula">補正Na ＝ 実測Na ＋ <span class="em">Δ</span>　　　<span class="em">Δ</span> ＝ k × (血糖 − 100) / 100</div>
+      <ul class="clean" style="margin-top:13px">
+        <li><strong>意味</strong>：血糖が100 mg/dLまで下がったときに<strong>予測される</strong>血清Na値。<strong>実在するイオン濃度ではない</strong>。</li>
+        <li><strong>Δ は血糖のみの関数</strong>。実測Naがいくつであろうと同じ量だけ足される。だから補正とは数直線上の平行移動でしかない。</li>
+        <li><strong>係数は決着していない</strong>：Katz 1973 <b>1.6</b>（理論計算のみ・実証データゼロ）／Hillier 1999 <b>2.4</b>（健常者n=6、p=0.02。<b>血糖>400 mg/dLでは4.0が適合</b>）／Adrogué &amp; Madias 2000 <b>1.7</b>／Ing 2020 は透析患者の閉鎖系 ΔNa/ΔGlu <b>−1.50±0.22・−1.61±0.36</b> から1.6を支持しHillierを批判。</li>
+        <li><strong>したがって補正Naは「方向」を見る量であって、精密な閾値判定に耐える精度はない。</strong></li>
+      </ul>
+    </div></div>
+
+    <div class="figure" style="margin-top:12px">
+      <p class="mini-h">模式図①　補正Naが判断を変えるのはどこか ― 3つの帯 <span class="tag">k = 2.4</span></p>
+      <svg viewBox="0 0 380 245" style="max-width:560px;margin:0 auto" role="img" aria-label="実測Naの数直線上で、補正Naが自由水欠乏の有無の判断を変える帯を、血糖300・600・1200 mg/dLの3条件で示した図。帯の幅は補正量Δに等しく、血糖が高いほど下方向へ広がる。">
+        <!-- legend -->
+        <rect x="28" y="6" width="13" height="11" rx="2.5" fill="var(--accent)"/>
+        <text x="45" y="15.5" font-size="10.5" fill="var(--ink-2)">判断が変わる</text>
+        <rect x="132" y="6" width="13" height="11" rx="2.5" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="149" y="15.5" font-size="10.5" fill="var(--ink-3)">変わらない</text>
+
+        <!-- 145 guide -->
+        <line x1="292.4" y1="30" x2="292.4" y2="196" stroke="var(--sev)" stroke-width="1.3" stroke-dasharray="4 3" opacity=".8"/>
+
+        <!-- row 1 : BG 300, delta 4.8, band 140.2-145 -->
+        <text x="28" y="38" font-size="12" font-weight="700" fill="var(--ink-2)">血糖 300 <tspan font-weight="400" fill="var(--ink-3)">／ Δ = +4.8</tspan></text>
+        <rect x="28" y="44" width="228.2" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <rect x="256.2" y="44" width="36.2" height="26" rx="4" fill="var(--accent)"/>
+        <rect x="292.4" y="44" width="75.6" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="142" y="61" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">補正しても145に届かない</text>
+
+        <!-- row 2 : BG 600, delta 12.0, band 133-145 -->
+        <text x="28" y="96" font-size="12" font-weight="700" fill="var(--ink-2)">血糖 600 <tspan font-weight="400" fill="var(--ink-3)">／ Δ = +12.0</tspan></text>
+        <rect x="28" y="102" width="173.8" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <rect x="201.8" y="102" width="90.6" height="26" rx="4" fill="var(--accent)"/>
+        <rect x="292.4" y="102" width="75.6" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="247" y="119" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">判断が変わる</text>
+
+        <!-- row 3 : BG 1200, delta 26.4, band 118.6-145 -->
+        <text x="28" y="154" font-size="12" font-weight="700" fill="var(--ink-2)">血糖 1200 <tspan font-weight="400" fill="var(--ink-3)">／ Δ = +26.4</tspan></text>
+        <rect x="28" y="160" width="64.9" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <rect x="92.9" y="160" width="199.5" height="26" rx="4" fill="var(--accent)"/>
+        <rect x="292.4" y="160" width="75.6" height="26" rx="4" fill="var(--surface-2)" stroke="var(--line-strong)"/>
+        <text x="192" y="177" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">実測Na 118.6 でも顕在化する</text>
+
+        <!-- axis -->
+        <line x1="28" y1="200" x2="368" y2="200" stroke="var(--line-strong)" stroke-width="1.3"/>
+        <g font-size="10.5" fill="var(--ink-3)" text-anchor="middle">
+          <line x1="28"    y1="200" x2="28"    y2="206" stroke="var(--line-strong)" stroke-width="1.3"/><text x="28"    y="218">110</text>
+          <line x1="103.6" y1="200" x2="103.6" y2="206" stroke="var(--line-strong)" stroke-width="1.3"/><text x="103.6" y="218">120</text>
+          <line x1="179.1" y1="200" x2="179.1" y2="206" stroke="var(--line-strong)" stroke-width="1.3"/><text x="179.1" y="218">130</text>
+          <line x1="254.7" y1="200" x2="254.7" y2="206" stroke="var(--line-strong)" stroke-width="1.3"/><text x="254.7" y="218">140</text>
+          <line x1="330.2" y1="200" x2="330.2" y2="206" stroke="var(--line-strong)" stroke-width="1.3"/><text x="330.2" y="218">150</text>
+        </g>
+        <line x1="292.4" y1="200" x2="292.4" y2="207" stroke="var(--sev)" stroke-width="1.6"/>
+        <text x="292.4" y="219" font-size="11" font-weight="700" fill="var(--sev)" text-anchor="middle">145</text>
+        <text x="198" y="238" font-size="11" font-weight="700" fill="var(--ink-2)" text-anchor="middle">実測Na（mEq/L）　― 帯の幅はちょうど Δ に等しい</text>
+      </svg>
+      <p class="fig-cap"><b>この図が扱うのは「自由水欠乏があるか（検出）」の一問だけ</b>。§2 のとおり定量と予測には帯が無いので、そちらは常に計算する。<br>
+      <b>検出についても、考えなくてよい帯は片側しか固定されない。</b>上の帯（実測Na ≥145）は血糖によらず常に成立するが、<b>下の帯の境界は 145 − Δ で血糖とともに下へ動く</b>。血糖400なら実測Na 130は下の帯だが、血糖2400なら実測Na 112でも中の帯に入る。「実測Naが低ければ補正は不要」は<b>誤り</b>。</p>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">▶</span>
+      <div><strong>実例（Kasamatsu 2025、HHS 2例）</strong>。症例1は<b>実測Na 112</b>（血糖2398）→ <b>補正Na 167</b>、症例2は<b>実測Na 149</b>（血糖1277）→ <b>補正Na 177</b>。実測値は正反対なのに、補正するとどちらも極度の自由水欠乏。<strong>症例1を実測Naだけで読むと「重症低Na血症」と真逆の解釈になる。</strong></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>使ってよい計算・使ってはいけない計算 <span class="sec-note">式にグルコース項があるなら実測Na</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:180px">場面</th><th style="width:88px">どちらのNa</th><th>理由・根拠</th></tr></thead>
+      <tbody>
+        <tr><td><b>血漿浸透圧の計算</b><br><span style="font-size:.78rem;color:var(--ink-3)">effective / total</span></td>
+            <td><span class="pill stop">実測Na</span></td>
+            <td>ADA 2009 原文が <b>"2[<u>measured</u> Na+ (mEq/l)] + glucose (mg/dl)/18"</b> と明記。補正Naはすでにグルコースの効果を織り込んだ量なので、<b>glucose/18 の項と二重計上</b>になる。</td></tr>
+        <tr><td><b>アニオンギャップ</b></td>
+            <td><span class="pill stop">実測Na</span></td>
+            <td>Beck 2001：<b>"use the actual, measured sodium to calculate the anion gap, and the corrected sodium to estimate dehydration"</b>。グルコースは電気的に中性でAGに影響しない。補正Naは実在しないイオン濃度なので <b>"would distort the anion gap"</b>。</td></tr>
+        <tr><td><b>Na補正速度の上限判定</b><br><span style="font-size:.78rem;color:var(--ink-3)">ODS予防</span></td>
+            <td><span class="pill stop">実測Na</span></td>
+            <td>ADA/EASD 2024・JBDS-IP とも数値目標は実測Na・実測浸透圧に対して規定。<b>「補正Naの変化速度」に上限を置いた推奨は存在しない</b>。</td></tr>
+        <tr><td><b>自由水欠乏の量的評価</b></td>
+            <td><span class="pill go">補正Na</span></td>
+            <td>これが補正Naの本来の用途。ADA 2009 も <b>"to assess the severity of sodium and water deficit"</b> と目的を限定して並記している。</td></tr>
+        <tr><td><b>重症度・予後の層別化</b></td>
+            <td><span class="pill go">補正Na</span></td>
+            <td>Chuang 2020（血糖≥500、n=755、90日死亡17.2%）：補正低Na血症 <b>HR 3.56（1.44–8.80）</b> と実測Naより予後予測に優れる。</td></tr>
+        <tr><td><b>輸液の張度選択</b></td>
+            <td><span class="pill care">見解が割れる</span></td>
+            <td>ADA 2009＝補正Naで分岐（旧）／<b>ADA/EASD 2024・JBDS-IP＝浸透圧トレンドで判断（現行）</b>／Ing 2020 と Cao 2025 は補正Na重視を主張。<b>いずれもRCTの裏付けなし</b>。</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">▶</span>
+      <div><strong>覚え方はひとつ。</strong>「式のなかにグルコース項（あるいはCl／HCO₃）が明示的に入っている計算では実測Na。補正Naは<u>自由水欠乏の評価専用</u>」。同じ論理がアニオンギャップと浸透圧の両方に効く。</div>
+    </div>
+
+    <p class="mini-h" style="margin:22px 0 9px">では補正Naで具体的に何が変わるのか ― 3つの別々の問い</p>
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:150px">問い</th><th style="width:250px">実測Na 128・補正Na 147<br><span style="font-weight:400;text-transform:none;letter-spacing:0">血糖1261 mg/dL（Jain 2023）</span></th><th>実測Na 149・補正Na 177<br><span style="font-weight:400;text-transform:none;letter-spacing:0">血糖1277 mg/dL（Kasamatsu 2025 症例2）</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>① 検出</b><br>自由水欠乏は<b>あるか</b></td>
+          <td><span class="pill stop">変わる</span> 実測128なら「低Na血症・自由水はむしろ過剰」。補正147で<b>「自由水欠乏あり」と正反対</b>になる。</td>
+          <td><span class="pill go">変わらない</span> 149の時点で既に高Na血症。補正しても<b>「自由水を与える」という方向は同じ</b>。<b>ここが上の帯</b>。</td>
+        </tr>
+        <tr>
+          <td><b>② 定量</b><br><b>どれだけ</b>あるか<br><span style="font-size:.75rem;color:var(--ink-3)">TBW×(Na/140−1)<br>体重70 kg・TBW 42 L</span></td>
+          <td><span class="pill stop">変わる</span> Na 128 → <b>−3.6 L（自由水過剰）</b>／Na 147 → <b>+2.1 L（欠乏）</b>。<b>約5.7 Lの振れ幅で符号が反転</b>する。</td>
+          <td><span class="pill stop">変わる</span> Na 149 → <b>2.7 L</b>／Na 177 → <b>11.1 L</b>。<b>約4倍</b>。輸液の総量設計が別物になる。<b>上の帯でも変わる</b>。</td>
+        </tr>
+        <tr>
+          <td><b>③ 予測</b><br>実測Naは<b>どこへ着地</b>するか</td>
+          <td><span class="pill stop">変わる</span> 血糖が下がりきると実測Naは<b>147へ向かう</b>。128→140の上昇は<b>予定通りで慌てない</b>。147を超え始めたら新規の自由水喪失。</td>
+          <td><span class="pill stop">変わる</span> 実測Naは<b>177へ向かう</b>。149を見て「高Naだが許容内」と構えると、自由水を入れないまま177に着地する。<b>上の帯でも変わる</b>。</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>「実測Na ≥145 なら計算不要」は①の検出にしか当てはまらない。</strong>②の定量と③の予測には<u>安全な帯が存在せず</u>、実測Naがいくつであっても補正Naでしか出せない。実測Na ≥145 で変わらないのは「自由水を与える」という<b>方向性</b>と、初期輸液を等張晶質液で始めるという<b>枠組み</b>（2024年版は補正Naによらず一律）だけ。<strong>量と着地点は常に計算する。</strong></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>浸透圧 ― 式と閾値はセットで決まる <span class="sec-note">2024年版で診断基準が変わった</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="formula">effective osmolality（張度） ＝ 2 × <span class="em">実測Na</span> ＋ glucose/18　<span style="color:var(--ink-3);font-size:.8rem">［尿素を含まない］</span></div>
+      <div class="formula">total osmolality ＝ 2 × <span class="em">実測Na</span> ＋ glucose/18 ＋ BUN/2.8</div>
+      <div class="formula"><span class="no">2 × 補正Na ＋ glucose/18</span>　<span style="color:var(--sev);font-size:.8rem">← 二重計上。過大分 ＝ 2×Δ</span></div>
+      <ul class="clean" style="margin-top:13px">
+        <li><strong>尿素は ineffective osmole</strong>。細胞膜を自由に通過するので浸透圧には寄与するが<strong>張度（＝実際に水を動かす力）には寄与しない</strong>。ADAが effective osmolality を採る生理学的根拠。</li>
+        <li><strong>インスリン欠乏下のグルコースは effective osmole</strong>。インスリンがあれば細胞内に取り込まれ有効浸透圧を作らない。<strong>DKA/HHSでグルコースが張度を規定するのはこのため。</strong></li>
+      </ul>
+    </div></div>
+
+    <div class="table-scroll card" style="margin-top:12px"><table class="narrow">
+      <thead><tr><th style="width:210px">基準</th><th>式と閾値</th></tr></thead>
+      <tbody>
+        <tr><td><b>ADA/EASD 2024</b><br><span style="font-size:.78rem;color:var(--ink-3)">現行・HHS診断</span></td>
+            <td><b>effective osm >300</b>（尿素なし）<b> OR total osm >320</b>（尿素含む）の<b>二重基準</b>。2009年版の「effective >320」から式・閾値とも変更されている。</td></tr>
+        <tr><td>ADA 2009（旧）</td><td>effective osmolality <b>>320 mOsm/kg</b></td></tr>
+        <tr><td>JBDS-IP（英国）</td><td>total osmolality（2Na+glucose+urea）<b>≥320 mOsm/kg</b></td></tr>
+        <tr><td><b>脳症の出現水準</b><br><span style="font-size:.78rem;color:var(--ink-3)">Pasquel 2014</span></td>
+            <td>total <b>>340</b>／effective <b>>320</b>／血清Na <b>>160 mEq/L</b>。<b>式が違えば閾値の数字も違う</b>。</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>施設で使う式を固定しないと診断がぶれる。</strong>尿素を入れるか否かで、腎機能障害を合併したHHS（＝ほとんど）では到達しやすさが変わる。JBDSの total 320 と ADA 2009 の effective 320 は<strong>式が違うのに数字だけ同じ</strong>で、混同が最も起きやすい箇所。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">▶</span>
+      <div><strong>意識障害の本態は浸透圧であってpHではない</strong>（Fulop 1975、DKA 85＋非ケトン性高血糖47エピソード）。原文：<em>"depression of consciousness ... is attributable to hyperosmolarity, whether or not ketoacidosis is present."</em> pHが悪いのに意識清明／pHはそこそこなのに昏睡、を説明するのはこれ。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>Na補正速度 ― 実測Naの上昇は「正常」 <span class="sec-note">ODSを規定するのは張度の変化速度</span></h2>
+
+    <div class="card"><div class="pad">
+      <ul class="clean">
+        <li><strong>治療中に実測Naが上がるのは生理的</strong>。インスリンで血糖が下がる＝細胞外の effective osmole が減る＝水が細胞内へ戻る。<strong>この実測Na上昇は張度の<u>低下</u>を伴っている</strong>ので、「Naが8上がった＝危険」ではない。</li>
+        <li>ADA/EASD 2024 原文：<strong>"The initial rise in serum sodium is not an indication to give hypotonic fluids, and the administration of 0.45% sodium chloride is indicated only if osmolality is not declining despite adequate positive fluid balance and appropriate insulin administration."</strong></li>
+        <li><strong>補正Naは「上限」ではなく「解釈のレンズ」</strong>。治療中は横ばい〜緩徐低下が想定される。<strong>補正Naが上がり続けている＝真の自由水喪失が進行中</strong>のシグナル。</li>
+      </ul>
+    </div></div>
+
+    <div class="ladder" style="margin-top:12px">
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">実測Na</span><span class="sev-name">≤10<br>/24h</span></div>
+        <div class="rung-body">ADA/EASD 2024・JBDS-IP の上限。<b>実測Naでトラッキングする</b>。48時間なら18 mEq/L を目安に累積も見る。</div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">浸透圧</span><span class="sev-name">3.0–8.0<br>mOsm/kg/h</span></div>
+        <div class="rung-body">ADA/EASD 2024。<b>輸液の張度を決める実質的な変数はこれ</b>。血糖の下げ幅も張度低下として勘定に入る（血糖 1261→608 mg/dL は glucose 項だけで約36 mOsm/kg の低下）。</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">古典的閾値</span><span class="sev-name">8–12<br>mEq/L/日</span></div>
+        <div class="rung-body">Sterns 1986（&gt;12で後遺症、12未満では<b>後遺症ゼロ</b>、n=8）→ Adrogué 2000（<b>8 mmol/L/日</b>）。<b>ただし全て低張性低Na血症のデータ</b>。</div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">適用範囲</span><span class="sev-name">対象外</span></div>
+        <div class="rung-body"><b>Spasovski 2014（欧州低Na血症GL）は高張性（translocational）低Na血症を scope から明示的に除外</b>。8–10 mEq/L/24h をDKA/HHSにそのまま外挿する直接的根拠は、ガイドライン側には<b>もともと存在しない</b>。</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>速度を守ってもODSは起きる ― 安全の保証にはならない。</strong>
+        <b>Kasamatsu 2025</b>：浸透圧低下 <b>1.0–1.2 mOsm/kg/h</b>（原文の上限3の1/3以下）でHHS 2例ともODS。入院時浸透圧 387・421 mOsm/kg。著者は<b>「極度の高浸透圧そのものが誘因」</b>と結論。
+        <b>Nakanishi 2024</b>：実測Na 127→135（<b>+8/24h＝推奨内</b>）・補正浸透圧ほぼ横ばい。<b>Day 8 で155（+28の累積）</b>となり chorea・意識障害。<b>MRIはDay 11陰性 → Day 18陽性</b>。
+        <b>Jain 2023</b>：Na速度 約6 mEq/L/24h と安全域内。<b>血糖 1261→608 mg/dL を5時間</b>という急落がトリガー。
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">▶</span>
+      <div><strong>実務の畳み込み</strong>：①24時間の速度だけでなく<b>数日単位の累積</b>を見る（Nakanishi は8日で+28）。②<b>血糖の下げ速度も張度の補正速度として管理する</b>。③入院時浸透圧が380–420に達しているHHSは<b>どれだけ慎重に是正してもODSが起こりうる前提</b>で神経学的経過を追う。④<b>陰性のMRIでODSは否定できない</b>。⑤ODS独立リスク（アルコール多飲・進行した肝疾患・低栄養・低K血症）はDKA/HHSでもそのまま効く。</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>ベッドサイドの手順 <span class="sec-note">暗算で足りる</span></h2>
+
+    <div class="card"><div class="pad"><div class="flow">
+      <div class="q">Q1. 実測Na は 145 以上か？　<span style="font-weight:400;color:var(--ink-3);font-size:.8rem">― 判定するのは「自由水欠乏があるか」だけ</span></div>
+      <div class="a"><span class="yn yes">はい</span><div><b>自由水欠乏の有無は確定</b>。補正しても方向は変わらない。ただし<b>欠乏量と着地点はまだ不明なのでQ2は飛ばさない</b>。</div></div>
+      <div class="a"><span class="yn no">いいえ</span><div>Q2へ。<b>「実測Naが低いから補正不要」は誤り</b>（下の帯の境界は血糖で動く）。</div></div>
+
+      <div class="q">Q2. Δ を暗算し、補正Naを出す（血糖600なら+12、1200なら+26、2400なら+55／k=2.4）</div>
+      <div class="a"><span class="yn yes">必ず</span><div><b>自由水欠乏量 ＝ TBW×(補正Na/140 − 1)</b> を出す。これが総輸液計画。そして<b>補正Na ＝ 実測Naの着地点</b>として頭に置き、以後その値へ向かう上昇を「予定通り」と読む。</div></div>
+      <div class="a"><span class="yn yes">補正Na<br>&gt;145</span><div><b>隠れた自由水欠乏</b>。実測Naが正常〜低値でも高張状態。ここが補正Naが唯一方針を変える帯。</div></div>
+      <div class="a"><span class="yn no">補正Na<br>&lt;135</span><div><b>異常事態</b>。DKA/HHSで補正Naが低いのは希釈だけでは説明できない。<b>嘔吐＋ADH／SIADH／高TG血症による真の pseudohyponatremia</b> を探す。予後も悪い（HR 3.56）。</div></div>
+
+      <div class="q">Q3. 浸透圧を出す ― <b>実測Na</b>で。施設の式（effective / total）を固定する</div>
+      <div class="a"><span class="yn yes">追う</span><div>低下速度 <b>3.0–8.0 mOsm/kg/h</b>。<b>下がらないときだけ</b>0.45%食塩水を検討する（実測Naの初期上昇は適応ではない）。</div></div>
+
+      <div class="q">Q4. 実測Naの低下（または上昇）が <b>≤10 mEq/L/24h</b> に収まっているか ― 累積も見る</div>
+      <div class="a"><span class="yn no">逸脱</span><div>輸液の張度と血糖の下げ速度を調整。<b>ODSリスク因子があれば更に保守的に</b>。</div></div>
+    </div></div></div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>落とし穴 <span class="sec-note">文献・二次資料で実際に混同されているもの</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:200px">項目</th><th>実際のところ</th></tr></thead>
+      <tbody>
+        <tr><td><b>偽性低Na血症との混同</b></td>
+            <td>高血糖の低Na血症は<b>translocational（真の希釈、直接ISEでも低い）</b>。高度高TG血症・高蛋白血症による <b>pseudohyponatremia は間接ISEのアーチファクト</b>で、グルコース補正式では捕捉できない。<b>DKAはインスリン欠乏で高カイロミクロン血症を伴うため両者が併存しうる</b>。直接ISE（血液ガス）で確認する。</td></tr>
+        <tr><td><b>osmolal gap 開大＝中毒性アルコール</b></td>
+            <td><b>誤り</b>。DKAでは<b>アセトン</b>（電気的に中性でAGに乗らない）でほぼ説明でき、治療20時間以内に消失（Davidson 1992、n=6）。アルコール性ケトアシドーシス <b>26.9±7.6</b>／乳酸アシドーシス <b>17.4±5.4</b>／対照 <b>−1.7±1.7</b> mmol/kg（Schelling 1990）。<b>エタノールを計算に入れてもなお10 mmol/kg超の残余</b>が残る（10.3±2.0／11.1±3.2）。</td></tr>
+        <tr><td><b>JBDS-IP の係数の出典</b></td>
+            <td>係数 <b>2.4</b> を用いながら、出典を <b>Katz 1973（＝1.6を提唱した論文）</b>と記載。2.4は Hillier 1999 由来で、<b>Hillier はJBDSの参考文献57件に一度も登場しない</b>。ガイドライン側の誤引用（原文PDFで確認）。</td></tr>
+        <tr><td><b>Adrogué &amp; Madias 2000 のページ</b></td>
+            <td>Hyponatremia は <b>342(21):1581-1589（PMID 10824078）</b>。よく引用される 342:1493-1499 は<b>姉妹論文 Hypernatremia（342(20)、PMID 10816188）</b>のページ。</td></tr>
+        <tr><td><b>JBDS HHS の著者</b></td>
+            <td>PMID 36370077（2023改訂版）の第一著者は <b>Mustafa OG</b>。<b>Scott AR は2015年初版</b>（PMID 25980647）。</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質について</h3>
+    <p><b>この領域はRCTがほぼ存在しない。</b>補正式そのもの（Katz 1973＝理論計算のみ／Hillier 1999＝健常者n=6の非生理的実験）、輸液の張度選択、Na補正速度の上限 ― いずれも<b>生理学的推論と専門家合議</b>に基づく。補正Naの数値精度を DKA/HHS患者で前向きに検証した研究（予測値 vs 正常血糖化後の実測Na）は<b>存在しない</b>。Chuang 2020 は補正Naと<u>予後</u>の相関を見た後ろ向き単施設コホートであって、式の精度検証ではない。ODSに関する知見は全て症例報告レベル（Level 4–5）。</p>
+    <p><b>主要な出典</b>：Katz MA. N Engl J Med 1973;289:843-844（PMID 4763428）／Hillier TA et al. Am J Med 1999;106:399-403（PMID 10225241）／Kitabchi AE et al. Diabetes Care 2009;32:1335-1343（PMID 19564476）／Umpierrez GE et al. Diabetes Care 2024;47:1257-1275（PMID 39052901）／Mustafa OG et al. Diabet Med 2023;40:e15005（PMID 36370077、JBDS-IP HHS）／Cao S, Cao S. Diabetes Care 2025;48:e40-e41（PMID 39977634）／Ing TS et al. Front Med 2020;7:477（PMID 32984372）／Chuang C et al. J Chin Med Assoc 2020;83:845-851（PMID 32773588）／Spasovski G et al. Eur J Endocrinol 2014;170:G1-G47（PMID 24569125）／Sterns RH et al. N Engl J Med 1986;314:1535-1542（PMID 3713747）／Adrogué HJ, Madias NE. N Engl J Med 2000;342:1581-1589（PMID 10824078）／Fulop M et al. Diabetes 1975;24:594-599（PMID 237799）／Pasquel FJ, Umpierrez GE. Diabetes Care 2014;37:3124-3131（PMID 25342831）／Beck LH. Cleve Clin J Med 2001;68:673-674（PMID 11510523）／Davidson DF. Clin Chem 1992;38:755-757（PMID 1582030）／Schelling JR et al. Ann Intern Med 1990;113:580-582（PMID 2400167）／Nakanishi T et al. Intern Med 2024;63:1591-1596（PMID 37866918）／Jain E et al. Cureus 2023;15:e34551（PMID 36874309）／Kasamatsu D et al. Cureus 2025;17:e88700（PMID 40861709）。</p>
+    <p><b>未照合の項目（このカード作成時点で一次文献に当たれていないもの）</b>：①<b>Seay NW et al. AJKD 2020;75:272-286（PMID 31606238）の本文</b> ― effective/ineffective osmole の分類、係数1.6–2.4の併記、ODS速度上限（8／10–12 mEq/L/24h）、高リスク群の定義は<b>抄録に無く本文は有料の壁の内側で未確認</b>。Verbalis 2013（Am J Med 126(10 Suppl 1):S1-S42）由来の可能性がある。②<b>McManus ML et al. NEJM 1995;333:1260-1266（PMID 7566004）</b> ― <b>PubMed/Europe PMCに抄録が存在せず本文もOAなし</b>で内容未確認。細胞容積調節の時間軸（無機イオンは数分〜数時間、organic osmolytes は48時間で完成）は Sterns RH, Silver SM. Am J Med 2006;119(7A Suppl 1):S12-S16（PMID 16843080）から取った。③<b>Cao 2025 の本文</b> ― Diabetes Care が403で一次PDF未読、逐語と数値は独立2クエリでの再現による確認。④Fulop 1975・Davidson 1992・Schelling 1990 の<b>本文</b>（意識レベル別の実測浸透圧、アセトンの寄与分の定量、計算浸透圧の具体式）は有料で未入手。</p>
+    <p><b>意図的に区別して書いたこと</b>：「補正Naが安定していれば安全」という命題は<b>支持されていない</b>。補正Naは<u>リスクの検出</u>には役立つが<u>安全の保証</u>にはならない（Kasamatsu 2025 の2例が直接の反証）。また輸液の張度選択については<b>ADA/EASD 2024・JBDS-IP（浸透圧トレンド）と Ing 2020・Cao 2025（補正Na）で専門家の見解が割れている</b>のが2026年時点の実情であり、どちらにもRCTの裏付けはない。カードは現行ガイドラインの立場を主として記述している。</p>
+  </div>
+
+  <footer>
+    DKA・HHS 補正Naと血漿浸透圧ポケットカード ／ 作成 2026-08-19<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

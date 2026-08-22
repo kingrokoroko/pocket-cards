@@ -80,6 +80,11 @@ SECTIONS = [
          "Gemella 菌血症",
          "グラム染色でグラム陰性桿菌に見える。2023年 Duke-ISCVID で typical pathogen になり、判定が45%→72%に変わる。",
          "感染症・循環"),
+        ("dka-hhs-sodium.html",
+         "DKA・HHS Na補正と浸透圧ポケットカード.html",
+         "DKA・HHS 補正Naと浸透圧",
+         "補正Naは血糖だけで決まる平行移動。浸透圧の計算にも補正速度の判定にも実測Naを使い、補正Naは自由水欠乏の評価に限る。",
+         "内分泌・代謝"),
     ]),
     ("アプリ", "その場で計算・練習するもの", [
         ("respiratory-mechanics.html",
