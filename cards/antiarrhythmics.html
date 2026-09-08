@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>抗不整脈薬 ― Vaughan Williams と Sicilian Gambit</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td b, tbody td strong { color: var(--ink); }
+  table.narrow { min-width: 420px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .formula {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 12px 15px; font-family: var(--mono); font-size: .88rem; color: var(--ink);
+    text-align: center; letter-spacing: .01em; overflow-x: auto; white-space: nowrap;
+  }
+  .formula + .formula { margin-top: 8px; }
+  .formula .em { color: var(--accent); font-weight: 700; }
+  .formula .no { color: var(--sev); text-decoration: line-through; }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>抗不整脈薬 ― Vaughan Williams と Sicilian Gambit</h1>
+    <div class="subtitle">分類編（第1版）／ Vaughan Williams classification・Sicilian Gambit・vulnerable parameter ／ 救急・集中治療 ／ 作成 2026-09-08</div>
+  </header>
+
+  <p class="lede">
+    2つの分類は競合していない。<strong>Vaughan Williams は「薬を語るための語彙」</strong>、<strong>Sicilian Gambit は「不整脈から薬に至るための手続き」</strong>で、階層が違う。
+    VWは<strong>薬ではなく作用の分類</strong>であり、1剤が複数クラスに属する（アミオダロンはⅠ〜Ⅳ全部を持つ）。
+    この点を忘れて「クラスで選ぶ」をやった結果が <strong>CAST</strong> ―「PVCを消せば予後が良くなる」という代替エンドポイントの敗北であり、これが Sicilian Gambit を生んだ。
+    実務では<strong>クラスで覚え、機序（vulnerable parameter）で選び、器質的心疾患の有無で切る</strong>。
+  </p>
+
+  <div class="grid4">
+    <div class="stat">
+      <div class="lab">Vaughan Williams</div>
+      <div class="num tnum">1970</div>
+      <div class="sub">Ⅰ〜Ⅳの4分類。<b>Ⅰ群のa/b/cへの細分は Harrison（1979–85）</b>による後付け</div>
+    </div>
+    <div class="stat">
+      <div class="lab">Sicilian Gambit</div>
+      <div class="num tnum">1991</div>
+      <div class="sub">1990年 シチリア・タオルミナでの合議。<b>ESC Working Group on Arrhythmias</b>／Circulation 84:1831</div>
+    </div>
+    <div class="stat">
+      <div class="lab">CAST 不整脈死（平均10か月）</div>
+      <div class="num tnum">43 vs 16</div>
+      <div class="sub">Ⅰc群 755例 vs プラセボ 743例、<b>P=0.0004</b>。総死亡は 63 vs 26</div>
+    </div>
+    <div class="stat">
+      <div class="lab">修正版（Oxford 2018）</div>
+      <div class="num tnum">Class 0–Ⅶ</div>
+      <div class="sub">Ifを<b>Class 0</b>として前置。Ⅳに細胞内Ca動態、Ⅴ〜Ⅶに機械感受性・gap junction・上流治療</div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>Vaughan Williams ― まずⅠ群の読み方 <span class="sec-note">a/b/c は「Na以外に何を持つか」で決まる</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="kv">
+        <div><div class="k">Ⅰ群</div><div class="v"><b>Naチャネル遮断薬</b>。phase 0 の立ち上がりを抑え、伝導速度と興奮性を下げる。ここまでは a/b/c 共通。</div></div>
+        <div><div class="k">Ⅰa群</div><div class="v"><b>Naチャネル遮断 ＋ Kチャネル遮断</b>。再分極も遅れるので <b>APD／不応期は延長</b>し、QRSもQTも延びる。</div></div>
+        <div><div class="k">Ⅰb群</div><div class="v"><b>不活性化型（inactivated state）Naチャネルの遮断薬</b>。脱分極して不活性化型が滞留する組織 ― 虚血心筋・活動電位の長い心室 ― に選択的に効く。APDはむしろ短縮。</div></div>
+        <div><div class="k">Ⅰc群</div><div class="v"><b>Kチャネル遮断を持たない</b>純粋なNa遮断。APDはほぼ不変で、<b>QRSだけが延びる</b>。チャネルからの解離が最も遅く、伝導抑制が強く残る。</div></div>
+      </div>
+    </div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div>a/b/c の順番は「効きの強さ」ではない。<b>Naチャネルからの解離速度（b＜1秒 ＜ a＝1〜10秒 ＜ c＞10秒）</b>と、<b>Kチャネル遮断を併せ持つか</b>の2軸で決まる。この2軸がそのまま心電図（QRSとQT）に現れる。</div>
+    </div>
+
+    <div class="figure" style="margin-top:12px">
+      <div class="mini-h">心室筋の活動電位と各クラスの作用点</div>
+      <svg viewBox="0 0 745 250" role="img" aria-label="心筋活動電位の各相と抗不整脈薬クラスの作用点">
+        <line x1="58" y1="18" x2="58" y2="212" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <line x1="58" y1="212" x2="722" y2="212" stroke="var(--line-strong)" stroke-width="1.5"/>
+        <text x="50" y="34" text-anchor="end" font-size="11" fill="var(--ink-3)">+20 mV</text>
+        <text x="50" y="128" text-anchor="end" font-size="11" fill="var(--ink-3)">0</text>
+        <text x="50" y="200" text-anchor="end" font-size="11" fill="var(--ink-3)">−85 mV</text>
+        <path d="M 70,196 L 112,196 L 119,32 L 133,62 C 146,50 168,60 190,64 L 322,74 C 366,80 398,150 418,196 L 714,196"
+              fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round"/>
+        <g font-size="12" font-weight="700" fill="var(--ink)">
+          <text x="124" y="24">0</text><text x="146" y="46">1</text><text x="250" y="60">2</text>
+          <text x="392" y="128">3</text><text x="474" y="188">4</text>
+        </g>
+        <line x1="119" y1="40" x2="119" y2="120" stroke="var(--sev)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="126" y="112" font-size="12" font-weight="700" fill="var(--sev)">Ⅰ群：Na⁺（phase 0）</text>
+        <text x="126" y="128" font-size="11" fill="var(--ink-3)">伝導速度・興奮性を下げる → QRS 延長</text>
+        <line x1="250" y1="74" x2="250" y2="104" stroke="var(--mod)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="258" y="100" font-size="12" font-weight="700" fill="var(--mod)">Ⅳ群：Ca²⁺（plateau・結節）</text>
+        <line x1="404" y1="110" x2="452" y2="110" stroke="var(--mild)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="458" y="106" font-size="12" font-weight="700" fill="var(--mild)">Ⅲ群：K⁺（phase 3）</text>
+        <text x="458" y="122" font-size="11" fill="var(--ink-3)">再分極を遅らせ APD／不応期を延長 → QT 延長</text>
+        <line x1="536" y1="196" x2="536" y2="166" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="544" y="164" font-size="12" font-weight="700" fill="var(--accent)">Ⅱ群・If：phase 4 の傾き</text>
+        <text x="544" y="180" font-size="11" fill="var(--ink-3)">洞結節・房室結節の自動能と伝導</text>
+      </svg>
+      <p class="fig-cap">Ⅰa群は phase 0（Na）と phase 3（K）の<b>両方</b>に矢印が立つ。Ⅰb群は phase 0 に効きつつ APD をむしろ短縮させ、Ⅰc群は phase 0 のみ。<b>心電図で見えるのは phase 0 → QRS、phase 3 → QT（JT）</b>という対応。</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>Vaughan Williams 分類の全体 <span class="sec-note">分類しているのは薬ではなく「作用」</span></h2>
+
+    <div class="table-scroll card"><table style="min-width:840px">
+      <thead><tr>
+        <th style="width:64px">クラス</th><th style="width:150px">標的</th><th>代表薬（国内）</th>
+        <th style="width:110px">APD／不応期</th><th style="width:120px">心電図</th><th>臨床での位置</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Ⅰa</b></td>
+          <td>Na（中間解離）<b>＋K</b></td>
+          <td>キニジン、プロカインアミド、ジソピラミド、シベンゾリン、ピルメノール、アジマリン</td>
+          <td>延長</td>
+          <td>QRS↑ <b>QT↑</b></td>
+          <td>上室・心室の両方に使える万能型だが、<b>TdPと陰性変力</b>で出番は縮小。プロカインアミドはWPW＋AFの第一選択</td>
+        </tr>
+        <tr>
+          <td><b>Ⅰb</b></td>
+          <td>Na（速い解離・<b>不活性化型</b>）</td>
+          <td>リドカイン、メキシレチン、アプリンジン</td>
+          <td><b>短縮</b></td>
+          <td>ほぼ不変</td>
+          <td><b>心室のみ</b>（虚血・脱分極心筋に選択的）。心房細動には無効。アプリンジンだけは例外で上室にも効く</td>
+        </tr>
+        <tr>
+          <td><b>Ⅰc</b></td>
+          <td>Na（遅い解離）<b>Kなし</b></td>
+          <td>フレカイニド、ピルシカイニド、プロパフェノン</td>
+          <td>ほぼ不変</td>
+          <td><b>QRS↑↑</b> QT→</td>
+          <td>発作性AF・上室頻拍のpill-in-the-pocketに強い。<b>器質的心疾患では禁忌（CAST）</b></td>
+        </tr>
+        <tr>
+          <td><b>Ⅱ</b></td>
+          <td>β受容体</td>
+          <td>プロプラノロール、ビソプロロール、カルベジロール、ランジオロール、エスモロール</td>
+          <td>（結節で不応期↑）</td>
+          <td>HR↓ <b>PR↑</b></td>
+          <td>洞結節・房室結節が主戦場。<b>唯一、心筋梗塞後・心不全で死亡率を下げるクラス</b>。electrical storm の中心</td>
+        </tr>
+        <tr>
+          <td><b>Ⅲ</b></td>
+          <td>K（主にIKr）</td>
+          <td>アミオダロン、ソタロール、ニフェカラント、ベプリジル</td>
+          <td><b>延長</b></td>
+          <td><b>QT↑</b></td>
+          <td>難治性VT/VF・AFの洞調律維持。<b>アミオダロンだけは多チャネル遮断でTdPが少ない</b></td>
+        </tr>
+        <tr>
+          <td><b>Ⅳ</b></td>
+          <td>L型Ca</td>
+          <td>ベラパミル、ジルチアゼム、（ベプリジル）</td>
+          <td>（結節で不応期↑）</td>
+          <td>HR↓ <b>PR↑</b></td>
+          <td>房室結節依存の頻拍（AVNRT・AVRT）とレートコントロール、ベラパミル感受性VT</td>
+        </tr>
+        <tr>
+          <td><b>分類外</b></td>
+          <td>Na-K ATPase／A1受容体／If／Mg</td>
+          <td>ジゴキシン、ATP（アデノシン）、イバブラジン、硫酸マグネシウム</td>
+          <td>—</td>
+          <td>—</td>
+          <td>ジゴキシンは迷走神経を介した房室結節抑制、ATPは房室結節の一過性ブロック（診断兼治療）、MgはTdP</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><b>1剤＝1クラスではない。</b>アミオダロンはⅠ〜Ⅳ全部（Na・Ca・K・α/β遮断）、ソタロールはⅡ＋Ⅲ、プロパフェノンはⅠc＋β遮断、ベプリジルはⅢ＋Ⅳ＋Na遮断。
+      さらに<b>活性代謝物が親化合物と別クラス</b>のことがある ― プロカインアミドの <b>NAPA は純粋なⅢ群で腎排泄</b>であり、腎不全では親薬が適量でもTdPを起こす。</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>Ⅰ群の3亜型 ― 解離速度がすべてを決める <span class="sec-note">use-dependence の強さ＝Ⅰc ＞ Ⅰa ＞ Ⅰb</span></h2>
+
+    <div class="ladder">
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">class</span><span class="sev-name">Ⅰa</span></div>
+        <div class="rung-body">
+          <b>Na（解離 1〜10秒）＋ K遮断。</b>脱分極も再分極も抑えるので<b>QRSとQTの両方</b>が延びる。上室にも心室にも効く反面、<b>TdP（キニジン失神）</b>と<b>陰性変力作用</b>が制限になる。
+          ジソピラミドは<b>抗コリン作用が強く</b>（尿閉・緑内障悪化・口渇）、シベンゾリンとジソピラミドは<b>低血糖</b>（膵β細胞のK<sub>ATP</sub>遮断でインスリン分泌↑、腎機能低下例と高齢者で顕在化）を起こす。シベンゾリン・ジソピラミドは腎排泄。
+        </div>
+      </div>
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">class</span><span class="sev-name">Ⅰb</span></div>
+        <div class="rung-body">
+          <b>不活性化型Naチャネルを選択的に遮断（解離＜1秒）。</b>正常に分極した心筋ではチャネルから素早く離れるため<b>実質的に効かず</b>、脱分極・虚血・頻拍で不活性化型が滞留する組織にだけ効く＝<b>電気生理学的な「病巣選択性」</b>。
+          <b>心房には無効</b>（心房は活動電位が短く不活性化型に留まる時間が足りない）。APDは短縮し、QRS・QTはほぼ動かない。リドカインは肝血流依存（心不全・肝硬変で減量）、中毒は<b>痙攣</b>から。
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">class</span><span class="sev-name">Ⅰc</span></div>
+        <div class="rung-body">
+          <b>解離＞10秒。Kチャネル遮断を持たない。</b>次の拍が来てもチャネルが空かず遮断が蓄積する（強い use-dependence）ため、<b>頻拍時ほど強く効く</b>一方、<b>伝導抑制が拍間に残り</b>リエントリーの基質そのものになる。
+          発作性AF・上室頻拍には非常に有効だが、<b>陳旧性心筋梗塞・低EF・心不全では禁忌</b>（CAST）。ピルシカイニドは<b>約9割が腎排泄</b>で、腎機能低下時にQRS著明延長・心停止をきたす。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>なぜ Sicilian Gambit が要ったのか ― CAST <span class="sec-note">分類が壊れたのではなく、分類の使い方が壊れた</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">CAST（Cardiac Arrhythmia Suppression Trial, NEJM 1991）<span class="tag">RCT</span></div>
+      <ul class="clean">
+        <li><b>仮説</b>：心筋梗塞後の心室期外収縮を抑えれば突然死が減る。<b>PVCの抑制を代替エンドポイント</b>として薬を選んだ。</li>
+        <li><b>設計</b>：まずオープンラベルでPVCが抑制された症例だけを無作為化（エンカイニド／フレカイニド／モリシジン vs プラセボ）。<b>「効いた人だけ」を選んで組み入れている</b>点が重要。</li>
+        <li><b>結果</b>：1498例、平均10か月で89例死亡。<b>不整脈死 43（実薬 n=755）vs 16（プラセボ n=743）、P=0.0004</b>。非不整脈心臓死も 17 vs 5（P=0.01）。<b>総死亡 63 vs 26</b>。エンカイニド／フレカイニド群は途中で中止された。</li>
+        <li><b>読み方</b>：PVCは<b>消えていた</b>のに死亡は増えた。抑えていたのは不整脈ではなく<b>心電図上の指標</b>で、同じNa遮断が瘢痕心筋では<b>リエントリーの基質</b>として働いた。</li>
+      </ul>
+    </div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div>CASTが否定したのは<b>Ⅰc群という薬でも、Vaughan Williams という分類でもない</b>。否定されたのは「クラス名と代替エンドポイントだけで薬を選ぶ」という<b>手続き</b>であり、<b>器質的心疾患という基質を無視したこと</b>。この反省から1990年にタオルミナで合議され、翌年 Sicilian Gambit が出た。</div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <div class="mini-h">Vaughan Williams 分類の構造的な限界（4点）</div>
+      <ul class="clean">
+        <li><b>薬ではなく作用の分類</b>なのに、薬の分類として使われる。実薬は複数クラスにまたがる。</li>
+        <li><b>不整脈の機序と結びついていない</b>。「上室性ならこれ」式の経験則しか導けず、なぜ効くかを説明しない。</li>
+        <li><b>分類に入らない薬</b>が増えた（ジゴキシン、アデノシン、Mg、イバブラジン）。</li>
+        <li><b>活性代謝物・自律神経作用・基質（虚血や線維化）</b>を表現できない。</li>
+      </ul>
+      <p style="margin:11px 0 0;font-size:.85rem;color:var(--ink-3)">なお2018年に Oxford のグループが <b>Class 0（If）〜Ⅶ（上流治療）</b>まで拡張した修正版を出しており、Ⅰ群には後期Na電流阻害（ラノラジン）が <b>Ⅰd</b> として、Ⅳ群には RyR2・SERCA など細胞内Ca動態が加えられている。分類の枠組み自体は今も更新され続けている。</p>
+    </div></div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>Sicilian Gambit ― 分類ではなく手続き <span class="sec-note">薬から入らず、機序から入る</span></h2>
+
+    <p style="font-size:.89rem;color:var(--ink-2);margin:0 0 12px">
+      Sicilian Gambit は薬に新しい名前を付け直したのではない。<b>「この不整脈を止めるには、どの電気生理学的パラメータを動かせばよいか」を先に決め、そのパラメータを担うチャネル・受容体・ポンプに作用する薬を、薬剤×標的のマトリクスから選ぶ</b>という手順を提案した。チェスの序盤定石になぞらえた名前も、この「手順」という含意による。
+    </p>
+
+    <div class="grid4">
+      <div class="stat">
+        <div class="lab">STEP 1</div>
+        <div class="num" style="font-size:1.0rem">機序を決める</div>
+        <div class="sub">自動能亢進か、triggered activity（EAD／DAD）か、リエントリーか。<b>ここを外すと以降すべて外れる</b></div>
+      </div>
+      <div class="stat">
+        <div class="lab">STEP 2</div>
+        <div class="num" style="font-size:1.0rem">vulnerable parameter</div>
+        <div class="sub">その機序を最小の介入で壊せるパラメータ。<b>伝導・興奮性・不応期・phase 4・細胞内Ca</b> のどれか</div>
+      </div>
+      <div class="stat">
+        <div class="lab">STEP 3</div>
+        <div class="num" style="font-size:1.0rem">標的を決める</div>
+        <div class="sub">そのパラメータを担う<b>チャネル（Na/Ca/K/If）・受容体（α/β/M2/A1）・ポンプ</b>へ翻訳する</div>
+      </div>
+      <div class="stat">
+        <div class="lab">STEP 4</div>
+        <div class="num" style="font-size:1.0rem">薬を選ぶ</div>
+        <div class="sub">標的に作用する薬をマトリクスから選び、<b>心機能・腎肝・併存症</b>で絞る</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">i</span>
+      <div><b>実務での立ち位置。</b>Sicilian Gambit は処方の手順として日常的に回すものというより、<b>薬を選ぶときの思考の枠</b>として使われている。国内では JCS/JHRS 2020 不整脈薬物治療ガイドラインが、薬剤の作用をこのマトリクス形式で掲載している。臨床の最初の分岐は今も<b>「器質的心疾患があるか」「心機能はどうか」「腎・肝はどうか」</b>であり、Gambit はその上で<b>なぜその薬なのかを言語化する</b>役割を担う。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>vulnerable parameter 一覧 <span class="sec-note">Sicilian Gambit の中核。ここだけ覚えれば選べる</span></h2>
+
+    <div class="table-scroll card"><table style="min-width:880px">
+      <thead><tr>
+        <th style="width:190px">機序</th><th style="width:180px">代表的な不整脈</th>
+        <th style="width:170px">vulnerable parameter</th><th style="width:130px">標的</th><th>実際に使う薬</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><b>自動能亢進</b>（正常自動能）</td>
+          <td>洞性頻脈、不適切洞頻脈</td>
+          <td>phase 4 拡張期脱分極の<b>傾き</b></td>
+          <td>I<sub>f</sub>、β受容体</td>
+          <td>β遮断薬、イバブラジン。<b>まず原因（発熱・脱水・疼痛・貧血）を切る</b></td>
+        </tr>
+        <tr>
+          <td><b>異常自動能</b></td>
+          <td>虚血・再灌流時の心室不整脈、接合部性異所性頻拍</td>
+          <td>最大拡張期電位／phase 4</td>
+          <td>Na、Ca</td>
+          <td>Naブロッカー、Ca拮抗。ただし<b>薬より原因（虚血・電解質・カテコラミン）の是正</b>が本筋</td>
+        </tr>
+        <tr>
+          <td><b>EAD</b>（早期後脱分極）</td>
+          <td><span class="pill stop">pause依存性 TdP</span> QT延長症候群</td>
+          <td><b>APDの延長そのもの</b>（と徐脈・pause）</td>
+          <td>I<sub>Kr</sub>／I<sub>Ca-L</sub></td>
+          <td><b>原因薬中止・Mg・K補正・心拍数を上げる</b>（ペーシング／イソプロテレノール）。<b>Ⅰa・Ⅲ群は禁忌</b></td>
+        </tr>
+        <tr>
+          <td><b>DAD</b>（遅延後脱分極）</td>
+          <td>ジギタリス中毒、CPVT、流出路起源VT</td>
+          <td>細胞内<b>Ca過負荷</b></td>
+          <td>I<sub>Ca-L</sub>、RyR2、Na-K ATPase</td>
+          <td>ベラパミル、β遮断薬。ジギタリス中毒では<b>中止＋Fab抗体＋K/Mg補正</b></td>
+        </tr>
+        <tr>
+          <td><b>リエントリー</b><br>Na依存・<b>興奮性ギャップあり</b></td>
+          <td>心房粗動、AVRT、瘢痕関連VT</td>
+          <td><b>伝導と興奮性</b></td>
+          <td>Naチャネル</td>
+          <td>Ⅰa・Ⅰc群（一方向性ブロックを双方向性ブロックに変える）。<b>器質的心疾患があれば選ばない</b></td>
+        </tr>
+        <tr>
+          <td><b>リエントリー</b><br>Na依存・<b>ギャップなし</b>（leading circle）</td>
+          <td>心房細動</td>
+          <td><b>不応期</b></td>
+          <td>Kチャネル</td>
+          <td>Ⅲ群（アミオダロン、ソタロール、ベプリジル、ニフェカラント）</td>
+        </tr>
+        <tr>
+          <td><b>リエントリー</b><br>Ca依存</td>
+          <td>AVNRT、房室結節を回路に含むAVRT、ベラパミル感受性VT</td>
+          <td><b>伝導と興奮性</b></td>
+          <td>Caチャネル</td>
+          <td>ベラパミル、ジルチアゼム、アデノシン（ATP）、β遮断薬</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div>同じ「リエントリー」でも<b>興奮性ギャップの有無で答えが正反対</b>になる ― ギャップがあるなら<b>伝導</b>を叩き（Na遮断）、無いなら<b>不応期</b>を延ばす（K遮断）。この分岐がGambitの実質的な取り分で、「上室性か心室性か」という部位による分類からは絶対に出てこない。</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>使い方の大原則 <span class="sec-note">分類より先に守ること</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">① 抗不整脈薬は「不整脈が停止したら中止する」薬<span class="tag">最重要</span></div>
+      <ul class="clean">
+        <li>目的は<b>不整脈を止めること</b>であって、止まった後も血中濃度を維持することではない。<b>停止したらそこで終了</b>し、漫然と続けない。</li>
+        <li>止まった後に残るのは<b>陰性変力作用・伝導抑制・催不整脈作用</b>だけで、得るものがない。抑制を続けるほど良いという発想の帰結が <b>CAST</b>（PVCは消えたのに死亡が増えた）。</li>
+        <li>再発予防が要るなら、<b>薬を続ける</b>のではなく<b>誘因（虚血・電解質・カテコラミン・低K/低Mg・アシドーシス・容量）を潰す</b>のが先。</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">② Naチャネルブロッカー（Ⅰ群）は持続投与しない<span class="tag">心抑制</span></div>
+      <ul class="clean">
+        <li>Ⅰ群は<b>心抑制（陰性変力）が著しい</b>。単回静注で止めるための薬であり、<b>持続点滴で維持する薬ではない</b>。</li>
+        <li>持続すると蓄積とともに <b>QRS延長 → 血圧低下 → 徐脈・心停止</b> へ向かう。use-dependence により<b>頻拍が続いている間ほど遮断が蓄積する</b>ことも効いてくる。</li>
+        <li>とくに<b>器質的心疾患・低EF・虚血例では投与そのものを避ける</b>（CAST）。腎排泄のピルシカイニド、腎排泄＋低血糖のシベンゾリンは<b>腎機能低下例で一段と危険</b>。</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">③ Kチャネルブロッカー（Ⅲ群）は持続投与してよい<span class="tag">維持できる</span></div>
+      <ul class="clean">
+        <li>不応期を延ばして<b>リエントリーの再発を抑える</b>のが作用で、<b>心抑制が乏しい</b>ため維持投与に耐える。難治性VT/VF・electrical storm でボーラス後に持続へつなぐのはここ。</li>
+        <li>代わりに監視するのは<b>QT（TdP）</b>。持続中は<b>QTc・K・Mg・徐脈と pause</b> を追う。<b>Ⅲ群のTdPは徐脈・pauseで出る</b>（逆使用依存性）ので、徐脈化させる要素を同時に足さない。</li>
+        <li>アミオダロンは多チャネル遮断のためTdPが少ないが<b>血圧低下（静注では溶媒の寄与も大きい）</b>があり、ニフェカラントは<b>純粋なI<sub>Kr</sub>遮断で血行動態に優しい代わりにTdPが最大の副作用</b>。</li>
+      </ul>
+    </div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div>この3つを合わせると、実際の使い分けは<b>「Ⅰ群＝止めるための一発、Ⅲ群＝止めた後も繋げる薬」</b>という形になる。止まったら中止という原則（①）はⅢ群でも変わらず、<b>持続してよいこと</b>と<b>持続すべきこと</b>は別。</div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>落とし穴 <span class="sec-note">分類を字義通りに読むと間違えるところ</span></h2>
+
+    <div class="card"><div class="pad">
+      <ul class="clean">
+        <li><b>「Ⅲ群だからTdP」ではない。</b>アミオダロンはAPDを延長するのにTdPは1%未満で、多チャネル遮断のため再分極のばらつきが増えないことによる。危ないのは<b>純粋なI<sub>Kr</sub>遮断</b>（ソタロール、ニフェカラント、キニジン）。</li>
+        <li><b>逆使用依存性（reverse use-dependence）。</b>純粋Ⅲ群は<b>徐脈のときに最もAPDが延び、頻拍では効きが落ちる</b>。「止めたい頻拍には効かず、危ないpauseでだけ延びる」という最悪の向き。アミオダロンはこれが弱い。</li>
+        <li><b>使用依存性（use-dependence）。</b>Ⅰ群のNa遮断は<b>頻拍時ほど強い</b>（Ⅰc＞Ⅰa＞Ⅰb）。だからⅠbは正常心拍ではほぼ効かず、<b>心房細動には無効</b>（心房の活動電位が短く不活性化型に留まらない）。</li>
+        <li><b>Ⅰc薬で心房粗動が1:1伝導になる。</b>Ⅰcで心房レートが300→200程度に落ちると房室結節が追いつき、<b>wide QRS の1:1伝導</b>で血行動態が破綻する。Ⅰcを心房性頻脈に使うときは<b>房室結節抑制薬（β遮断／Ca拮抗）を併用</b>する。</li>
+        <li><b>WPW＋心房細動に、房室結節だけを抑える薬は禁忌。</b>ベラパミル・ジルチアゼム・ジゴキシン・アデノシンは<b>副伝導路の順行伝導を相対的に増やしVFへ</b>。この場面はプロカインアミド等のNa遮断か、不安定なら電気的除細動。</li>
+        <li><b>wide QRS tachycardia への「診断的ベラパミル」は禁忌。</b>VTだった場合に血行動態が破綻する。鑑別がつかないうちはVTとして扱う。</li>
+        <li><b>クラス名は薬ではなく作用。</b>プロカインアミドの活性代謝物 <b>NAPA は純粋なⅢ群かつ腎排泄</b>で、親薬の血中濃度が適正でも腎不全ではTdPが起こる。プロパフェノンはβ遮断作用を併せ持ち、喘息では気管支攣縮を起こす。</li>
+        <li><b>Ⅰa群の低血糖と抗コリン作用。</b>シベンゾリン・ジソピラミドは膵β細胞のK<sub>ATP</sub>遮断で<b>低血糖</b>を起こす（高齢・腎機能低下で顕在化）。ジソピラミドは<b>尿閉・緑内障悪化・口渇</b>。「抗不整脈薬で意識障害」を見たらまず血糖。</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>分類そのものはエビデンスではなく枠組みである。</b>Vaughan Williams 分類（1970／1984 再評価）も Sicilian Gambit（1991）も、RCTで検証された対象ではなく<b>専門家による整理・合議</b>である。したがって「Gambitで選んだ方が予後が良い」ことを示した試験は存在しない。一方で<b>CASTは分類の使い方に対する反証としてのRCT</b>であり、このカードで唯一の一次エビデンスにあたる。</p>
+    <p><b>主要な出典</b>：Task Force of the Working Group on Arrhythmias of the European Society of Cardiology. The Sicilian Gambit. A new approach to the classification of antiarrhythmic drugs based on their actions on arrhythmogenic mechanisms. <b>Circulation 1991;84:1831-1851</b>（PMID 1717173、doi 10.1161/01.cir.84.4.1831）／Echt DS, Liebson PR, Mitchell LB, et al. Mortality and morbidity in patients receiving encainide, flecainide, or placebo. The Cardiac Arrhythmia Suppression Trial. <b>N Engl J Med 1991;324:781-788</b>（PMID 1900101、doi 10.1056/NEJM199103213241201）／Vaughan Williams EM. A classification of antiarrhythmic actions reassessed after a decade of new drugs. <b>J Clin Pharmacol 1984;24:129-147</b>（doi 10.1002/j.1552-4604.1984.tb01822.x）／Lei M, Wu L, Terrar DA, Huang CL. Modernized classification of cardiac antiarrhythmic drugs. <b>Circulation 2018;138:1879-1896</b>（PMID 30354657、doi 10.1161/CIRCULATIONAHA.118.035455）／Ono K, Iwasaki Y, Akao M, et al. JCS/JHRS 2020 Guideline on Pharmacotherapy of Cardiac Arrhythmias. <b>Circ J 2022;86:1790-1924</b>（PMID 35283400、doi 10.1253/circj.CJ-20-1212）。</p>
+    <p><b>照合の状況</b>：CASTの数値（1498例、平均10か月、不整脈死 43 vs 16／P=0.0004、非不整脈心臓死 17 vs 5／P=0.01、総死亡 63 vs 26）は<b>抄録の記載に基づく</b>。書誌（雑誌・巻・ページ・PMID・DOI）は PubMed／Europe PMC で確認済み。<b>Sicilian Gambit 原著の本文とマトリクス図は有料の壁の内側で未読</b>であり、本カードの vulnerable parameter 表は原著図の転載ではなく<b>枠組みの要約</b>である。Vaughan Williams 1970年の原典（Sandøe ら編の学会論文集）と Harrison による a/b/c 細分の原典は<b>未入手</b>で、年号は二次資料ベース。</p>
+    <p><b>意図的に書かなかったこと</b>：<b>個々の薬剤の投与量・投与速度・調製</b>は本版（分類編）には含めていない。用量は添付文書と JCS/JHRS 2020 に当たって別途追記する。また Sicilian Gambit の薬剤×標的マトリクス（○◐●の強度表）も、原著の値を確認できていないため掲載していない。</p>
+  </div>
+
+  <footer>
+    抗不整脈薬ポケットカード（分類編・第1版）／ 作成 2026-09-08<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
