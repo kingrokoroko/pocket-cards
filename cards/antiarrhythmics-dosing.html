@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>抗不整脈薬 使い方② ― 静注の実際</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td b, tbody td strong { color: var(--ink); }
+  table.narrow { min-width: 420px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .formula {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 12px 15px; font-family: var(--mono); font-size: .88rem; color: var(--ink);
+    text-align: center; letter-spacing: .01em; overflow-x: auto; white-space: nowrap;
+  }
+  .formula + .formula { margin-top: 8px; }
+  .formula .em { color: var(--accent); font-weight: 700; }
+  .formula .no { color: var(--sev); text-decoration: line-through; }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+  /* Sicilian Gambit マトリクス */
+  table.mx { min-width: 1080px; font-size: .8rem; }
+  table.mx thead th { text-transform: none; letter-spacing: .02em; font-size: .68rem; text-align: center; padding: 8px 5px; }
+  table.mx thead tr:first-child th { border-bottom: 1px solid var(--line); }
+  table.mx thead th.grp { background: var(--accent-soft); color: var(--accent); }
+  table.mx th.drug, table.mx td.drug { text-align: left; white-space: nowrap; padding-left: 13px; }
+  table.mx th.drug, table.mx td.drug { position: sticky; left: 0; z-index: 2; box-shadow: 1px 0 0 var(--line); }
+  table.mx td.drug { background: var(--surface); }
+  table.mx th.drug { background: var(--surface-2); z-index: 3; }
+  table.mx tbody td { padding: 7px 5px; text-align: center; }
+  table.mx tbody + tbody td { border-top: 2px solid var(--line-strong); }
+  table.mx td.drug b { color: var(--ink); font-weight: 600; }
+  table.mx .vw { font-size: .63rem; font-weight: 700; color: var(--ink-3); margin-left: 6px; }
+  table.mx .ar { font-weight: 700; color: var(--ink-2); letter-spacing: -.04em; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; }
+  .dot.lo { border: 1.6px solid var(--ink-3); }
+  .dot.mid { background: var(--accent-soft); border: 1.6px solid var(--accent); }
+  .dot.hi { background: var(--accent); border: 1.6px solid var(--accent); }
+  .sq { display: inline-block; width: 11px; height: 11px; background: var(--mod); vertical-align: -1px; }
+  .ai { font-size: .62rem; font-weight: 800; color: var(--ink-2); margin-left: 1px; vertical-align: 3px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 7px 18px; font-size: .78rem; color: var(--ink-3); margin: 11px 0 0; }
+  .legend .it { display: inline-flex; align-items: center; gap: 6px; }
+  /* 投与レシピ */
+  .rx { background: var(--surface-2); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+        border-radius: 9px; padding: 11px 14px; font-size: .88rem; color: var(--ink); }
+  .rx + .rx { margin-top: 7px; }
+  .rx b { color: var(--accent); font-weight: 700; }
+  .rx .lbl { display: block; font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+             color: var(--ink-3); margin-bottom: 3px; }
+  .drugcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+              box-shadow: var(--shadow); padding: 14px 16px; }
+  .drugcard + .drugcard { margin-top: 12px; }
+  .dhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-bottom: 9px; }
+  .dhead .nm { font-size: 1.0rem; font-weight: 700; color: var(--ink); }
+  .dhead .gen { font-size: .82rem; color: var(--ink-2); }
+  .dhead .amp { font-size: .74rem; color: var(--ink-3); font-family: var(--mono); }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 9px; }
+  .tagm { font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+          background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); }
+  .tagm.liver { background: var(--mod-soft); color: var(--mod); border-color: transparent; }
+  .tagm.kidney { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .note { font-size: .85rem; color: var(--ink-2); margin: 9px 0 0; }
+  .note b { color: var(--ink); }
+  .bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--line); margin: 3px 0 0; }
+  .bar i { display: block; height: 100%; }
+  .bar i.l { background: var(--mod); }
+  .bar i.k { background: var(--accent); }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>抗不整脈薬 使い方② ― 静注の実際</h1>
+    <div class="subtitle">1アンプルからの組み立て（希釈・速度・持続の可否）／ 救急・集中治療 ／ 作成 2026-09-08 ／ <a href="antiarrhythmics.html" style="color:var(--accent)">①分類編はこちら</a></div>
+  </header>
+
+  <p class="lede">
+    静注抗不整脈薬の投与法は、薬ごとにバラバラに覚えるものではなく<strong>2つの型</strong>に落ちる ―
+    <strong>①1アンプルを生食20mLに溶いて5分かけて iv（急ぐとき）</strong>、<strong>②同じ1アンプルを生食100mLに溶いて30分〜1時間で DIV（血行動態に不安があるとき）</strong>。
+    決めるべきは「どちらの型で入れるか」と「どの薬を選ぶか」で、後者は<strong>代謝の肝／腎比</strong>と<strong>心抑制の強さ</strong>で決まる。
+    <strong>Ⅰ群は止まったら中止し持続しない。持続してよいのはⅢ群（アミオダロン・ニフェカラント）とリドカイン</strong>。
+  </p>
+
+  <div class="grid3">
+    <div class="stat">
+      <div class="lab">型① 急ぐとき</div>
+      <div class="num" style="font-size:1.0rem">1A ＋ 生食20mL</div>
+      <div class="sub"><b>5分かけて iv</b>。血圧と心電図を見ながら、止まったところで<b>途中でも中止</b></div>
+    </div>
+    <div class="stat">
+      <div class="lab">型② 血行動態に不安</div>
+      <div class="num" style="font-size:1.0rem">1A ＋ 生食100mL</div>
+      <div class="sub"><b>30分〜1時間で DIV</b>。同じ総量でも心抑制と血圧低下の出方が穏やか</div>
+    </div>
+    <div class="stat">
+      <div class="lab">持続してよい薬</div>
+      <div class="num" style="font-size:1.0rem">Ⅲ群＋リドカイン</div>
+      <div class="sub">アミオダロン・ニフェカラント・リドカイン。<b>それ以外のⅠ群・ベラパミルは持続しない</b></div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>静注レシピ 一覧 <span class="sec-note">ベッドサイドはここだけ見る</span></h2>
+
+    <div class="table-scroll card"><table style="min-width:900px">
+      <thead><tr>
+        <th style="width:56px">群</th><th style="width:190px">薬剤（規格）</th><th style="width:96px">代謝 肝／腎</th>
+        <th style="width:250px">単回投与</th><th style="width:230px">持続</th><th>ひとこと</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Ⅰa</b></td>
+          <td><b>アミサリン</b><br><span style="font-size:.78rem">プロカインアミド 1A 200mg</span></td>
+          <td>肝60／腎40</td>
+          <td><b>200〜1,000mg</b>（入れたい総量）＋生食100mL<br><b>DIV 30分〜1時間</b></td>
+          <td><span class="pill stop">しない</span></td>
+          <td>Ⅰa群で<b>もっともNa遮断が弱く、心抑制も弱い</b>。1A 200mgでは足りず<b>2A程度</b>必要なことが多い</td>
+        </tr>
+        <tr>
+          <td><b>Ⅰa</b></td>
+          <td><b>リスモダンP</b><br><span style="font-size:.78rem">ジソピラミド 1A 50mg</span></td>
+          <td>肝50／腎50</td>
+          <td><b>50mg＋生食20mL iv 5分</b><br>or 50〜100mg＋生食100mL DIV 30分〜1時間</td>
+          <td><span class="pill stop">しない</span></td>
+          <td>プロカインアミドより<b>強く効く</b>。<b>抗コリン作用が最強</b>、K<sub>ATP</sub>遮断で<b>低血糖</b></td>
+        </tr>
+        <tr>
+          <td><b>Ⅰa</b></td>
+          <td><b>シベノール</b><br><span style="font-size:.78rem">シベンゾリン 1A 70mg</span></td>
+          <td>肝15／<b>腎85</b></td>
+          <td><b>70mg＋生食20mL iv 5分</b><br>or 70mg＋生食100mL DIV 30分〜1時間</td>
+          <td><span class="pill stop">しない</span></td>
+          <td>Na結合／解離が最も遅く<b>Ⅰa群で最強</b>。<b>心抑制も強い</b>。HOCMの閉塞緩和にも使う</td>
+        </tr>
+        <tr>
+          <td><b>Ⅰb</b></td>
+          <td><b>キシロカイン</b><br><span style="font-size:.78rem">リドカイン 静注用2% 5mL＝100mg</span></td>
+          <td>肝80／腎20<br><span style="font-size:.75rem">代謝が早い</span></td>
+          <td><b>0.5〜0.75mg/kg</b> one-shot iv<br>重症は<b>1〜1.5mg/kg</b> one-shot iv</td>
+          <td><span class="pill mid">可</span> <b>60〜240mg/h</b><br><span style="font-size:.76rem">1%と2%の製剤があるので注意</span></td>
+          <td>心室のみ。<b>心房細動には効かない</b></td>
+        </tr>
+        <tr>
+          <td><b>Ⅰb</b></td>
+          <td><b>アスペノン</b><br><span style="font-size:.78rem">アプリンジン 1A 100mg</span></td>
+          <td><b>肝100</b>／腎0</td>
+          <td><b>100mg＋生食20mL iv 5分</b><br>or 100mg＋生食100mL DIV 30分〜1時間</td>
+          <td><span class="pill stop">しない</span></td>
+          <td>不活性化型ブロッカーなのに<b>上室性にも効く</b>。<b>心抑制が少ない</b>。100%肝代謝＝<b>腎障害で使いやすい</b></td>
+        </tr>
+        <tr>
+          <td><b>Ⅰc</b></td>
+          <td><b>サンリズム</b><br><span style="font-size:.78rem">ピルシカイニド 1A 50mg</span></td>
+          <td>肝1／<b>腎99</b></td>
+          <td><b>50mg＋生食20mL iv 5分</b><br>or 50mg＋生食100mL DIV 30分〜1時間</td>
+          <td><span class="pill stop">しない</span></td>
+          <td>K遮断を持たない純粋なNa遮断。<b>腎排泄99%</b>で腎機能低下例は避ける</td>
+        </tr>
+        <tr>
+          <td><b>Ⅰc</b></td>
+          <td><b>タンボコール</b><br><span style="font-size:.78rem">フレカイニド 1A 50mg</span></td>
+          <td>肝70／腎30</td>
+          <td><b>50mg＋生食20mL iv 5分</b><br>or 50mg＋生食100mL DIV 30分〜1時間</td>
+          <td><span class="pill stop">しない</span></td>
+          <td>ピルシカイニドと並んで<b>非常に強いNa遮断</b>。器質的心疾患・高齢者では避ける</td>
+        </tr>
+        <tr>
+          <td><b>Ⅲ</b></td>
+          <td><b>アンカロン</b><br><span style="font-size:.78rem">アミオダロン 注150mg/3mL</span></td>
+          <td><b>肝99</b>／腎1</td>
+          <td>VT/VF：<b>初回300mg iv/io</b><br>効かなければ<b>150mgを1回だけ</b>追加</td>
+          <td><span class="pill go">してよい</span><br>150〜600mg＋5%ブドウ糖50mL → <b>2mL/h</b><br>or 150〜600mg＋5%ブドウ糖500mL → <b>20mL/h</b><br><span style="font-size:.76rem">（150〜600mg/日）</span></td>
+          <td>マルチチャネル遮断。<b>予後改善が示されている唯一の抗不整脈薬</b>。内服は半減期19〜53日、効果発現に2週〜1ヵ月</td>
+        </tr>
+        <tr>
+          <td><b>Ⅲ</b></td>
+          <td><b>シンビット</b><br><span style="font-size:.78rem">ニフェカラント 1A 50mg</span></td>
+          <td>肝50／腎50</td>
+          <td><b>50mg＋生食20mLとして5mLずつ iv</b><br>（<b>0.3mg/kg</b> or 15〜20mg iv）</td>
+          <td><span class="pill go">してよい</span><br>150mg＋生食50mL で <b>〜15mg/h</b> or <b>〜5γ</b></td>
+          <td>純粋なK遮断で<b>心抑制がない</b>。<b>QTcを見ながら調節</b>（0.40〜0.55秒）</td>
+        </tr>
+        <tr>
+          <td><b>Ⅳ</b></td>
+          <td><b>ワソラン</b><br><span style="font-size:.78rem">ベラパミル 1A 5mg/2mL</span></td>
+          <td>肝80／腎20</td>
+          <td><b>5mg＋生食20mL iv 5分かけて</b></td>
+          <td><span class="pill stop">しない</span></td>
+          <td>降圧薬でなく<b>抗不整脈薬として</b>使う。<b>血圧低下・心抑制は必発</b>。効いた分だけ入れて途中で止める</td>
+        </tr>
+        <tr>
+          <td>ジギ</td>
+          <td><b>ジゴシン</b><br><span style="font-size:.78rem">ジゴキシン 1A 0.25mg</span></td>
+          <td>腎排泄が主</td>
+          <td><b>0.25mg＋生食100mL を DIV</b></td>
+          <td><span class="pill care">維持</span> <b>0.125〜0.5mg/日</b><br><span style="font-size:.76rem">血中濃度を見ながら</span></td>
+          <td>強心薬ではなく<b>抗不整脈薬として</b>使い、強心はおまけ。効果は弱く<b>他剤の補助</b></td>
+        </tr>
+        <tr>
+          <td>ジギ</td>
+          <td><b>ジギラノゲン</b><br><span style="font-size:.78rem">デスラノシド 1A 0.4mg</span></td>
+          <td>腎排泄が主</td>
+          <td><b>0.4mg＋生食100mL を DIV</b></td>
+          <td><span class="pill care">維持</span> ジゴキシンに準じる</td>
+          <td>ジゴキシンより<b>やや速く効き、強心作用もやや強い</b></td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><b>Ⅰ群はどれも「1A＋生食20mLを5分」か「1A＋生食100mLを30分〜1時間」の二択</b>で、量ではなく<b>入れ方</b>を選んでいる。血行動態が保たれていて早く止めたいなら前者、心機能が悪い・血圧が心配なら後者。<b>どちらでも、止まった時点で中止する</b>。</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>群別 ― レシピと、その薬を選ぶ理由 <span class="sec-note">同じ群でも「強さ」と「心抑制」が違う</span></h2>
+
+    <div class="mini-h" style="margin:16px 0 9px">Ⅰa群 ― Na＋K遮断。強さと心抑制はセットで上がる</div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">アミサリン</span><span class="gen">プロカインアミド</span><span class="amp">1A 200mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 60%</span><span class="tagm kidney">腎 40%</span></div>
+      <div class="bar"><i class="l" style="width:60%"></i><i class="k" style="width:40%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">DIV</span><b>200〜1,000mg</b>（トータルで入れたい量）＋<b>生食100mL</b>として、<b>30分〜1時間</b>で投与</div>
+      <p class="note">Ⅰa群の中でも<b>Naチャネル遮断が弱い</b>。効きが弱い反面、<b>副作用としての心抑制も弱い</b>のが特徴で、<b>心機能の悪い患者に使いうる</b>のはそのため。弱いので <b>1A 200mgでは足りず2Aくらい使わないと不整脈を止められない</b>ことが多い。以前のACLSでは心停止に <b>1,200mg/h で導入し総量17mg/kg（70kgで1,200mg）まで</b>とされていたが、現在の心肺蘇生ガイドラインでは推奨度が大きく下がり、心停止で使うことはまずない。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">リスモダンP</span><span class="gen">ジソピラミド</span><span class="amp">1A 50mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 50%</span><span class="tagm kidney">腎 50%</span></div>
+      <div class="bar"><i class="l" style="width:50%"></i><i class="k" style="width:50%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>50mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <div class="rx"><span class="lbl">or DIV</span><b>50〜100mg＋生食100mL</b>、<b>30分〜1時間</b>で投与</div>
+      <p class="note">Ⅰa群としては<b>プロカインアミドより強く効く</b>。問題は2つ ― <b>抗コリン作用が強い</b>こと（他の抗不整脈薬と比べてももっとも強い）と、<b>ATP感受性Kチャネルを阻害してインスリン分泌を促し低血糖を起こす</b>こと。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">シベノール</span><span class="gen">シベンゾリン</span><span class="amp">1A 70mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 15%</span><span class="tagm kidney">腎 85%</span></div>
+      <div class="bar"><i class="l" style="width:15%"></i><i class="k" style="width:85%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>70mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <div class="rx"><span class="lbl">or DIV</span><b>70mg＋生食100mL</b>、<b>30分〜1時間</b>で投与</div>
+      <p class="note">Ⅰa群の中で<b>Naチャネルとの結合／解離がもっとも遅く、もっとも強力なⅠa群</b>。ジソピラミドと同じ<b>抗コリン作用・低血糖</b>があるが、ジソピラミドよりは弱い。強力ゆえに<b>「ここぞ」でNa遮断を効かせたいとき</b>に使えるが、<b>心抑制も強い</b>ので注意。<b>HOCM で閉塞を緩和</b>する用途でも使う。ⅠcよりNa遮断は弱い代わりに<b>Ⅰa群なのでK遮断を併せ持つ</b> ― K遮断も同時に効かせたいかどうかで選ぶ。</p>
+    </div>
+
+    <div class="mini-h" style="margin:20px 0 9px">Ⅰb群 ― 不活性化型を狙うので心抑制が少ない</div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">キシロカイン</span><span class="gen">リドカイン</span><span class="amp">静注用2% 5mL＝100mg／リドカインシリンジ 100mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 80%</span><span class="tagm kidney">腎 20%</span><span class="tagm">代謝が早い</span></div>
+      <div class="bar"><i class="l" style="width:80%"></i><i class="k" style="width:20%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">one-shot iv</span><b>0.5〜0.75 mg/kg</b>／重症は <b>1〜1.5 mg/kg</b></div>
+      <div class="rx"><span class="lbl">持続静注する場合</span><b>60〜240 mg/h</b>　<span style="color:var(--sev)">※1%と2%の製剤があるので濃度に注意</span></div>
+      <p class="note">代謝が早く効果の切れも早いので、<b>入れて効かなければ次の手に移れる</b>のが利点。心房には効かない（§1・分類編§3）。以前は心肺蘇生ガイドラインに入っていたが推奨から外れ、使用は減った。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">アスペノン</span><span class="gen">アプリンジン</span><span class="amp">1A 100mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 100%</span></div>
+      <div class="bar"><i class="l" style="width:100%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>100mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <div class="rx"><span class="lbl">or DIV</span><b>100mg＋生食100mL</b>、<b>30分〜1時間</b>で投与</div>
+      <p class="note">Ⅰb群でも<b>非常に特殊な薬</b>。Sicilian Gambit で見ると<b>結合／解離は medium</b> で、<b>不活性化型チャネルブロッカーなのに上室性不整脈にも効く</b>。不活性化型を狙うので<b>心抑制が少なく</b>、<b>心不全の患者にも使いやすい</b>。<b>100%肝代謝</b>なので<b>腎障害の患者にも使いやすい</b>。静注製剤があるので、院内採用されているなら選択肢に入る。</p>
+    </div>
+
+    <div class="mini-h" style="margin:20px 0 9px">Ⅰc群 ― K遮断を持たない、純粋で強力なNa遮断</div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">サンリズム</span><span class="gen">ピルシカイニド</span><span class="amp">1A 50mg</span></div>
+      <div class="meta"><span class="tagm kidney">腎 99%</span></div>
+      <div class="bar"><i class="k" style="width:99%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>50mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <div class="rx"><span class="lbl">or DIV</span><b>50mg＋生食100mL</b>、<b>30分〜1時間</b>で投与</div>
+      <p class="note"><b>腎排泄99%</b>。腎機能低下例では蓄積してQRSが延び、徐脈・心停止に向かう。<b>腎機能を見ずに使わない</b>。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">タンボコール</span><span class="gen">フレカイニド</span><span class="amp">1A 50mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 70%</span><span class="tagm kidney">腎 30%</span></div>
+      <div class="bar"><i class="l" style="width:70%"></i><i class="k" style="width:30%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>50mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <div class="rx"><span class="lbl">or DIV</span><b>50mg＋生食100mL</b>、<b>30分〜1時間</b>で投与</div>
+      <p class="note">ピルシカイニドと並んで<b>非常に強いNaチャネルブロッカー</b>。<b>CASTで生命予後を悪化させた薬</b>でもあり、<b>器質的心疾患のある人や高齢者では避ける</b>のが無難。逆に<b>心疾患のない人では有効率が高く</b>、「せっかく抗不整脈薬を使うなら洞調律化できなければ意味がない」という点で使う機会はある。</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>Ⅲ群・Ⅳ群・ジギタリス <span class="sec-note">持続してよいのはここだけ</span></h2>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">アンカロン</span><span class="gen">アミオダロン</span><span class="amp">注 150mg/3mL ／ 錠 100mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 99%</span><span class="tagm">半減期 19〜53日</span><span class="tagm">内服の効果発現 2週〜1ヵ月</span></div>
+      <div class="bar"><i class="l" style="width:99%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">VT／VF</span>初回 <b>300mg iv/io</b>。効かなければ <b>150mg を1回だけ</b>追加投与</div>
+      <div class="rx"><span class="lbl">維持（持続静注）</span><b>150〜600mg ＋ 5%ブドウ糖 50mL</b> → <b>2mL/h</b></div>
+      <div class="rx"><span class="lbl">or</span><b>150〜600mg ＋ 5%ブドウ糖 500mL</b> → <b>20mL/h</b>　<span style="font-size:.8rem;color:var(--ink-3)">（いずれも 150〜600mg/日）</span></div>
+      <p class="note"><b>マルチチャネルブロッカー</b>で、抗不整脈薬の中で<b>もっとも多くの作用を同時に持つ</b>（分類編§6のマトリクスで、Na・Ca・K・α・βのすべてに印が付くのはこの薬だけ）。<b>予後の改善が示されている抗不整脈薬</b>であり、冠動脈拡張作用も持つ。溶解は<b>生食ではなく5%ブドウ糖</b>。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">シンビット</span><span class="gen">ニフェカラント</span><span class="amp">1A 50mg</span></div>
+      <div class="meta"><span class="tagm liver">肝 50%</span><span class="tagm kidney">腎 50%</span></div>
+      <div class="bar"><i class="l" style="width:50%"></i><i class="k" style="width:50%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">one-shot 静注</span><b>50mg＋生食20mL</b> として <b>5mLずつ iv</b>（<b>0.3mg/kg</b> または <b>15〜20mg</b> iv）</div>
+      <div class="rx"><span class="lbl">持続静注</span><b>150mg＋生食50mL</b> で <b>〜15mg/h</b> または <b>〜5γ</b></div>
+      <div class="rx"><span class="lbl">調節</span><b>QTc をモニタリングしながら調節</b>（QTc 0.40〜0.55 秒 を目安）</div>
+      <p class="note">アミオダロンと対照的に<b>純粋なKチャネル遮断</b>で、<b>心抑制がない</b>のが最大の利点 ― 血圧が保てない状況で使える。代償として<b>TdPが最大の副作用</b>で、<b>QTcと徐脈・pause の監視が投与の条件</b>になる。</p>
+    </div>
+
+    <div class="drugcard">
+      <div class="dhead"><span class="nm">ワソラン</span><span class="gen">ベラパミル</span><span class="amp">1A 5mg / 2mL</span></div>
+      <div class="meta"><span class="tagm liver">肝 80%</span><span class="tagm kidney">腎 20%</span></div>
+      <div class="bar"><i class="l" style="width:80%"></i><i class="k" style="width:20%"></i></div>
+      <div class="rx" style="margin-top:10px"><span class="lbl">iv</span><b>5mg＋生食20mL</b>、<b>5分かけて</b></div>
+      <p class="note"><b>降圧薬としてではなく抗不整脈薬として使う</b>。心臓への作用が強く、<b>血圧低下と心抑制は必発</b>と考えておく。<b>持続静注はしないほうがよい</b>。上記の組成で静注し、<b>効いた時点で必要分のみ入れて中止する</b>使い方が多い。</p>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <div class="mini-h">ジギタリス ― 強心薬ではなく「抗不整脈薬」として使う</div>
+      <ul class="clean">
+        <li><b>強心作用はおまけ</b>と考える。強心の機序は Na-K ATPase 阻害 → Na-Ca ポンプ阻害 → <b>細胞内Ca増加</b>。</li>
+        <li><b>抗不整脈作用は M<sub>2</sub>受容体を介した副交感神経刺激による徐拍化</b>。まだ未解明の機序もあるとされる。</li>
+        <li>強心作用も抗不整脈作用も<b>弱い</b>ので、<b>抗不整脈薬としても他剤の補助</b>として使うべき薬。</li>
+      </ul>
+    </div></div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="drugcard">
+        <div class="dhead"><span class="nm">ジゴシン</span><span class="gen">ジゴキシン</span><span class="amp">1A 0.25mg</span></div>
+        <div class="rx"><span class="lbl">DIV</span><b>0.25mg ＋ 生食100mL</b></div>
+        <div class="rx"><span class="lbl">維持</span><b>0.125〜0.5 mg/日</b>（血中濃度を見ながら）</div>
+      </div>
+      <div class="drugcard">
+        <div class="dhead"><span class="nm">ジギラノゲン</span><span class="gen">デスラノシド</span><span class="amp">1A 0.4mg</span></div>
+        <div class="rx"><span class="lbl">DIV</span><b>0.4mg ＋ 生食100mL</b></div>
+        <p class="note" style="margin-top:9px">どちらを使ってもよいが、<b>デスラノシドのほうがジゴキシンより少し早く効き、強心作用も少し強い</b>。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>代謝で選ぶ <span class="sec-note">腎不全・肝不全でまず切る薬が決まる</span></h2>
+
+    <div class="grid2">
+      <div class="card"><div class="pad">
+        <div class="mini-h">腎機能が悪いとき<span class="tag" style="background:var(--sev-soft);color:var(--sev)">避ける</span></div>
+        <ul class="clean">
+          <li><b>ピルシカイニド（腎99%）</b> ― 蓄積してQRS延長・徐脈・心停止。<b>もっとも危ない</b></li>
+          <li><b>シベンゾリン（腎85%）</b> ― 蓄積に加えて<b>低血糖</b>が顕在化する</li>
+          <li>ジソピラミド（腎50%）、ニフェカラント（腎50%）は<b>減量・監視で使う</b></li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">腎機能が悪いとき<span class="tag" style="background:var(--mild-soft);color:var(--mild)">選べる</span></div>
+        <ul class="clean">
+          <li><b>アプリンジン（肝100%）</b> ― <b>心抑制も少なく</b>、腎障害＋心不全という最悪の組み合わせで最も使いやすい</li>
+          <li><b>アミオダロン（肝99%）</b> ― 持続もできる</li>
+          <li>リドカイン（肝80%）、ベラパミル（肝80%）、フレカイニド（肝70%）</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">i</span>
+      <div><b>肝血流が落ちる状況（心不全・ショック・肝硬変）ではリドカインが蓄積する</b>。逆に<b>アプリンジンは100%肝代謝でも心抑制が少ない</b>ため、心機能と腎機能の両方が悪い症例で選ばれる。「肝か腎か」だけでなく<b>「心抑制が許容できるか」</b>を必ず一緒に見る。</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>添付文書・ガイドラインとの対応 <span class="sec-note">1アンプル固定は「体重50kg」の量になっている</span></h2>
+
+    <div class="table-scroll card"><table style="min-width:880px">
+      <thead><tr><th style="width:130px">薬剤</th><th style="width:250px">この一覧（実務のレシピ）</th><th>添付文書／JCS・JHRS 2020 の用法用量</th><th style="width:210px">差の意味</th></tr></thead>
+      <tbody>
+        <tr><td><b>プロカインアミド</b></td><td>200〜1,000mg＋生食100mL を<b>30分〜1時間</b></td><td>静注 200〜1,000mg を <b>50〜100mg/分</b>で（＝2〜20分）</td><td>実務のほうが<b>大幅に緩徐</b>＝安全側</td></tr>
+        <tr><td><b>ジソピラミド</b></td><td>50mg＋生食20mL を5分</td><td>50〜100mg を<b>5分以上</b>かけて緩徐に静注</td><td>一致</td></tr>
+        <tr><td><b>シベンゾリン</b></td><td>70mg（1A）＋生食20mL を5分</td><td><b>1.4mg/kg</b>（0.1mL/kg）を2〜5分、血圧・心電図監視下</td><td><b>1A=70mg は体重50kg分</b>。70kgなら約98mgが規定量</td></tr>
+        <tr><td><b>リドカイン</b></td><td>0.5〜0.75mg/kg（重症1〜1.5）／持続60〜240mg/h</td><td>50〜100mg（<b>1〜2mg/kg</b>）を1〜2分／点滴 <b>1〜2mg/分（最大4mg/分＝240mg/h）</b></td><td>初回は実務のほうが控えめ。持続の上限は一致</td></tr>
+        <tr><td><b>アプリンジン</b></td><td>100mg＋生食20mL を5分</td><td>1.5〜2.0mg/kg を10倍希釈し5〜10mL/分、<b>単回累積100mgまで</b></td><td><b>上限100mg</b>で一致</td></tr>
+        <tr><td><b>ピルシカイニド</b></td><td>50mg＋生食20mL を5分</td><td><b>1mg/kg</b>（期外収縮は0.75mg/kg）を<b>10分</b>かけて</td><td>1A=50mgは体重50kg分。<b>規定は10分</b></td></tr>
+        <tr><td><b>フレカイニド</b></td><td>50mg＋生食20mL を5分</td><td><b>1〜2mg/kg</b> を<b>10分</b>、<b>単回総量150mgまで</b></td><td>同上。ブドウ糖で希釈と規定</td></tr>
+        <tr><td><b>アミオダロン</b></td><td>VT/VF 300mg→無効なら150mg追加／維持 150〜600mg/日</td><td>心停止：<b>300mg(6mL)または5mg/kg</b>＋5%ブドウ糖20mLをボーラス、持続すれば<b>150mg(3mL)または2.5mg/kg</b>追加。難治性VF/VT：①<b>125mg</b>＋5%ブドウ糖100mLを<b>10分</b>（600mL/h）→②<b>750mg</b>＋5%ブドウ糖500mLを<b>33mL/h×6時間</b>→③維持 <b>17mL/h</b>。<b>1日1,250mgまで・2.5mg/mL以下・輸液ポンプ必須</b></td><td>心停止の量は一致。<b>維持は実務の簡略版</b>で、添付文書の3段階プロトコルとは別物</td></tr>
+        <tr><td><b>ニフェカラント</b></td><td>0.3mg/kg を5mLずつ／持続 〜15mg/h（〜5γ）</td><td>単回 <b>0.3mg/kg</b> を5分／持続 <b>0.4mg/kg/h</b></td><td>一致（0.4mg/kg/h＝50kgで20mg/h）</td></tr>
+        <tr><td><b>ベラパミル</b></td><td>5mg＋生食20mL を5分</td><td>5mg を必要に応じ希釈し緩徐に静注</td><td>一致</td></tr>
+        <tr><td><b>ジゴキシン</b></td><td>0.25mg＋生食100mL DIV／維持 0.125〜0.5mg/日</td><td>急速飽和：0.25〜0.5mgを2〜4時間ごと（飽和量1.0〜2.0mg）／維持：<b>1日0.25mg</b>。<b>飽和療法は過量になりやすく、緊急でなければ初めから維持量で</b></td><td>実務は<b>飽和をかけない</b>使い方</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><b>「1アンプルを溶いて入れる」は体重50kg前後を前提にした量</b>になっている ― シベンゾリン1.4mg/kg・ピルシカイニド1mg/kg・フレカイニド1〜2mg/kg は、いずれも50kgで1A分。<b>体格の大きい患者では1Aで足りず、逆に小柄・高齢・腎機能低下では1Aが過量</b>になる。<b>止まらないときに漫然と2A目を足す前に、mg/kgで計算し直す</b>。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>この一覧にない静注薬 <span class="sec-note">添付文書・JCS/JHRS 2020 より</span></h2>
+
+    <div class="table-scroll card"><table style="min-width:760px">
+      <thead><tr><th style="width:180px">薬剤</th><th style="width:280px">用法</th><th>注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>ヘルベッサー注</b><br><span style="font-size:.78rem">ジルチアゼム 10／50／250mg</span></td>
+            <td>頻脈性不整脈（上室性）：<b>1回10mg を約3分</b>で緩徐に静注</td>
+            <td><b>不整脈に対する持続点滴は添付文書の用法にない</b>（5〜15µg/kg/分は手術時の異常高血圧・高血圧性緊急症の用法）。250mgバイアルは<b>不整脈には使えない</b></td></tr>
+        <tr><td><b>オノアクト</b><br><span style="font-size:.78rem">ランジオロール 50／150mg</span></td>
+            <td>心機能低下例の頻脈性AF/AFL：<b>1µg/kg/分</b>で開始 →<b>1〜10µg/kg/分</b>（最大40µg/kg/分）<br>術中・術後：0.125mg/kg/分を1分 → 0.01〜0.04mg/kg/分</td>
+            <td>半減期4分。<b>切れが早いので試せる</b>のが利点。心機能低下例は<b>少量から漸増</b></td></tr>
+        <tr><td><b>ブレビブロック</b><br><span style="font-size:.78rem">エスモロール 100mg/10mL</span></td>
+            <td><b>1mg/kg を30秒</b>で静注 → <b>150µg/kg/分</b>で持続</td><td>適応は手術時の頻脈性不整脈</td></tr>
+        <tr><td><b>アデホス／ATP</b><br><span style="font-size:.78rem">10・20・40mg</span></td>
+            <td><b>10mg を1〜2秒</b>で急速静注（血圧・心電図監視下）、後押しの生食フラッシュ</td>
+            <td><b>頻拍停止の目的は保険適応外</b>（JCS/JHRS 2020 が明記）。喘息では避ける。<b>WPW＋AFには使わない</b></td></tr>
+        <tr><td><b>硫酸マグネシウム</b><br><span style="font-size:.78rem">2.0g / 20mL</span></td>
+            <td><b>1〜2g を緩徐に</b>静注（血圧・心電図監視下）</td><td>TdPの第一手。<b>QTが正常でも投与してよい</b></td></tr>
+        <tr><td><b>メキシチール</b><br><span style="font-size:.78rem">メキシレチン 125mg/5mL</span></td>
+            <td><b>2〜3mg/kg を5〜10分</b>／点滴 0.4〜0.6mg/kg/h</td><td>Ⅰb群。心室性のみ</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>投与するときの実務 <span class="sec-note">量より、入れ方と止めどきで事故が起きる</span></h2>
+
+    <div class="card"><div class="pad">
+      <ul class="clean">
+        <li><b>γ＝µg/kg/分。</b>ニフェカラントの「5γ」は 5µg/kg/分＝<b>50kgで0.3mg/kg/h（15mg/h）</b>。mg/h と γ を混ぜて指示しない。</li>
+        <li><b>リドカインは1%と2%がある。</b>同じ「1A」でも含量が倍違う。持続で 60〜240mg/h を回すときは<b>製剤濃度を必ず確認</b>。</li>
+        <li><b>アミオダロンは5%ブドウ糖で溶く</b>（生食では配合変化）。輸液ポンプ必須、末梢投与では静脈炎を起こすので<b>可能なら中心静脈</b>。</li>
+        <li><b>Ⅰ群を2剤重ねない。</b>効かないからと別のⅠ群を足すのは、Na遮断の上乗せで<b>QRS延長・心停止</b>に向かう。効かなければ<b>群を変える</b>（Ⅲ群へ）か<b>電気的除細動</b>。</li>
+        <li><b>Ⅰc群を心房性頻拍に使うときは房室結節抑制薬を併用</b>（心房レートが落ちて1:1伝導になる）。</li>
+        <li><b>WPW＋心房細動にベラパミル・ジゴキシン・ATPは使わない</b>（副伝導路の順行伝導が増えVFへ）。</li>
+        <li><b>ニフェカラント持続中はQTcを追う</b>（0.40〜0.55秒を目安）。徐脈・pause・低K・低Mgが重なるとTdPが出る。</li>
+        <li><b>止まったら中止。</b>入れ切ることが目的ではない ― 5分かけて iv している最中に洞調律化したら、<b>その時点でシリンジを置く</b>。</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <div class="evidence">
+    <h3>出典と、確認できていないこと</h3>
+    <p><b>投与レシピ（§1〜§3）</b>は、先生から提供された成書の「Point!」欄を書き起こしたもの。<b>希釈・速度・持続の可否・肝腎の代謝比は、その記載のままにしてある</b>（丸めたり平均したりしていない）。§5の対照欄と§6は、<b>JCS/JHRS 2020 不整脈薬物治療ガイドライン（Ono K, et al. Circ J 2022;86:1790-1924、PMID 35283400）Table 74「Indication, Dosage and Administration of Antiarrhythmic Drugs for Adults」</b>と、各製剤の添付文書情報から補った。</p>
+    <p><b>照合の状況</b>：ガイドライン Table 74 の記載は公開全文から機械的に抽出しており、転記の誤りはない。一方で<b>アンカロン注・ジゴシン注・ヘルベッサー注の用量は製品情報データベース経由での確認</b>であり、<b>PMDAの添付文書PDFそのものには当たれていない</b>。ランジオロール・エスモロール・メキシレチン・ATP・硫酸マグネシウムはガイドライン Table 74 の記載による。</p>
+    <p><b>読み取りで確認をお願いしたい点</b>：写真の Point 欄でリドカインのアンプル表記が「1A 70mg」と読めたが、<b>静注用キシロカイン2%は5mL＝100mg</b>であり、同じ欄に「リドカインシリンジ（100mg）」とあることから、<b>本カードでは 100mg として記載している</b>。ジゴキシン・デスラノシドの肝腎比は Point 欄に記載がなかったため「腎排泄が主」とだけ書いた。</p>
+    <p><b>この版に入れていないもの</b>：経口薬の用量（維持療法）、小児用量、妊婦・授乳婦での可否、TDMの採血タイミング。</p>
+  </div>
+
+  <footer>
+    抗不整脈薬ポケットカード② 投与法編 ／ 作成 2026-09-08 ／ <a href="antiarrhythmics.html" style="color:var(--accent)">① 分類編</a><br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
