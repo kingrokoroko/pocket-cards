@@ -260,6 +260,28 @@
     .card, .rung, .callout, .figure, .stat { box-shadow: none; }
     section { break-inside: avoid; }
   }
+  /* Sicilian Gambit マトリクス */
+  table.mx { min-width: 1080px; font-size: .8rem; }
+  table.mx thead th { text-transform: none; letter-spacing: .02em; font-size: .68rem; text-align: center; padding: 8px 5px; }
+  table.mx thead tr:first-child th { border-bottom: 1px solid var(--line); }
+  table.mx thead th.grp { background: var(--accent-soft); color: var(--accent); }
+  table.mx th.drug, table.mx td.drug { text-align: left; white-space: nowrap; padding-left: 13px; }
+  table.mx th.drug, table.mx td.drug { position: sticky; left: 0; z-index: 2; box-shadow: 1px 0 0 var(--line); }
+  table.mx td.drug { background: var(--surface); }
+  table.mx th.drug { background: var(--surface-2); z-index: 3; }
+  table.mx tbody td { padding: 7px 5px; text-align: center; }
+  table.mx tbody + tbody td { border-top: 2px solid var(--line-strong); }
+  table.mx td.drug b { color: var(--ink); font-weight: 600; }
+  table.mx .vw { font-size: .63rem; font-weight: 700; color: var(--ink-3); margin-left: 6px; }
+  table.mx .ar { font-weight: 700; color: var(--ink-2); letter-spacing: -.04em; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; }
+  .dot.lo { border: 1.6px solid var(--ink-3); }
+  .dot.mid { background: var(--accent-soft); border: 1.6px solid var(--accent); }
+  .dot.hi { background: var(--accent); border: 1.6px solid var(--accent); }
+  .sq { display: inline-block; width: 11px; height: 11px; background: var(--mod); vertical-align: -1px; }
+  .ai { font-size: .62rem; font-weight: 800; color: var(--ink-2); margin-left: 1px; vertical-align: 3px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 7px 18px; font-size: .78rem; color: var(--ink-3); margin: 11px 0 0; }
+  .legend .it { display: inline-flex; align-items: center; gap: 6px; }
 </style>
 
 <style>
@@ -472,38 +494,7 @@
 
   <!-- 4 -->
   <section>
-    <h2 class="sec-title"><span class="sec-num">4</span>なぜ Sicilian Gambit が要ったのか ― CAST <span class="sec-note">分類が壊れたのではなく、分類の使い方が壊れた</span></h2>
-
-    <div class="card"><div class="pad">
-      <div class="mini-h">CAST（Cardiac Arrhythmia Suppression Trial, NEJM 1991）<span class="tag">RCT</span></div>
-      <ul class="clean">
-        <li><b>仮説</b>：心筋梗塞後の心室期外収縮を抑えれば突然死が減る。<b>PVCの抑制を代替エンドポイント</b>として薬を選んだ。</li>
-        <li><b>設計</b>：まずオープンラベルでPVCが抑制された症例だけを無作為化（エンカイニド／フレカイニド／モリシジン vs プラセボ）。<b>「効いた人だけ」を選んで組み入れている</b>点が重要。</li>
-        <li><b>結果</b>：1498例、平均10か月で89例死亡。<b>不整脈死 43（実薬 n=755）vs 16（プラセボ n=743）、P=0.0004</b>。非不整脈心臓死も 17 vs 5（P=0.01）。<b>総死亡 63 vs 26</b>。エンカイニド／フレカイニド群は途中で中止された。</li>
-        <li><b>読み方</b>：PVCは<b>消えていた</b>のに死亡は増えた。抑えていたのは不整脈ではなく<b>心電図上の指標</b>で、同じNa遮断が瘢痕心筋では<b>リエントリーの基質</b>として働いた。</li>
-      </ul>
-    </div></div>
-
-    <div class="callout" style="margin-top:12px">
-      <span class="mk">!</span>
-      <div>CASTが否定したのは<b>Ⅰc群という薬でも、Vaughan Williams という分類でもない</b>。否定されたのは「クラス名と代替エンドポイントだけで薬を選ぶ」という<b>手続き</b>であり、<b>器質的心疾患という基質を無視したこと</b>。この反省から1990年にタオルミナで合議され、翌年 Sicilian Gambit が出た。</div>
-    </div>
-
-    <div class="card" style="margin-top:12px"><div class="pad">
-      <div class="mini-h">Vaughan Williams 分類の構造的な限界（4点）</div>
-      <ul class="clean">
-        <li><b>薬ではなく作用の分類</b>なのに、薬の分類として使われる。実薬は複数クラスにまたがる。</li>
-        <li><b>不整脈の機序と結びついていない</b>。「上室性ならこれ」式の経験則しか導けず、なぜ効くかを説明しない。</li>
-        <li><b>分類に入らない薬</b>が増えた（ジゴキシン、アデノシン、Mg、イバブラジン）。</li>
-        <li><b>活性代謝物・自律神経作用・基質（虚血や線維化）</b>を表現できない。</li>
-      </ul>
-      <p style="margin:11px 0 0;font-size:.85rem;color:var(--ink-3)">なお2018年に Oxford のグループが <b>Class 0（If）〜Ⅶ（上流治療）</b>まで拡張した修正版を出しており、Ⅰ群には後期Na電流阻害（ラノラジン）が <b>Ⅰd</b> として、Ⅳ群には RyR2・SERCA など細胞内Ca動態が加えられている。分類の枠組み自体は今も更新され続けている。</p>
-    </div></div>
-  </section>
-
-  <!-- 5 -->
-  <section>
-    <h2 class="sec-title"><span class="sec-num">5</span>Sicilian Gambit ― 分類ではなく手続き <span class="sec-note">薬から入らず、機序から入る</span></h2>
+    <h2 class="sec-title"><span class="sec-num">4</span>Sicilian Gambit ― 分類ではなく手続き <span class="sec-note">薬から入らず、機序から入る</span></h2>
 
     <p style="font-size:.89rem;color:var(--ink-2);margin:0 0 12px">
       Sicilian Gambit は薬に新しい名前を付け直したのではない。<b>「この不整脈を止めるには、どの電気生理学的パラメータを動かせばよいか」を先に決め、そのパラメータを担うチャネル・受容体・ポンプに作用する薬を、薬剤×標的のマトリクスから選ぶ</b>という手順を提案した。チェスの序盤定石になぞらえた名前も、この「手順」という含意による。
@@ -538,9 +529,9 @@
     </div>
   </section>
 
-  <!-- 6 -->
+  <!-- 5 -->
   <section>
-    <h2 class="sec-title"><span class="sec-num">6</span>vulnerable parameter 一覧 <span class="sec-note">Sicilian Gambit の中核。ここだけ覚えれば選べる</span></h2>
+    <h2 class="sec-title"><span class="sec-num">5</span>vulnerable parameter 一覧 <span class="sec-note">Sicilian Gambit の中核。ここだけ覚えれば選べる</span></h2>
 
     <div class="table-scroll card"><table style="min-width:880px">
       <thead><tr>
@@ -603,6 +594,99 @@
     <div class="callout" style="margin-top:12px">
       <span class="mk">!</span>
       <div>同じ「リエントリー」でも<b>興奮性ギャップの有無で答えが正反対</b>になる ― ギャップがあるなら<b>伝導</b>を叩き（Na遮断）、無いなら<b>不応期</b>を延ばす（K遮断）。この分岐がGambitの実質的な取り分で、「上室性か心室性か」という部位による分類からは絶対に出てこない。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>薬剤 × 標的マトリクス <span class="sec-note">STEP 3→4 は「横読み」で使う</span></h2>
+
+    <div class="table-scroll card"><table class="mx">
+      <thead>
+        <tr>
+          <th class="drug" rowspan="2">薬剤</th>
+          <th class="grp" colspan="6">イオンチャネル</th>
+          <th class="grp" colspan="4">受容体</th>
+          <th class="grp" colspan="1">ポンプ</th>
+          <th class="grp" colspan="3">臨床効果</th>
+          <th class="grp" colspan="3">心電図</th>
+        </tr>
+        <tr>
+          <th>Na<br><span style="font-weight:400">fast</span></th>
+          <th>Na<br><span style="font-weight:400">med</span></th>
+          <th>Na<br><span style="font-weight:400">slow</span></th>
+          <th>Ca</th><th>K</th><th>I<sub>f</sub></th>
+          <th>α</th><th>β</th><th>M<sub>2</sub></th><th>A<sub>1</sub></th>
+          <th>Na-K<br>ATPase</th>
+          <th>左室<br>機能</th><th>洞調律</th><th>心外性</th>
+          <th>PR</th><th>QRS</th><th>JT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="drug"><b>リドカイン</b><span class="vw">Ⅰb</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">→</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td><span class="ar">↓</span></td></tr>
+        <tr><td class="drug"><b>メキシレチン</b><span class="vw">Ⅰb</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">→</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td><span class="ar">↓</span></td></tr>
+        <tr><td class="drug"><b>プロカインアミド</b><span class="vw">Ⅰa</span></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">→</span></td><td><span class="dot hi" title="遮断作用 高"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>ジソピラミド</b><span class="vw">Ⅰa</span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">→</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td><span class="ar">↑↓</span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>キニジン</b><span class="vw">Ⅰa</span></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">↑</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td><span class="ar">↑↓</span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>プロパフェノン</b><span class="vw">Ⅰc</span></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td></td><td></td><td></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td></td></tr>
+        <tr><td class="drug"><b>アプリンジン</b><span class="vw">Ⅰb</span></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">I</span></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">→</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td><span class="ar">→</span></td></tr>
+        <tr><td class="drug"><b>シベンゾリン</b><span class="vw">Ⅰa</span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">→</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td><span class="ar">→</span></td></tr>
+        <tr><td class="drug"><b>ピルメノール</b><span class="vw">Ⅰa</span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↑</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td><span class="ar">↑→</span></td></tr>
+        <tr><td class="drug"><b>フレカイニド</b><span class="vw">Ⅰc</span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">→</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td></td></tr>
+        <tr><td class="drug"><b>ピルシカイニド</b><span class="vw">Ⅰc</span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span><span class="ai">A</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">↓→</span></td><td><span class="ar">→</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↑</span></td><td></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>ベプリジル</b><span class="vw">Ⅳ・Ⅲ</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">?</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>ベラパミル</b><span class="vw">Ⅳ</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td></td></tr>
+        <tr><td class="drug"><b>ジルチアゼム</b><span class="vw">Ⅳ</span></td><td></td><td></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>ソタロール</b><span class="vw">Ⅲ・Ⅱ</span></td><td></td><td></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>アミオダロン</b><span class="vw">Ⅲ</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">↓</span></td><td><span class="dot hi" title="遮断作用 高"></span></td><td><span class="ar">↑</span></td><td></td><td><span class="ar">↑</span></td></tr>
+        <tr><td class="drug"><b>ニフェカラント</b><span class="vw">Ⅲ</span></td><td></td><td></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">→</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td><span class="ar">↑</span></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>ナドロール</b><span class="vw">Ⅱ</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td></td></tr>
+        <tr><td class="drug"><b>プロプラノロール</b><span class="vw">Ⅱ</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td></td><td><span class="ar">↓</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>アトロピン</b><span class="vw">—</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td></td><td></td><td><span class="ar">→</span></td><td><span class="ar">↑</span></td><td><span class="dot mid" title="遮断作用 中等"></span></td><td><span class="ar">↓</span></td><td></td><td></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>ATP（アデノシン）</b><span class="vw">—</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="sq" title="作動薬"></span></td><td></td><td><span class="ar">?</span></td><td><span class="ar">↓</span></td><td><span class="dot lo" title="遮断作用 低"></span></td><td><span class="ar">↑</span></td><td></td><td></td></tr>
+      </tbody>
+      <tbody>
+        <tr><td class="drug"><b>ジゴキシン</b><span class="vw">—</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="sq" title="作動薬"></span></td><td></td><td><span class="dot hi" title="遮断作用 高"></span></td><td><span class="ar">↑</span></td><td><span class="ar">↓</span></td><td><span class="dot hi" title="遮断作用 高"></span></td><td><span class="ar">↑</span></td><td></td><td><span class="ar">↓</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="legend">
+      <span class="it"><span class="dot lo"></span>遮断作用 低</span>
+      <span class="it"><span class="dot mid"></span>中等</span>
+      <span class="it"><span class="dot hi"></span>高</span>
+      <span class="it"><b class="ai" style="margin:0">A</b>活性化チャネルブロッカー</span>
+      <span class="it"><b class="ai" style="margin:0">I</b>不活性化チャネルブロッカー</span>
+      <span class="it"><span class="sq"></span>作動薬</span>
+      <span class="it">↑ 増加・延長／↓ 減少・短縮／→ 不変／? 不明／空欄 作用なし</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--ink-3);margin:8px 0 0">
+      出典：JCS/JHRS 2020 不整脈薬物治療ガイドライン（Circ J 2022;86:1790-1924）Table 6 をもとに作成。原表は Sicilian Gambit（Circulation 1991;84:1831-1851）に基づく。
+    </p>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <div class="mini-h">この表の使い方</div>
+      <ul class="clean">
+        <li><b>横読みが Gambit、縦読みが Vaughan Williams。</b>「Caチャネルを叩きたい」と決まったら<b>Ca列を上から見て候補を出す</b> ― これがSTEP 3→4。1剤ずつ縦に見るとVW分類の焼き直しにしかならない。</li>
+        <li><b>「左室機能 ↓」が付く薬が心抑制を起こす薬</b>。Ⅰ群のほぼ全部とⅡ・Ⅳ群に付き、<b>アミオダロン・ニフェカラントは → </b>。§6で「Naブロッカーは持続しない、Kブロッカーは持続してよい」と書いたことが、この列にそのまま出ている。</li>
+        <li><b>「心外性」が●（高）の3剤 ― プロカインアミド・アミオダロン・ジゴキシン</b>が、長期に使うと心臓以外で問題を起こす薬。逆にⅠc群と純粋Ⅲ群のニフェカラントは○。</li>
+        <li><b>JT列が延びるのはK遮断を持つ薬だけ</b>（Ⅰa群・Ⅲ群）。QRSはNa遮断、JTはK遮断という対応が、そのまま列として見える。</li>
+        <li><b>M<sub>2</sub>の○</b>（ジソピラミド・キニジン・シベンゾリン・ピルメノール）が抗コリン作用 ― 尿閉・口渇・緑内障悪化の正体で、房室伝導をむしろ促進する方向にも働く。</li>
+      </ul>
+    </div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div>表ではリドカイン・メキシレチンのNa欄に <b>A/I の付記がない</b>（fast Na遮断としてのみ示される）が、<b>Ⅰb群が不活性化型チャネルブロッカーである</b>ことは§1・§3のとおり。原表でIが明示されているのはアプリンジンのみ。</div>
     </div>
   </section>
 
