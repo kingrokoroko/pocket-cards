@@ -1,5 +1,5 @@
 /* 自動生成 — 編集しないこと。build.py が _sw.template.js から生成する。 */
-var CACHE = 'pocket-cards-e5ed9632f5e5';
+var CACHE = 'pocket-cards-6c175d34bb29';
 
 var ASSETS = [
   "./",
@@ -23,6 +23,7 @@ var ASSETS = [
   "./cards/dka-hhs-sodium.html",
   "./cards/antiarrhythmics.html",
   "./cards/antiarrhythmics-dosing.html",
+  "./cards/preop-check.html",
   "./cards/respiratory-mechanics.html",
   "./cards/ncse-eeg-trainer.html"
 ];

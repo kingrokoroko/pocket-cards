@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>術前確認ポケットカード ― 手術に出す前に</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em; flex-wrap: wrap;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 122px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 94px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--sev); }
+  .rung.s2 .rung-tag { background: var(--mod); }
+  .rung.s3 .rung-tag { background: var(--accent); }
+  .rung.s4 .rung-tag { background: var(--mild); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 640px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td b, tbody td strong { color: var(--ink); }
+  tbody th.grp {
+    text-align: left; font-size: .72rem; letter-spacing: .08em; font-weight: 700;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 7px 13px; border-bottom: 1px solid var(--line);
+  }
+  table.narrow { min-width: 480px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 106px 1fr; gap: 10px; }
+  @media (max-width: 560px) { .kv > div { grid-template-columns: 86px 1fr; } }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .chk { display: flex; flex-direction: column; }
+  .chk .row {
+    display: grid; grid-template-columns: 26px 122px 1fr; gap: 11px; align-items: start;
+    padding: 10px 0; border-bottom: 1px dashed var(--line);
+  }
+  .chk .row:last-child { border-bottom: none; }
+  @media (max-width: 620px) {
+    .chk .row { grid-template-columns: 24px 1fr; row-gap: 3px; }
+    .chk .ck-k { grid-column: 2; }
+    .chk .ck-v { grid-column: 2; }
+  }
+  .chk .box {
+    width: 17px; height: 17px; border: 1.8px solid var(--line-strong); border-radius: 4px;
+    margin-top: 3px;
+  }
+  .chk .ck-k { font-size: .8rem; font-weight: 700; color: var(--ink); }
+  .chk .ck-v { font-size: .84rem; color: var(--ink-2); }
+  .chk .ck-v b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+  .refs { font-size: .77rem; color: var(--ink-3); line-height: 1.8; margin: 8px 0 0; }
+  .refs b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>術前確認 ― 手術に出す前に</h1>
+    <div class="subtitle">救急・ICU から手術室へ／待機手術の術前評価も含む ／ 作成 2026-09-09</div>
+  </header>
+
+  <p class="lede">
+    術前確認の本体は<strong>検査を増やすことではない</strong>。低リスク手術のルーチン検査は転帰を変えない一方で、
+    <strong>薬（抗血栓薬・ヘパリン・SGLT2／GLP-1）・気道と胃・出血への備え・持ち込み抗菌薬</strong>の抜けは直接命に関わる。
+    決めることは4つ ―― <strong>①あと何時間待てるか　②何を止めて何を続けるか　③気道と胃はどうか　④出血にどう備えるか</strong>。
+    最初に決めるのは必ず①で、<strong>待てる時間が「評価をどこまでやれるか」の上限を決める</strong>。
+  </p>
+
+  <div class="grid4">
+    <div class="stat">
+      <div class="lab">① 時間</div>
+      <div class="num" style="font-size:1.0rem">あと何時間</div>
+      <div class="sub">緊急は<b>2時間未満</b>（2024 ACC/AHA で6時間から短縮）。ここで評価の上限が決まる</div>
+    </div>
+    <div class="stat">
+      <div class="lab">② 薬</div>
+      <div class="num" style="font-size:1.0rem">止める／続ける</div>
+      <div class="sub">抗血栓薬・ヘパリン・<b>SGLT2は3日前</b>・β遮断薬は<b>続ける</b>（当日新規開始は禁）</div>
+    </div>
+    <div class="stat">
+      <div class="lab">③ 気道と胃</div>
+      <div class="num" style="font-size:1.0rem">full stomach?</div>
+      <div class="sub">絶食時間より<b>病態</b>。外傷・イレウス・妊娠・胃不全麻痺・GLP-1 は時間によらず full stomach</div>
+    </div>
+    <div class="stat">
+      <div class="lab">④ 出血</div>
+      <div class="num" style="font-size:1.0rem">T&amp;S・中和・TXA</div>
+      <div class="sub">血液型と不規則抗体、抗凝固の中和手段、<b>TXAは3時間以内</b>だけ有効</div>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>あと何時間待てるか ― 緊急度がすべての上限を決める
+      <span class="sec-note">2024 ACC/AHA で時間の定義が変わった</span></h2>
+
+    <div class="ladder">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">EMERGENCY</span><span class="sev-name">緊急<br>2時間未満</span></div>
+        <div class="rung-body">評価は<b>病歴・薬歴・気道・血液型だけ</b>。検査待ちで手術を遅らせない。抗凝固の中和と輸血準備を並行して走らせる。<b>2014年版の「6時間以内」から2時間に短縮された</b></div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">URGENT</span><span class="sev-name">準緊急<br>2〜24時間</span></div>
+        <div class="rung-body">心電図・血算・生化学・凝固・T&amp;S は間に合う。<b>DOACの休薬は間に合わない</b>ので中和薬と出血リスクの相談に切り替える。ここが最も判断が割れる帯</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">TIME-SENSITIVE</span><span class="sev-name">猶予あり<br>〜3か月</span></div>
+        <div class="rung-body">抗血栓薬の休薬・貧血の是正・機能的容量の評価が可能。<b>PCI後の待機期間をどこまで短縮するかを多職種で決める帯</b></div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">ELECTIVE</span><span class="sev-name">待機</span></div>
+        <div class="rung-body">条件が揃うまで待てる。逆に言えば<b>「待てるのに待たない」理由がない</b>。貧血是正・禁煙・血糖・PCI後待機はすべてここで解決する</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>「緊急だから何もできない」ではなく「緊急だから何を捨てるかを決める」</strong>。捨ててはいけないのは
+      <b>薬歴（特に抗血栓薬の最終内服時刻）・アレルギー・血液型と不規則抗体・気道の見た目・最終経口摂取時刻</b>の5つ。これは2時間でも取れる。</div>
+    </div>
+
+    <h3 class="mini-h" style="margin-top:18px">冠動脈インターベンション後の待機期間<span class="tag">2024 ACC/AHA</span></h3>
+    <div class="card"><div class="table-scroll"><table class="narrow">
+      <thead><tr><th>状況</th><th>待機期間</th><th>推奨クラス</th></tr></thead>
+      <tbody>
+        <tr><td><b>BMS／DES 留置後 ≤30日</b></td><td><b>抗血小板薬の中断を要する</b>待機的非心臓手術は<b>有害</b>。抗血小板薬を継続できるなら状況は異なる</td><td><span class="pill stop">Class III（Harm）</span></td></tr>
+        <tr><td><b>DES 留置後（慢性冠動脈疾患）</b></td><td>6か月以上</td><td><span class="pill mid">Class IIa</span></td></tr>
+        <tr><td><b>DES 留置後（ACS 後）</b></td><td>12か月</td><td><span class="pill go">Class I</span></td></tr>
+        <tr><td>猶予ありの手術で、待機の不利益が上回るとき</td><td>3か月まで短縮を検討可</td><td><span class="pill care">Class IIb</span></td></tr>
+        <tr><td>CABG 後</td><td>ガイドラインに明示的推奨なし。全国データベース研究では術後100日以降で有害事象が減少</td><td><span class="pill care">観察研究のみ</span></td></tr>
+      </tbody>
+    </table></div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">▲</span>
+      <div>待てずに手術する場合は<strong>DAPTを継続するか、最低限アスピリンだけは継続</strong>し、P2Y12阻害薬は術後できるだけ早期に再開する。
+      <strong>静注抗血小板薬によるルーチンのブリッジは推奨されない</strong>（有効性のエビデンスがない）。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>心血管リスクをどう見るか
+      <span class="sec-note">計算機を信じすぎない</span></h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">MACE のリスク層別</div>
+        <div class="num">&lt;1% / ≥1%</div>
+        <div class="sub">2024 ACC/AHA は<b>低リスク &lt;1% と上昇リスク ≥1% の二分類</b>に単純化し、特定の計算機を指定しなくなった</div>
+      </div>
+      <div class="stat">
+        <div class="lab">RCRI / NSQIP MICA の識別能</div>
+        <div class="num">c = 0.60 / 0.64</div>
+        <div class="sub">血管外科での外部検証。<b>再較正しなければ臨床的有用性はなく、リスクを有意に過小評価</b>（p&lt;0.001）</div>
+      </div>
+      <div class="stat">
+        <div class="lab">医師の主観による METs 評価</div>
+        <div class="num">感度 19.2%</div>
+        <div class="sub">METS study（n=1401）。<b>「階段は上れますか」の主観評価は METs&lt;4 をほぼ拾えない</b>。DASI 質問票を使う</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <h3 class="mini-h">機能的容量（DASI）とバイオマーカー</h3>
+      <ul class="clean">
+        <li><strong>DASI</strong>（12項目・0〜58.2点）。<strong>&lt;34</strong> が心筋障害・MI・重篤合併症と関連する閾値。構造化質問票での評価は妥当（Class IIa 相当）</li>
+        <li>ただし<strong>上乗せは小さい</strong> ―― 年齢・性・RCRI だけで AUC 0.70、DASI や NT-proBNP を足しても <strong>0.71</strong> にしかならない（METS の付随コホート解析、Br J Anaesth 2020）</li>
+        <li>34 という数字は<strong>絶対的なカットオフではなく層別化の目安</strong>で、25 を代替閾値として提案する立場もある</li>
+        <li><strong>NT-proBNP / BNP</strong>：65歳以上、または45〜64歳で有意な心血管疾患があり上昇リスク手術 → 測定は妥当（<span class="pill mid">Class IIa</span>）</li>
+        <li><strong>トロポニン</strong>：BNP系より弱い推奨（<span class="pill care">Class IIb</span>）</li>
+        <li>よく引用される <strong>BNP&lt;92 pg/mL・NT-proBNP&lt;300 pg/mL</strong>（代替 200）は<strong>カナダ CCS 2017 由来</strong>の閾値。2024 ACC/AHA 本文が独自に数値を明記しているわけではない</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="pad">
+      <h3 class="mini-h">MINS ― 術後に症状がなくても死ぬ<span class="tag">術前に測る意味</span></h3>
+      <ul class="clean">
+        <li>定義：術後トロポニンが99パーセンタイル上限超＋上昇/下降パターン、虚血起源が疑われ、<strong>ST上昇なし・MI の普遍的定義を満たさない</strong>もの</li>
+        <li>VISION study：<strong>術後30日死亡は約10%</strong>。<strong>無症候でも予後に直結する</strong></li>
+        <li>閾値の目安（複数総説で一致、ガイドライン本文での確認は未了）：<strong>hs-cTnT ≥20 ng/L かつ術前から +5 ng/L 以上</strong>、または<strong>≥65 ng/L</strong></li>
+        <li><strong>術前にトロポニンを測る本当の意味は「術後の値を解釈できるようにすること」</strong>。ベースラインがなければ MINS は判定できない</li>
+      </ul>
+    </div></div>
+
+    <div class="callout">
+      <span class="mk">✕</span>
+      <div><strong>術前カテと予防的血行再建はやらない。</strong>CARP試験（血管外科・有意な冠動脈疾患 510例のRCT）で
+      <strong>長期死亡 22% vs 23%（p=0.92）、術後30日 MI 12% vs 14%（p=0.37）</strong> といずれも差がなかった。
+      術前冠動脈造影のルーチン施行は <span class="pill stop">Class III</span>。負荷試験も「結果が方針を変えるとき」だけ（低リスク手術では <span class="pill stop">Class III</span>）。
+      なお周術期β遮断の根拠として長く引用された <strong>DECREASE 試験群は研究不正が認定され、根拠に使ってはならない</strong>
+      （ただし「撤回済み」と言うのは不正確 ―― 一部論文は撤回・懸念表明となったが、<strong>DECREASE I・III は NEJM が正式な撤回を拒否し Editor's Note にとどまっている</strong>。
+      ガイドライン側が推奨から削除・格下げしたというのが実態）。</div>
+    </div>
+
+    <h3 class="mini-h" style="margin-top:18px">見落としやすい2つ ― デバイスと大動脈弁</h3>
+    <div class="grid2">
+      <div class="card"><div class="pad">
+        <div class="mini-h">CIED（ペースメーカー／ICD）</div>
+        <ul class="clean">
+          <li><strong>PM は12か月以内、ICD は6か月以内</strong>のデバイスチェックが必要（<span class="pill go">Class I</span>）</li>
+          <li>ペースメーカー依存＋<strong>臍より上の手術</strong>＋電磁干渉予想 → 再プログラムかマグネットで<strong>非同期ペーシングを確保</strong>（<span class="pill go">Class I</span>）</li>
+          <li>非依存例の ICD は頻拍治療のみ無効化（<span class="pill mid">Class IIa</span>）</li>
+          <li><strong>退院前に必ず元に戻す</strong>。ここが最も抜ける</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">大動脈弁狭窄症</div>
+        <ul class="clean">
+          <li>症候性の重症 AS、無症候性重症 AS＋LVEF低下 → <strong>弁治療の要否を先に評価</strong>（<span class="pill go">Class I</span>）</li>
+          <li>中等度〜重症 AS が疑われれば術前心エコー（<span class="pill go">Class I</span>）</li>
+          <li><strong>無症候・LVEF正常・1年以内の心エコーがある中等度〜重症 AS なら、低リスク手術は待たせなくてよい</strong>（<span class="pill mid">Class IIa</span>）</li>
+          <li><strong>TAVI 後30日以内でも、適応があれば非心臓手術は安全に施行できる</strong>（<span class="pill mid">Class IIa</span>）</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>術前検査 ― 増やす方向ではなく減らす方向
+      <span class="sec-note">ただし減らしてはいけないものがある</span></h2>
+
+    <div class="card"><div class="pad">
+      <h3 class="mini-h">ルーチン検査は低リスクでは要らない</h3>
+      <ul class="clean">
+        <li>ASA I〜II・低リスク手術では、<strong>ルーチンの心電図・胸部X線・血算・凝固・生化学は転帰を変えない</strong>（NICE NG45／Choosing Wisely）。偽陽性からの追加検査・手術延期という害だけが増える</li>
+        <li>NICE NG45 は<strong>ルーチンの尿検査・胸部X線・安静時心エコーを推奨しない</strong>と明記</li>
+        <li>それでも実臨床では<strong>低リスク手術の 17.9〜35.5%</strong> で不要な心電図・胸部X線・負荷試験・心エコーが先行している（NG45 とは別のカナダの実態調査）</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="pad">
+      <h3 class="mini-h">呼吸器合併症 ― ARISCAT<span class="tag">7項目</span></h3>
+      <ul class="clean">
+        <li>項目：<strong>年齢／術前 SpO₂／直近1か月の呼吸器感染／貧血（Hb ≤10 g/dL）／手術部位（上腹部・胸部で加点大）／手術時間2時間超／緊急手術</strong></li>
+        <li>層別：<strong>&lt;26 低リスク／26〜44 中リスク／≥45 高リスク</strong></li>
+        <li>性能：&gt;26 で感度 87.3%・特異度 79.1%、<strong>&gt;45 で感度 61.9%・特異度 96.5%</strong>（＝高得点は拾えば確からしいが、低得点でも安心はできない）</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="pad">
+      <h3 class="mini-h">血液は「数を見る」より「待てるか」で決める<span class="tag">Patient Blood Management</span></h3>
+      <div class="kv">
+        <div><span class="k">貧血</span><span class="v">WHO 定義で<b>女性 Hb&lt;12、男性 Hb&lt;13 g/dL</b>。<b>待機手術なら鉄欠乏を是正してから出す</b>のが原則（術前輸血ではなく鉄剤）</span></div>
+        <div><span class="k">輸血閾値</span><span class="v">AABB 2023：一般成人入院患者は <b>Hb&lt;7 g/dL</b>（強い推奨）。<b>心臓手術は &lt;7.5</b>、<b>整形外科手術または既存心血管疾患は &lt;8</b> を<b>「選んでもよい」という弱い推奨</b>にとどまる ―― 強い推奨は 7 だけ</span></div>
+        <div><span class="k">血小板</span><span class="v">活動性出血で <b>&gt;50×10⁹/L</b>、大量輸血時は <b>&gt;75×10⁹/L</b> を目安。区域麻酔は <b>≥70×10⁹/L</b>（産科領域のコンセンサス由来で、非産科への外挿は慎重に）</span></div>
+        <div><span class="k">凝固</span><span class="v"><b>フィブリノゲン &lt;200 mg/dL は重篤出血の独立危険因子</b>。維持目標は病態依存で、単一の数字を機械的に当てない</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>薬 ― 止めるもの・続けるもの
+      <span class="sec-note">「不安だから全部止める」が一番危ない</span></h2>
+
+    <div class="card"><div class="table-scroll"><table>
+      <thead><tr><th style="width:23%">薬剤</th><th style="width:25%">どうするか</th><th>根拠・数値</th></tr></thead>
+      <tbody>
+        <tr><th class="grp" colspan="3">抗血栓薬</th></tr>
+        <tr>
+          <td><b>DOAC</b><br><span style="font-size:.78rem;color:var(--ink-3)">アピキサバン／リバーロキサバン／エドキサバン／ダビガトラン</span></td>
+          <td><span class="pill care">休薬</span> 低出血リスク手術は<b>術前1日</b>、高出血リスク手術は<b>術前2日</b>。<b>ダビガトランで CrCl&lt;50 なら 2日／4日</b>に延長。<b>ブリッジしない</b></td>
+          <td>PAUSE study（n=3007、AF）。30日大出血はアピキサバン1.35%・ダビガトラン0.90%・リバーロキサバン1.85%、動脈血栓塞栓症は0.16%・0.60%・0.37%。<b>術前DOAC濃度が非検出/低値だった割合は90.5〜96.8%</b>（高出血リスク手術では98.8%）</td>
+        </tr>
+        <tr>
+          <td><b>ワルファリン</b></td>
+          <td><span class="pill care">休薬</span> <b>術前5日中止</b>、<b>術前1〜2日に INR 確認</b>（&lt;1.5 が目安。ビタミンK で補正する余地を残す）。<b>原則ブリッジ不要</b></td>
+          <td>BRIDGE 試験（非弁膜症性AF 1884例、RCT）：動脈血栓塞栓症 <b>ブリッジなし0.4% vs あり0.3%</b>（リスク差0.1%、95%CI −0.6〜0.8で非劣性）、<b>大出血 1.3% vs 3.2%（RR 0.41、95%CI 0.20–0.78、p=0.005）</b>。ブリッジは血栓を減らさず出血だけ増やした</td>
+        </tr>
+        <tr>
+          <td><b>アスピリン</b></td>
+          <td><span class="pill care">条件付き</span> 一次予防なら<b>中止してよい</b>。<b>ステント後の二次予防はまったく別扱い</b>で、原則継続</td>
+          <td>POISE-2（n=10,010、RCT）：死亡＋非致死性MI <b>7.0% vs 7.1%（HR 0.99、95%CI 0.86–1.15、p=0.92）</b>で差なし。一方<b>大出血は 4.6% vs 3.8%（HR 1.23、95%CI 1.01–1.49、p=0.04）と有意に増加</b>。<b>「念のため継続」に利益はない</b></td>
+        </tr>
+        <tr>
+          <td><b>P2Y12 阻害薬</b><br><span style="font-size:.78rem;color:var(--ink-3)">クロピドグレル／プラスグレル／チカグレロル</span></td>
+          <td><span class="pill care">休薬</span> 欧米ガイドラインではクロピドグレル<b>5日</b>／プラスグレル<b>7日</b>（施設により10日まで）／チカグレロル<b>3〜5日</b></td>
+          <td>日数の根拠は血小板寿命（7〜10日）と活性代謝物の薬物動態で、<b>日数を比較したRCTはない</b>。<b>【日本】クロピドグレル（プラビックス）の添付文書は「血小板凝集抑制が問題となる手術では14日以上前に投与を中止することが望ましい」と、欧米の5日より大幅に長い休薬を求めている</b>（CABG例で重大出血が休薬7日以上42.9% vs 7日未満65.0% というデータが根拠として付記）。<b>ここは必ず施設基準と電子添文で突き合わせる</b></td>
+        </tr>
+
+        <tr><th class="grp" colspan="3">循環器薬</th></tr>
+        <tr>
+          <td><b>β遮断薬</b></td>
+          <td><span class="pill go">継続</span> 慢性内服は続ける。<br><span class="pill stop">禁</span> <b>当日の新規開始・高用量開始</b></td>
+          <td>POISE（n=8,351、RCT。<b>未使用者へメトプロロール徐放100mgを術前2〜4時間に新規開始</b>）：複合エンドポイントは減った（HR 0.84、95%CI 0.70–0.99）が、<b>総死亡 HR 1.33（1.03–1.74）・脳卒中 HR 2.17（1.26–3.74）と増加</b>。低血圧15.0%対9.7%、徐脈6.6%対2.4%。<b>新規開始そのものが弱い推奨（COR 2b）にとどまり、「手術当日に開始しない」は Harm（COR 3）</b>。始めるなら<b>術前7〜8日以上の余裕</b>をもつ</td>
+        </tr>
+        <tr>
+          <td><b>ACE阻害薬／ARB</b></td>
+          <td><span class="pill mid">どちらでも可</span> 施設方針に従う。<b>HFrEF は継続</b></td>
+          <td>STOP-or-NOT（n=2,222、RCT）：28日複合転帰 <b>継続22% vs 48時間前中止22%（RR 1.02、95%CI 0.87–1.19、p=0.85）</b>。術中低血圧は継続群で多い（54% vs 41%、RR 1.31）が<b>臨床転帰は変わらない</b>。観察研究（VISION二次解析）は休薬有利を示唆したが交絡の影響を受ける</td>
+        </tr>
+        <tr>
+          <td><b>スタチン・Ca拮抗薬</b></td>
+          <td><span class="pill go">継続</span></td>
+          <td>スタチンは離脱によるリバウンドが懸念され継続が原則。周術期スタチンのメタ解析は結果が不安定で、<b>ベネフィットの大きさは過大評価しない</b></td>
+        </tr>
+        <tr>
+          <td><b>利尿薬</b></td>
+          <td><span class="pill mid">当日朝は保留可</span></td>
+          <td>短時間の保留で慢性の低カリウム血症は是正されない。<b>止めたことで是正した気にならない</b></td>
+        </tr>
+
+        <tr><th class="grp" colspan="3">糖尿病薬</th></tr>
+        <tr>
+          <td><b>SGLT2 阻害薬</b></td>
+          <td><span class="pill stop">術前3日中止</span> エルツグリフロジンは<b>4日</b></td>
+          <td>FDA 2020改訂。2024 ACC/AHA は <span class="pill go">Class I</span> で術前3〜4日の中止を推奨（ただし<b>エビデンスレベルは C-LD ＝症例報告・限定的データで、推奨は強いが根拠は弱い</b>）。<b>血糖が正常でもケトアシドーシスを起こす</b>（正常血糖ケトアシドーシス）ため、術後の意識障害・頻呼吸ではケトンを測る</td>
+        </tr>
+        <tr>
+          <td><b>GLP-1 受容体作動薬</b></td>
+          <td><span class="pill care">個別判断</span> ASA 2023 は週1回製剤で術前1週間・1日1回製剤で当日休薬を提案。<b>2024 マルチソサエティは一律休薬を求めず、個別評価＋胃エコー</b></td>
+          <td>いずれも<b>「エビデンスに基づくガイドライン」ではなく合意に基づくガイダンス</b>で、<b>最適な休薬期間は不明</b>とガイダンス自身が明記（マルチソサエティ版も暫定的には ASA 基準の踏襲を認めている）。内視鏡のメタ解析では<b>胃内残渣が有意に増える（報告により OR 約4〜6）</b>一方、<b>誤嚥性肺炎は OR 1.23（95%CI 0.58–2.60、p=0.59）で増加を示さない</b></td>
+        </tr>
+        <tr>
+          <td><b>メトホルミン</b></td>
+          <td><span class="pill care">条件付き</span> eGFR≥60 なら<b>当日朝のみ休薬</b>。<b>eGFR&lt;60 または造影剤使用なら48時間前から中止</b></td>
+          <td>乳酸アシドーシス回避。造影を伴う緊急症例でここが抜けやすい。<b>閾値はガイドラインごとにばらつく</b>（ADA は一律当日休薬、SAMBA は eGFR&lt;45、造影剤の ACR 基準は eGFR&lt;30 で48時間）ので施設基準を確認する</td>
+        </tr>
+        <tr>
+          <td><b>SU薬・インスリン</b></td>
+          <td><span class="pill care">減量</span> SU は当日朝休薬。持効型は<b>20〜25%減量</b>、高用量例（総量&gt;80単位、または基礎が総量の&gt;60%）は<b>50〜75%減</b>、NPH は当日朝<b>50%減</b></td>
+          <td>絶食下の低血糖回避。<b>「絶食だから全部止める」は高血糖・ケトーシスを招く</b> ―― 基礎インスリンは減らしても切らない</td>
+        </tr>
+
+        <tr><th class="grp" colspan="3">ステロイド・免疫抑制</th></tr>
+        <tr>
+          <td><b>ステロイド</b></td>
+          <td><span class="pill mid">通常量継続でよいことが多い</span> PSL 換算 <b>&lt;5 mg/日</b>、または <b>&lt;20 mg/日を3週間未満</b> ならストレス用量は不要</td>
+          <td>「stress dose coverage」の起源は<b>1950年代の症例報告</b>で、高用量カバーを支持する強いエビデンスはない。下垂体手術のRCT（n=436）では<b>ヒドロコルチゾン省略が非劣性</b>で、<b>投与群でむしろ新規発症糖尿病 4.1% vs 0.5%・高Na血症 9.6% vs 4.1%・低K血症 15.6% vs 10.6%・低Ca血症 8.7% vs 2.8% と代謝/電解質異常が増えた</b>（尿崩症は 6.4% vs 11.0% で有意差なし）。5〜20 mg/日を3週間以上なら時間があるうちにHPA軸を評価する</td>
+        </tr>
+        <tr>
+          <td><b>メトトレキサート</b></td>
+          <td><span class="pill go">継続</span></td>
+          <td rowspan="2">2022 ACR/AAHKS ガイドライン（待機的 THA/TKA が適応範囲、推奨の多くは conditional）。生物学的製剤の再開は<b>創部治癒の確認</b>（抜糸・抜鈎済み、腫脹/発赤/滲出なし、他部位に活動性感染なし＝目安14日）が条件</td>
+        </tr>
+        <tr>
+          <td><b>生物学的製剤</b></td>
+          <td><span class="pill care">1投与サイクル休薬</span> 薬剤の投与間隔ぶんだけ空けて手術</td>
+        </tr>
+
+        <tr><th class="grp" colspan="3">神経・精神</th></tr>
+        <tr>
+          <td><b>抗てんかん薬</b></td>
+          <td><span class="pill go">当日も継続</span> 内服できないなら静注へスイッチ</td>
+          <td>例外はてんかん外科で術中皮質脳波を要する場合のみ</td>
+        </tr>
+        <tr>
+          <td><b>レボドパ</b></td>
+          <td><span class="pill stop">中断厳禁</span> 絶食なら経鼻胃管など代替経路で通常スケジュールを守る</td>
+          <td><b>離脱でパーキンソン高熱症候群</b>（発熱・筋強剛・自律神経障害・CK上昇・意識障害＝NMS様）を起こす。治療はレボドパの速やかな再開</td>
+        </tr>
+        <tr>
+          <td><b>SSRI／SNRI</b></td>
+          <td><span class="pill go">継続</span></td>
+          <td>安定例では<b>離脱のリスクが継続のリスクを上回る</b></td>
+        </tr>
+        <tr>
+          <td><b>MAO 阻害薬</b></td>
+          <td><span class="pill stop">2週間前から漸減中止</span></td>
+          <td>中止不能ならチラミン制限を続け、<b>ペチジン・間接作用性昇圧薬との併用に厳重注意</b>。ただし<b>この漸減中止は伝統的推奨で根拠は限定的</b>とする異論もあり、精神科と個別に相談する</td>
+        </tr>
+        <tr>
+          <td><b>リチウム・抗精神病薬</b></td>
+          <td><span class="pill care">精神科と相談</span> 単純に切らない</td>
+          <td>急な中止は精神症状の再燃・NMS 様病態のリスク</td>
+        </tr>
+
+        <tr><th class="grp" colspan="3">サプリメント</th></tr>
+        <tr>
+          <td><b>ハーブ・サプリ</b></td>
+          <td><span class="pill care">1〜2週間前に中止</span></td>
+          <td>ニンニク7日／イチョウ葉36時間／高麗人参7日（団体により2週間とするものもあり、出典で差がある）。<b>セントジョーンズワートは CYP450 誘導で麻酔薬・オピオイドの血中濃度を下げる</b>。<b>患者の50〜70%は聞かれなければ申告しない</b>ので、こちらから列挙して聞く</td>
+        </tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>ヘパリン
+      <span class="sec-note">日本ではブリッジ＝UFH持続静注になりやすい</span></h2>
+
+    <div class="card"><div class="table-scroll"><table class="narrow">
+      <thead><tr><th>種類</th><th>手術・区域麻酔までに空ける時間</th><th>確認すること</th></tr></thead>
+      <tbody>
+        <tr><td><b>UFH 持続静注</b></td><td><b>中止 4〜6時間</b>（半減期 60〜90分）</td><td><b>APTT が施設基準内に戻っていること</b>。ループスアンチコアグラント陽性など APTT が当てにならない例では抗Xa活性（治療域 0.3〜0.7 IU/mL）で見る</td></tr>
+        <tr><td><b>UFH 皮下注（低用量）</b><br><span style="font-size:.78rem;color:var(--ink-3)">5,000単位 × 2〜3回/日</span></td><td><b>4〜6時間</b></td><td rowspan="3"><b>皮下注は用量で3段階に分かれる</b> ―― 「予防量なら12時間」と一括りにしない。<br>4日以上ヘパリンを使っている患者は、区域麻酔前・カテーテル抜去前に<b>血小板数を確認</b>（HIT）</td></tr>
+        <tr><td><b>UFH 皮下注（中間用量）</b><br><span style="font-size:.78rem;color:var(--ink-3)">7,500〜10,000単位 × 2回/日、または総量 ≤20,000単位/日</span></td><td><b>12時間</b></td></tr>
+        <tr><td><b>UFH 皮下注（高用量＝治療量）</b><br><span style="font-size:.78rem;color:var(--ink-3)">&gt;10,000単位/回、または総量 &gt;20,000単位/日</span></td><td><b>24時間</b></td></tr>
+        <tr><td><b>LMWH（予防量）</b></td><td><b>12時間</b></td><td rowspan="2">腎排泄のため <b>CrCl&lt;30 mL/min では蓄積し、間隔の延長が必要</b>（統一された延長時間の基準はない）。<b>術前2時間以内に投与された例では区域麻酔を行わない</b></td></tr>
+        <tr><td><b>LMWH（治療量）</b></td><td><b>24時間</b></td></tr>
+      </tbody>
+    </table></div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">JP</span>
+      <div><strong>日本ではエノキサパリンの保険適応が下肢整形外科手術後などの VTE 予防に限られ、欧米で一般的な「治療用量 LMWH による内科的ブリッジ」という選択肢が制度上そもそも取りにくい。</strong>
+      結果として実務上のブリッジは <strong>UFH 持続静注</strong>になりやすい。海外ガイドラインの LMWH プロトコルをそのまま持ち込まないこと。</div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="pad">
+        <div class="mini-h">ブリッジが本当に要るのは誰か</div>
+        <ul class="clean">
+          <li><strong>機械弁</strong>（特に僧帽弁位、旧世代弁、多弁置換）</li>
+          <li><strong>直近3か月以内</strong>の脳卒中／TIA／VTE</li>
+          <li><strong>重症の血栓性素因</strong>（プロテインC/S欠乏、抗リン脂質抗体症候群など）</li>
+          <li>それ以外の非弁膜症性AF・大動脈弁位の機械弁単独などは<strong>原則ブリッジしない</strong></li>
+          <li>ブリッジのやり方（BRIDGE プロトコル）：ワルファリンを術前5日で中止 → 術前3日目からヘパリン開始 → <strong>最終投与は手術のおよそ24時間前</strong></li>
+          <li><strong>「高リスクならブリッジが要る」ことを検証したRCTはない</strong>。ブリッジしない側だけがRCTで裏づけられている</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">プロタミンと HIT</div>
+        <ul class="clean">
+          <li><strong>プロタミン：ヘパリン100単位あたり1 mg</strong>。投与から30分以内なら 1 mg/100単位、<strong>30〜120分経過なら 0.5 mg/100単位に減量</strong></li>
+          <li><strong>LMWH に対する中和は不完全</strong>（抗Xa活性は完全には戻らない）</li>
+          <li><strong>アナフィラキシー・急性肺高血圧</strong>のリスクがあり緩徐投与。リスク因子は魚アレルギー・プロタミン含有インスリン（NPH）使用歴・精管切除の既往</li>
+          <li><strong>HIT：4Ts スコアが低確率なら陰性的中率 0.998</strong> でほぼ除外できる。疑うのはヘパリン開始<strong>5〜10日</strong>で血小板が<strong>50%以上低下</strong>、新規血栓、注射部位の皮膚壊死</li>
+          <li>HIT 既往・現症ならアルガトロバン（<strong>肝代謝なので腎不全でも使いやすい</strong>／逆に肝不全では半減期が延びる）。<strong>術前中止時間の明確なガイドライン記載はない</strong>ため、短い半減期を踏まえ施設で決める</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>緊急手術 ― 抗凝固をどう中和するか</h2>
+
+    <div class="card"><div class="table-scroll"><table>
+      <thead><tr><th style="width:20%">薬剤</th><th style="width:26%">中和</th><th>数値と注意</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>ワルファリン</b></td>
+          <td><b>4F-PCC ＋ ビタミンK 5〜10 mg 静注</b></td>
+          <td>4F-PCC は FFP より<b>INR 是正が速い</b>（Sarode 2013、4F-PCC vs 血漿の唯一のRCT）。<b>PCC の効果は一時的で、ビタミンK の併用が必須</b> ―― これを忘れると数時間後に INR が戻る</td>
+        </tr>
+        <tr>
+          <td><b>ダビガトラン</b></td>
+          <td><b>イダルシズマブ 5 g</b>（国内使用可）</td>
+          <td>RE-VERSE AD（n=503）：<b>抗凝固の最大逆転率の中央値 100%</b>、制御不能出血での<b>止血達成までの中央値2.5時間</b>。効果は投与直後から立ち上がる</td>
+        </tr>
+        <tr>
+          <td><b>Xa 阻害薬</b><br><span style="font-size:.78rem;color:var(--ink-3)">アピキサバン／リバーロキサバン</span></td>
+          <td><b>アンデキサネット アルファ</b>（国内2022年承認）</td>
+          <td>ANNEXA-I（急性頭蓋内出血 530例、RCT）：止血効果 <b>67.0% vs 53.1%、補正後群間差13.4%（95%CI 4.6–22.2、p=0.003）</b>。ただし<b>血栓性イベント（主に虚血性脳卒中）が 10.3% vs 5.6% とほぼ2倍</b>。<b>「止血はできるが血栓が増える」トレードオフを個別に判断する</b></td>
+        </tr>
+        <tr>
+          <td><b>抗血小板薬</b></td>
+          <td><span class="pill stop">ルーチンの血小板輸血は不可</span></td>
+          <td>PATCH（抗血小板薬内服中の自然テント上脳出血 190例、RCT）で<b>血小板輸血群のほうが3か月後の死亡・機能予後が不良</b>（補正後共通オッズ比 <b>2.05、95%CI 1.18–3.56、p=0.0114</b>）。<b>「抗血小板薬を飲んでいるから輸血」という反射をやめる</b>。外科的活動性出血への外挿は別問題で、個別判断</td>
+        </tr>
+      </tbody>
+    </table></div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">検査</span>
+      <div><strong>PT・APTT が正常でも「効いていない」証明にはならない。</strong>
+      <strong>ダビガトランは TT（トロンビン時間）が正常なら臨床的に問題となる濃度はほぼ否定的</strong>。
+      Xa 阻害薬は<strong>キャリブレートされた抗Xa活性</strong>で見る（PT の感度は薬剤により大きく異なり、エドキサバン・アピキサバンでは低いことがある）。
+      緊急時に最も確実な情報は<strong>最終内服時刻と腎機能</strong>である。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>食事 ― 絶飲食は「時間」ではなく「病態」で決まる</h2>
+
+    <div class="grid4">
+      <div class="stat">
+        <div class="lab">清澄水分</div>
+        <div class="num">2 時間</div>
+        <div class="sub">水・果肉なしジュース・炭酸・清澄茶・ブラックコーヒー。<b>炭水化物入りも2時間で可</b></div>
+      </div>
+      <div class="stat">
+        <div class="lab">母乳</div>
+        <div class="num">4 時間</div>
+        <div class="sub">人工乳は軽食と同じ<b>6時間</b>扱い</div>
+      </div>
+      <div class="stat">
+        <div class="lab">軽食</div>
+        <div class="num">6 時間</div>
+        <div class="sub">脂肪分の少ない食事</div>
+      </div>
+      <div class="stat">
+        <div class="lab">脂肪の多い食事</div>
+        <div class="num">8 時間〜</div>
+        <div class="sub">揚げ物など。<b>それ以上の延長に意味はない</b></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>絶食時間を延ばしても誤嚥は減らない。</strong>誤嚥は絶食時間ではなく<strong>患者側のリスク因子と気道確保の手技</strong>で決まる。
+      むしろ<strong>過度の絶食は胃内容量と酸性度を逆に増やしうる</strong>。ASA の 2-4-6-8 は
+      <strong>「誤嚥リスク因子のない健常な待機手術患者」に限った基準</strong>であり、救急の患者にそのまま当てはめるものではない。</div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="pad">
+        <div class="mini-h">時間によらず full stomach として扱う</div>
+        <ul class="clean">
+          <li><strong>外傷</strong>（疼痛・オピオイドで胃排出が止まる。受傷時刻＝最終摂食時刻と考える）</li>
+          <li><strong>腸閉塞</strong></li>
+          <li><strong>妊娠後期〜産褥早期</strong></li>
+          <li><strong>糖尿病性胃不全麻痺</strong>（研究では糖尿病患者の <strong>52.3%</strong> が full stomach 相当の所見）</li>
+          <li><strong>GLP-1 受容体作動薬の使用者</strong></li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">迷ったら胃エコー<span class="tag">Perlas 分類</span></div>
+        <ul class="clean">
+          <li>Grade 0（空虚）〜 Grade 3（thick fluid／固形物）で評価</li>
+          <li><strong>Grade 2 以上、または推定残量 &gt;1.5 mL/kg で誤嚥高リスク</strong> → RSI か延期を検討</li>
+          <li>2024 マルチソサエティ・ガイダンスが <strong>GLP-1 使用者への一律休薬より胃エコーを優先</strong>したのはこの理由</li>
+          <li>ASA 2023：<strong>ガムを噛んでいたことが分かっても、除去を確認すれば手術延期は不要</strong></li>
+          <li>ERAS の術前炭水化物負荷は、<strong>2025年の ERAS 大腸癌ガイドラインで「強い推奨」から「弱い推奨」に格下げ</strong>された</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>気道 ― 予測は当たらない前提で準備する</h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">Mallampati 単独（困難挿管）</div>
+        <div class="num">感度 51%</div>
+        <div class="sub">95%CI 40–61。困難喉頭鏡視で感度53%・特異度80%、<b>困難マスク換気では感度17%</b>。<b>単独では除外に使えない</b></div>
+      </div>
+      <div class="stat">
+        <div class="lab">MACOCHA（ICU の挿管困難）</div>
+        <div class="num">NPV 98%</div>
+        <div class="sub">AUC 0.89、感度73%・特異度89%。<b>PPV は36%</b>＝陽性でも必ず困難ではない。追試では AUC 0.66 まで下がった報告もある</div>
+      </div>
+      <div class="stat">
+        <div class="lab">ICU/ER 挿管の重大有害事象</div>
+        <div class="num">45.2%</div>
+        <div class="sub">INTUBE（29か国・2,964例）。<b>循環虚脱42.6%</b>・重症低酸素9.3%・<b>心停止3.1%</b>。手術室の予定挿管とは別の行為だと考える</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">✕</span>
+      <div><strong>輪状軟骨圧迫（Sellick 法）のルーチン適用は推奨できない。</strong>
+      IRIS 試験（多施設RCT）は誤嚥性肺炎 <strong>0.6% vs 0.5%</strong> で<strong>非劣性を証明できず</strong>、一方で
+      <strong>Cormack-Lehane 3〜4度が 10% vs 5%（p&lt;0.001）</strong>と声門視野を悪化させ、挿管時間も延長した（中央値27秒 vs 23秒）。
+      <strong>誤嚥を減らす証拠がないまま、挿管を難しくしている</strong>。</div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <div class="mini-h">ICU から手術室へ出す前の気道の確認</div>
+      <ul class="clean">
+        <li><strong>誰が・どの器具で・失敗したらどうするか</strong>を出発前に言語化する。予測スコアではなく撤退計画が命綱</li>
+        <li><strong>波形カプノグラフィ</strong>。INTUBE で挿管確認に波形カプノが使われていたのは <strong>34.5%</strong>（1,025/2,964例）にすぎない</li>
+        <li>循環虚脱が最頻の合併症＝<strong>挿管前に昇圧薬をすぐ押せる状態にしておく</strong>（血圧を上げてから鎮静する）</li>
+        <li>頸椎損傷疑いでは用手的頸椎固定下でのビデオ喉頭鏡、気道熱傷は<strong>進行性浮腫を前提に低い閾値で先に確保</strong>（いずれも観察研究・専門家コンセンサスのレベル）</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>輸血 ― 出る前に「どこまで出血しうるか」を数字にする</h2>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">出発前に必ず揃えるもの</div>
+      <ul class="clean">
+        <li><strong>血液型と不規則抗体スクリーニング（T&amp;S）</strong>。出血量が読める手術・すでに出血している患者は<strong>クロスマッチ済みの製剤</strong>まで確保する</li>
+        <li>緊急時は O 型赤血球。<strong>RhD 陰性は妊娠可能年齢の女性に優先</strong>し、それ以外は RhD 陽性で在庫を温存するのが一般的な運用（施設の緊急輸血手順に従う）</li>
+        <li><strong>大量輸血プロトコル（MTP）を「起動するかどうか」を出発前に決めておく</strong>。手術室に入ってから考え始めると間に合わない</li>
+      </ul>
+    </div></div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="pad">
+        <div class="mini-h">MTP の起動 ― ABC スコア</div>
+        <ul class="clean">
+          <li>4項目・各1点：<strong>穿通性外傷／収縮期血圧 ≤90／心拍 ≥120／FAST 陽性</strong></li>
+          <li><strong>≥2点で感度75%・特異度86%</strong>（外部検証で NPV 97%・PPV 55%）</li>
+          <li>Shock Index（HR/SBP）も簡便な代替として併用される</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">比率 ― PROPPR が本当に示したこと</div>
+        <ul class="clean">
+          <li>n=680、1:1:1 vs 1:1:2 のRCT</li>
+          <li>24時間死亡 12.7% vs 17.0%、30日死亡 22.4% vs 26.1% ―― <strong>いずれも有意差なし</strong></li>
+          <li><strong>出血による死亡だけが 9.2% vs 14.6%（p=0.03）で有意に減少</strong></li>
+          <li>つまり<strong>1:1:1 は出血死を減らすが、全死亡を変えるとまでは言えない</strong></li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <div class="mini-h">トラネキサム酸は「3時間以内」だけの薬<span class="tag">遅らせるくらいなら投与しない</span></div>
+      <div class="table-scroll"><table class="narrow">
+        <thead><tr><th>試験</th><th>結果</th><th>読み方</th></tr></thead>
+        <tbody>
+          <tr><td><b>CRASH-2</b>（外傷）</td><td><b>3時間以内：出血死 HR 0.72（0.60–0.86）</b><br>1時間以内：RR 0.68（0.57–0.82）<br><b>3時間超：HR 1.02（0.76–1.36）</b></td><td>効果は完全に時間依存。<b>3時間を過ぎたら効かない（むしろ有害の可能性）</b></td></tr>
+          <tr><td><b>WOMAN</b>（産科出血）</td><td>出血死 RR 0.81（0.65–1.00、p=0.045）<br><b>3時間以内に限れば RR 0.69</b></td><td>同じく3時間以内でのみ有効</td></tr>
+          <tr><td><b>CRASH-3</b>（外傷性脳損傷）</td><td>頭部外傷死 <b>3時間以内治療群の全体で RR 0.94（0.86–1.02）＝非有意</b><br><b>GCS 9–15 でのみ RR 0.78（0.64–0.95）</b><br>GCS 3–8：RR 0.99（0.91–1.07）</td><td><b>「頭部外傷にTXA」ではなく「軽〜中等症の頭部外傷にTXA」</b>。重症例では効かない。※この「全体」は全登録例ではなく<b>プロトコル修正後の主要解析集団（3時間以内治療）</b>を指す</td></tr>
+        </tbody>
+      </table></div>
+    </div></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">10</span>持ち込み抗菌薬 ― すでに抗菌薬が入っている患者
+      <span class="sec-note">学会ガイドラインに明文の推奨がない領域</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="flow">
+        <div class="q">Q1. いま入っている治療用抗菌薬は、これから切る術野の想定菌をカバーしているか？</div>
+        <div class="a"><span class="yn yes">カバー</span><span><b>予防抗菌薬の上乗せは不要。</b>次回投与のタイミングをずらすか追加ボーラスで、<b>切開時に有効血中濃度がある状態</b>にする（＝切開前60分以内に投与済み）</span></div>
+        <div class="a"><span class="yn no">不足</span><span>セファゾリン等を<b>上乗せ</b>する（例：グラム陰性桿菌用の薬しか入っておらず、ブドウ球菌カバーがない消化管外手術）</span></div>
+        <div class="q">Q2. 培養は取れているか？</div>
+        <div class="a"><span class="yn no">未提出</span><span><b>抗菌薬を変更・追加する前に確保する。</b>既投与で術中培養の陽性率が下がるという報告はあるが結果は一致しておらず、確実なのは「先に取っておく」ことだけ</span></div>
+        <div class="q">Q3. 「ペニシリンアレルギー」と書いてあるか？</div>
+        <div class="a"><span class="yn yes">記載あり</span><span><b>その場で内容を聞き直す。</b>申告患者の<b>90%以上は真のアレルギーではない</b>のに、セカンドライン薬に流れることで SSI が増える</span></div>
+      </div>
+    </div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">△</span>
+      <div><strong>「すでに治療的抗菌薬が入っている患者に予防抗菌薬を足すべきか」を明文化した推奨は、ASHP/IDSA/SIS/SHEA・WHO 2018・CDC 2017 のいずれにも見当たらない。</strong>
+      上の判断は複数施設のプロトコルが一致して採用している運用であって、<strong>学会推奨ではない</strong>。施設の感染対策チームの基準を確認すること。</div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="pad">
+        <div class="mini-h">投与タイミングと再投与</div>
+        <ul class="clean">
+          <li><strong>切開前60分以内</strong>に投与開始。<strong>バンコマイシン・フルオロキノロンは投与時間が長いので120分以内に開始</strong></li>
+          <li>Steinberg 2009（29施設・4,472例）：SSI は <strong>切開前0〜30分で1.6%、31〜60分で2.4%（OR 1.74、95%CI 0.98–3.04）</strong>と、遅いほど増える傾向</li>
+          <li>Classen 1992（2,847例）：<strong>切開前2時間以内で SSI 0.6% と最低</strong>。早すぎても切開後でも増える</li>
+          <li>術中再投与：<strong>手術時間が半減期の約2倍を超えたとき</strong>、および<strong>出血量が多いとき（1,500 mL 超が慣用の目安）</strong></li>
+          <li>再投与間隔の目安：<strong>セファゾリン4時間／ABPC-SBT 約2時間／クリンダマイシン6時間</strong>。バンコマイシン・メトロニダゾール・ゲンタマイシンは通常不要</li>
+          <li>体重：<strong>80 kg 以上でセファゾリン 2 g、120 kg 以上で 3 g</strong>（薬物動態に基づく推奨で、SSI をアウトカムにしたRCTはない）</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">やめどきと、アレルギー・MRSA</div>
+        <ul class="clean">
+          <li><strong>術後継続はしない。</strong>閉創時、遅くとも24時間以内で終了する</li>
+          <li>de Jonge 2020（52 RCT・19,273例のメタ解析）：<strong>「切開前60分以内＋必要なら術中再投与」が守られていれば、術後継続に追加のベネフィットはない</strong>。WHO 2018 も術後継続を推奨しない</li>
+          <li><strong>汚染手術・穿孔性腹膜炎はすでに「治療」であって「予防」ではない</strong> → 3〜5日の治療的投与に切り替える。ここを予防と混同して24時間で切らない</li>
+          <li>ペニシリンアレルギー申告：Blumenthal 2018 で<strong>セファゾリン使用率 12% vs 92%</strong>、代わりにクリンダマイシン49%・バンコマイシン35%・ゲンタマイシン24%。<strong>SSI の調整オッズ比 1.51（95%CI 1.02–2.22）</strong>で、この上昇は<strong>セカンドライン薬の使用で完全に説明される</strong>（アレルギーそのものが原因ではない）</li>
+          <li>MRSA 保菌・既往ならバンコマイシンを追加。<strong>ムピロシン鼻腔除菌は S. aureus 関連 SSI を RR 0.67（95%CI 0.49–0.91）で減らす</strong>が、<strong>全体 SSI への効果は限定的</strong>で、<strong>保菌者に絞って除菌したほうが効果が大きい</strong>（全例一律の除菌より）</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">11</span>体温・電解質・source control
+      <span class="sec-note">数字より病態で決める帯</span></h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">術前からの加温</div>
+        <div class="num">19% → 6%</div>
+        <div class="sub">Kurz 1996（直腸結腸手術 200例、RCT）。創部感染が <b>18/96例(19%) → 6/104例(6%)、p=0.009</b>（相対で約7割減）。<b>出発前から温める</b></div>
+      </div>
+      <div class="stat">
+        <div class="lab">敗血症の source control</div>
+        <div class="num">診断後すぐ</div>
+        <div class="sub">SSC 2021 のベストプラクティス声明。<b>明確な時間閾値のエビデンスは不足</b>し、観察研究で6〜12時間以内が目安とされるにとどまる</div>
+      </div>
+      <div class="stat">
+        <div class="lab">電解質の是正閾値</div>
+        <div class="num">RCT なし</div>
+        <div class="sub">「K &gt;6 mEq/L なら待機手術延期」は広く使われるが<b>閾値を検証したRCTは存在しない</b>。緊急手術への外挿はさらに根拠がない</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">!</span>
+      <div><strong>カリウムは数字ではなく心電図と病態で判断する。</strong>「K が 6.2 だから出せない」と手術を止める前に、
+      その K が<strong>横紋筋融解や組織壊死そのものの結果であって、手術こそが治療である</strong>可能性を考える。
+      同様に <strong>permissive hypotension の至適血圧を検証した大規模RCTもない</strong> ―― 数値目標より
+      <strong>「止血までの時間を最短にする」</strong>ことが実質的な介入である。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">12</span>人・書類・搬送
+      <span class="sec-note">チェックリストは紙ではなく運用</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="mini-h">WHO 手術安全チェックリスト ― 2つの研究の落差が本質</div>
+      <div class="table-scroll"><table class="narrow">
+        <thead><tr><th>研究</th><th>デザイン</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td><b>Haynes 2009</b>（8都市）</td><td>前後比較（RCTではない）</td><td><b>死亡 1.5% → 0.8%、主要合併症 11.0% → 7.0%</b></td></tr>
+          <tr><td><b>Urbach 2014</b>（オンタリオ州101病院・義務化後）</td><td>悉皆データ解析</td><td>合併症 3.86% → 3.82%、30日死亡 0.71% → 0.65%。<b>いずれも有意差なし</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="fig-cap"><b>読み方：</b>チェックリストという紙に効果があるのではなく、<b>チームが本気で読み合わせる運用があって初めて効果が出る</b>。
+      義務化して形だけ回すと差は消える。日本では「タイムアウト」という語だけが独り歩きし、患者・部位確認だけで完了したと誤解されやすい ――
+      <b>サインイン（麻酔導入前）／タイムアウト（皮膚切開前）／サインアウト（退室前）の3段階</b>を分けて意識する。</p>
+    </div></div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="pad">
+        <div class="mini-h">DNAR 患者を手術に出すとき</div>
+        <ul class="clean">
+          <li><strong>自動的な一時停止も、自動的な継続も、どちらも不適切</strong>（ASA／ACS）</li>
+          <li>取るべきは <strong>Required Reconsideration（求められる再検討）</strong> ―― 患者・代理決定者と<strong>事前に話し合って明文化する</strong></li>
+          <li>分けて決める：<strong>手術を成立させるために不可欠な蘇生的手技</strong>（昇圧薬・気道確保・除細動）と、<strong>純粋な心肺蘇生</strong>（胸骨圧迫）</li>
+          <li>この再検討プロセスは<strong>実臨床でほとんど定着していない</strong>と繰り返し指摘されている</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <div class="mini-h">院内搬送 ― 手術室までの数分が最も無防備</div>
+        <ul class="clean">
+          <li>重症患者の院内搬送での有害事象は、メタ解析（24研究・12,313搬送）で<strong>全体 26.2%（95%CI 15.0–39.2）</strong>。<strong>生命を脅かす有害事象は 1.47%、死亡は 0%</strong> ―― 頻度は高いが致命的なものは稀、という読み方をする（研究間で定義が不統一で、報告値は 3〜80% と幅が大きい）</li>
+          <li>出発前に：<strong>モニタ・バッグバルブ・気道デバイス・吸引・昇圧薬（希釈済み）・酸素残量・人員</strong></li>
+          <li><strong>エレベーターの中で昇圧薬を作らない</strong>。作ってから出る</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title"><span class="sec-num">13</span>出す直前の最終確認
+      <span class="sec-note">2時間しかなくても、ここは全部取れる</span></h2>
+
+    <div class="card"><div class="pad">
+      <div class="chk">
+        <div class="row"><div class="box"></div><div class="ck-k">緊急度</div><div class="ck-v">この手術は<b>あと何時間待てるか</b>。待てるなら、待って何を是正するのか</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">薬歴</div><div class="ck-v"><b>抗血栓薬の最終内服時刻</b>／ヘパリンの最終投与時刻／SGLT2・GLP-1／β遮断薬・レボドパ・抗てんかん薬（続けるもの）／ステロイド歴</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">中和の手段</div><div class="ck-v">中和薬は<b>院内にあるか、何分で来るか</b>。ビタミンKを PCC と一緒に出したか</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">アレルギー</div><div class="ck-v">「ペニシリンアレルギー」は<b>内容を聞き直したか</b>（発疹か、アナフィラキシーか、いつか）</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">持ち込み抗菌薬</div><div class="ck-v">何を・何日目・術野をカバーするか。<b>培養は取れているか</b>。<b>切開前60分以内に入る形になっているか</b></div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">気道と胃</div><div class="ck-v"><b>最終経口摂取時刻</b>と full stomach かどうか。困難気道の見た目、失敗時の撤退計画、波形カプノ</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">出血への備え</div><div class="ck-v"><b>血液型・不規則抗体（T&amp;S）</b>、クロスマッチの要否、MTP を起動するか、TXA は<b>受傷/発症から3時間以内か</b></div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">循環</div><div class="ck-v">ライン（太さ・本数）、Aライン・中心静脈の要否、<b>昇圧薬は希釈済みで手元にあるか</b></div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">デバイス</div><div class="ck-v">ペースメーカー／ICD の<b>最終チェック日</b>、依存の有無、術中の対応と<b>退院前に戻す段取り</b></div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">体温</div><div class="ck-v">出発前から加温を始めているか</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">意思決定</div><div class="ck-v">同意（緊急時の扱いを含む）、<b>DNAR があるなら周術期の方針を明文化したか</b>、家族への説明</div></div>
+        <div class="row"><div class="box"></div><div class="ck-k">搬送</div><div class="ck-v">モニタ・気道・吸引・酸素残量・人員。<b>作ってから出る</b></div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <div class="evidence">
+    <h3>このカードの根拠と限界</h3>
+    <p>中心は <b>2024 ACC/AHA ほか合同 周術期心血管管理ガイドライン</b>（Circulation 2024;150(19):e351-e442、PMID 39320289）と、
+    <b>2022 ESC 非心臓手術ガイドライン</b>（Eur Heart J 2022;43(39):3826-3924、PMID 36017553）。両者は手術リスク分類の粒度と
+    バイオマーカーの優先順位が異なるため、<b>どちらの表を見ているかを意識する</b>必要がある。</p>
+    <p><b>推奨クラス（Class I / IIa / IIb / III）の文字表記は二次資料を含めて整理しており、原文の COR/LOE 表記と完全に突き合わせたわけではない。</b>
+    また <b>BNP&lt;92 pg/mL・NT-proBNP&lt;300 pg/mL</b> は CCS 2017 由来の閾値で、2024 ACC/AHA 本文が独自に明記した数値ではない。
+    MINS の hs-cTnT 閾値も複数総説で一致する値であり、ガイドライン本文での確認は未了。</p>
+    <p><b>日本の事情に依存する部分</b>（エノキサパリンの保険適応の制約、P2Y12 阻害薬の国内添付文書の休薬記載、緊急時 O 型赤血球の運用）は、
+    <b>必ず施設の基準と添付文書で確認すること</b>。海外ガイドラインの数字をそのまま持ち込めない代表的な箇所である。</p>
+    <p><b>明確な学会推奨が存在しない領域</b>：持ち込み抗菌薬への予防抗菌薬の上乗せ可否、電解質（K/Ca/Mg）の術前是正閾値、
+    permissive hypotension の至適血圧、アルガトロバンの術前中止時間。これらは施設プロトコルと専門家の判断に委ねられている。</p>
+    <p class="refs">
+      <b>主要文献（PMID）</b>　周術期心血管 2024 ACC/AHA：Circulation 版 39316661／JACC 版 39320289（同一ガイドラインの同時掲載で PMID が別）／ ESC 2022 36017553 ／ CARP（NEJM 2004）15625331 ／
+      METS study（Lancet 2018）30070222 ／ VISION・MINS（JAMA 2017）28444280 ／ ARISCAT（Anesthesiology 2010）21045639 ／
+      RCRI・NSQIP MICA 外部検証（Br J Anaesth 2019）31256916 ／ CCS 周術期（Can J Cardiol 2017）27865641 ／
+      DECREASE 除外メタ解析（Heart 2014）23904357 ／ PAUSE（JAMA Intern Med 2019）31380891 ／ BRIDGE（NEJM 2015）26095867 ／
+      RE-VERSE AD（NEJM 2017）28693366 ／ ANNEXA-I（NEJM 2024, DOI 10.1056/NEJMoa2313040）／ Sarode 4F-PCC（Circulation 2013）23935011 ／ POISE-2（NEJM 2014）24679062 ／
+      PATCH（Lancet 2016）27178479 ／ POISE（Lancet 2008）18479744 ／ STOP-or-NOT（JAMA 2024）39212270 ／
+      Roshanov（Anesthesiology 2017）27775997 ／ ACR/AAHKS 2022　35718887 ／ ASA 絶飲食 2023　36629465 ／
+      GLP-1 マルチソサエティ 2024（DOI 10.1016/j.cgh.2024.10.003）／ Mallampati 精度（Cochrane 2018）29761867 ／
+      MACOCHA（AJRCCM 2013）23348979 ／ INTUBE（JAMA 2021）33755076 ／ IRIS（JAMA Surg 2019）30347104 ／
+      PROPPR（JAMA 2015）25647203 ／ CRASH-2 タイミング（Lancet 2011）21439633 ／ CRASH-3（Lancet 2019）31623894 ／
+      WOMAN（Lancet 2017）28456509 ／ ABC score（J Trauma 2009）19204506 ／ SSC 2021　34605781 ／
+      外科的予防抗菌薬 ASHP/IDSA/SIS/SHEA 2013　23327981 ／ Classen（NEJM 1992）1728731 ／ Steinberg（Ann Surg 2009）19561486 ／
+      de Jonge（Lancet Infect Dis 2020）32470329 ／ Blumenthal（Clin Infect Dis 2018）29361015 ／ Kurz（NEJM 1996）8606715 ／
+      Haynes（NEJM 2009）19144931 ／ Urbach（NEJM 2014）24620866
+    </p>
+  </div>
+
+  <footer>
+    術前確認ポケットカード ／ 2026-09-09 作成<br>
+    施設プロトコル・添付文書と必ず突き合わせて使用すること。最終判断は主治医・麻酔科の責任のもとで行う。
+  </footer>
+
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
