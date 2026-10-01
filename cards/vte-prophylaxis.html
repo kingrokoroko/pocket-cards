@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DVT（VTE）予防 ― 外科のリスク層別とICUの分岐</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+  .lede ol { margin: 6px 0 0; padding-left: 1.3em; }
+  .lede li + li { margin-top: 4px; }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 76px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .86rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+  .rung-body .who { display: block; color: var(--ink-3); font-size: .8rem; margin-bottom: 5px; }
+  .rung-body .do { display: block; color: var(--ink); font-weight: 600; }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 560px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .8rem; color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .callout + .card, .ladder + .callout, .callout + .ladder { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.2rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .q .step { color: var(--accent); margin-right: 6px; }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a .yn.mid { background: var(--accent-soft); color: var(--accent); }
+  .flow .a b { color: var(--ink); }
+  .flow .a .src { color: var(--ink-3); font-size: .76rem; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: .8rem; padding: 3px 9px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>DVT（VTE）予防 ― 外科のリスク層別とICUの分岐</h1>
+    <div class="subtitle">Venous thromboembolism prophylaxis ／ 周術期・集中治療 ／ 作成 2026-10-01</div>
+  </header>
+
+  <div class="lede">
+    覚えるのは3点。
+    <ol>
+      <li><strong>外科はJCS 2025のリスク4段階（低・中・高・最高）で予防法が決まる。</strong>2017年版から表の定義は変わらず、IPCと抗凝固の推奨がIIaからIに上がった。</li>
+      <li><strong>ICU専用の定番フローチャートは存在しない。</strong>出血リスクで薬物予防か機械的予防かを分け、<b>薬物予防にIPCは上乗せしない</b>（PREVENT、JCS 2025 Class III）。</li>
+      <li><strong>日本で内科（ICU含む）に予防として使える抗凝固薬はUFHだけ。</strong>海外の「LMWHを優先」はそのまま持ち込めない。</li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>外科：リスクレベル → 推奨予防法 <span class="sec-note">JCS 2025 表19・表20・推奨表16（一般外科・泌尿器科・婦人科）</span></h2>
+
+    <div class="ladder">
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">risk</span><span class="sev-name">低</span></div>
+        <div class="rung-body">
+          <span class="who">60歳未満の非大手術／40歳未満の大手術</span>
+          <span class="do">早期離床・積極的な運動</span>
+          <span class="pill go">I / C</span>
+        </div>
+      </div>
+      <div class="rung s2">
+        <div class="rung-tag"><span class="sev-label">risk</span><span class="sev-name">中</span></div>
+        <div class="rung-body">
+          <span class="who">60歳以上、あるいは危険因子のある非大手術／40歳以上、あるいは危険因子がある大手術</span>
+          <span class="do">＋ 弾性ストッキング（ES）あるいは 間欠的空気圧迫法（IPC）</span>
+          <span class="pill mid">ES IIa / A</span> <span class="pill go">IPC I / A</span>
+        </div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">risk</span><span class="sev-name">高</span></div>
+        <div class="rung-body">
+          <span class="who">40歳以上のがんの大手術</span>
+          <span class="do">＋ IPC あるいは 抗凝固療法</span>
+          <span class="pill go">I / A</span>
+        </div>
+      </div>
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">risk</span><span class="sev-name">最高</span></div>
+        <div class="rung-body">
+          <span class="who">VTEの既往、あるいは血栓性素因のある大手術</span>
+          <span class="do">＋（抗凝固療法＋IPC）あるいは（抗凝固療法＋ES）</span>
+          <span class="pill go">I / A</span>
+          <br><span style="font-size:.8rem">必要なら用量調節UFH単独も可。2025年版で<b>用量調節ワルファリン単独は脚注から削除</b>。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <ul class="clean">
+          <li><strong>大手術</strong>＝厳密な定義はない。<b>すべての腹部手術、あるいはその他の45分以上要する手術</b>を基本とし、麻酔法・出血量・輸血量・手術時間で総合評価する。</li>
+          <li><strong>付加的な危険因子（下表）があればリスクレベルを1段階上げることを「考慮」</strong>する。必須ではない。</li>
+          <li><strong>出血リスクが高い場合</strong>は抗凝固薬を慎重に検討し、IPC・ESなどの理学的予防を行う。最高リスクでも理学的予防のみを考慮してよい。</li>
+          <li>「理学的予防を先行し、出血リスクが下がったら抗凝固を追加」は<b>脳神経外科の節</b>の記述（下記）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">付加的な危険因子の強度 <span class="tag">JCS 2025 表21</span></p>
+        <div class="table-scroll">
+          <table style="min-width:0">
+            <thead><tr><th style="width:70px">強度</th><th>危険因子</th></tr></thead>
+            <tbody>
+              <tr><td>弱い</td><td>肥満、エストロゲン治療、下肢静脈瘤</td></tr>
+              <tr><td>中等度</td><td>高齢、長期臥床、うっ血性心不全、呼吸不全、悪性疾患、中心静脈カテーテル留置、がん化学療法、重症感染症</td></tr>
+              <tr><td>強い</td><td>VTEの既往、血栓性素因（AT・PC・PS欠乏症、抗リン脂質抗体症候群など）、下肢麻痺、ギプスによる下肢固定、<b>活動性がん（2025で追加）</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">他領域は表でなく本文で記載 <span class="tag">JCS 2025 §3</span></p>
+        <div class="table-scroll">
+          <table style="min-width:0">
+            <thead><tr><th>領域</th><th>中</th><th>高</th></tr></thead>
+            <tbody>
+              <tr><td>泌尿器科</td><td>癌以外の骨盤手術（経尿道的手術は低）</td><td>前立腺全摘・膀胱全摘</td></tr>
+              <tr><td>婦人科</td><td>良性疾患手術、ホルモン療法中</td><td>骨盤内悪性腫瘍手術</td></tr>
+              <tr><td>脳神経外科</td><td>脳腫瘍以外の開頭術</td><td>脳腫瘍の開頭術（大量ステロイド併用でさらに上）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fig-cap">脳神経外科では<b>最高リスクでも周術期は理学的予防が基本</b>で、出血リスクが低下した時期に抗凝固の追加を考慮する。整形外科（人工関節・大腿骨近位部骨折）と産科は別ガイドライン・別体系で層別する。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>ICU：予防の分岐 <span class="sec-note">複数ガイドラインからの再構成（単一文書の図ではない）</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <div class="flow">
+          <div class="q"><span class="step">Step 0</span>入室時に全例でVTEリスクと出血リスクを評価する</div>
+          <div class="a"><span class="yn mid">原則</span><div>施設の予防プロトコルを持つ <span class="src">ESA 2018 1B</span>。予防中の<b>無症状DVTのルーチン超音波スクリーニングはしない</b> <span class="src">ESA 2018 1B</span>。</div></div>
+
+          <div class="q"><span class="step">Step 1</span>薬物予防の禁忌（出血中・高出血リスク）があるか</div>
+          <div class="a"><span class="yn yes">なし</span><div><b>薬物予防を行う。</b> <span class="src">SSC 2021 強い推奨／ASH 2018 強い推奨／ACCP 2012 2C／JCS 2025 IIa/A（出血に留意しつつ）</span></div></div>
+          <div class="a"><span class="yn no">あり</span><div><b>機械的予防（IPC）を入室時から。</b>出血リスクが下がったら薬物予防へ切り替える <span class="src">ACCP 2012 2C／NICE NG89／JCS 2025 IIa/B／ESAIC 2024 外科系1C・内科系2B</span>。機械的予防は<b>ESよりIPC</b> <span class="src">ESAIC 2024 2B</span>。<br>血小板&lt;5万/μLかつ高出血リスク：予防なし、またはIPC <span class="src">ESA 2018 2C</span>。<br>薬物もIPCも使えない：IVCフィルターを考慮 <span class="src">ESA 2018 2C</span>。</div></div>
+
+          <div class="q"><span class="step">Step 2</span>薬物予防中にIPCを上乗せするか</div>
+          <div class="a"><span class="yn no">しない</span><div><b>上乗せしない。</b> <span class="src">JCS 2025 Class III（No benefit）/B／SSC 2021 弱い推奨</span>。根拠はPREVENT（下記）。<br>例外として神経集中治療（ICH等）ではNCS 2016がIPC継続を提案しており、文書間で割れている。</div></div>
+
+          <div class="q"><span class="step">Step 3</span>薬剤と用量を選ぶ</div>
+          <div class="a"><span class="yn mid">国内</span><div><b>内科（ICU含む）の一次予防に国内で使える抗凝固薬はUFHのみ</b>（JCS 2025、2025年3月現在）。<span class="dose" style="font-family:var(--mono);font-size:.8rem;color:var(--ink)">UFH 5,000単位 皮下注 8〜12時間ごと</span>。</div></div>
+          <div class="a"><span class="yn mid">海外</span><div>LMWHをUFHより優先 <span class="src">SSC 2021 強い推奨（DVT RR 0.84）／ESAIC 2024 1B／ASH 2018 条件付き</span>。ESAIC 2024は個別評価のうえ<b>低用量より中間用量のLMWH</b>も提案（2B）。<b>国内ではこの推奨と保険適用が衝突する</b>。術後患者は手術適応のある国内LMWH・フォンダパリヌクス（§3）。</div></div>
+          <div class="a"><span class="yn care" style="background:var(--mod-soft);color:var(--mod)">腎</span><div>重度腎機能障害：<b>UFHまたはダルテパリンを他のLMWHより</b> <span class="src">ESAIC 2024 2C</span>。腎障害・病的肥満では抗Xa活性で用量調整（2C）。ルーチンの抗Xa測定はしない（2C）。「CrCl&lt;30ならUFH」と断定する文書はない。<b>ダルテパリンは国内にVTE予防の適応がない</b>（DICと体外循環のみ）。</div></div>
+          <div class="a"><span class="yn no">HIT</span><div>疑い・確定で<b>全ヘパリン中止</b>し非ヘパリン系抗凝固へ。<b>アルガトロバンが第一選択</b> <span class="src">ESA 2018 1B／ESAIC 2024 1C</span>。</div></div>
+
+          <div class="q"><span class="step">Step 4</span>特殊病態を確認する（下表 §4）</div>
+          <div class="a"><span class="yn mid">神経</span><div>ICH・TBI・SAH・脊髄損傷・脳卒中は開始時期の目安が個別にある。</div></div>
+
+          <div class="q"><span class="step">Step 5</span>毎日再評価する</div>
+          <div class="a"><span class="yn yes">毎日</span><div>VTEリスクと出血リスクを毎日。<b>病態が急変するときは1日に複数回</b> <span class="src">NICE NG89 1.8</span>。継続は離床・退院まで <span class="src">J-SSCG 2020（敗血症、expert consensus）</span>。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">JCS 2025 推奨表17（内科入院・重症患者）</p>
+        <div class="table-scroll">
+          <table style="min-width:0">
+            <thead><tr><th>推奨</th><th style="width:96px">クラス/レベル</th></tr></thead>
+            <tbody>
+              <tr><td>すべての入院患者に早期離床・積極的な運動</td><td><span class="pill go">I / C</span></td></tr>
+              <tr><td>移動能力が低下した急性期脳卒中にIPC</td><td><span class="pill go">I / A</span></td></tr>
+              <tr><td>重症急性期内科疾患（ICU・人工呼吸）にIPCを考慮</td><td><span class="pill mid">IIa / B</span></td></tr>
+              <tr><td>同、出血に留意しつつ予防的抗凝固を考慮</td><td><span class="pill mid">IIa / A</span></td></tr>
+              <tr><td>同、薬物予防＋IPC、または薬物予防＋ESの併用</td><td><span class="pill stop">III / B</span></td></tr>
+              <tr><td>COVID-19 中等症II以上に抗凝固を考慮</td><td><span class="pill mid">IIa / B</span></td></tr>
+              <tr><td>疾患リスク＋3〜4日以上の移動制限＋追加リスクのある急性期内科入院に予防的抗凝固を考慮してもよい</td><td><span class="pill care">IIb / B</span></td></tr>
+              <tr><td>疾患リスクのある内科入院に圧迫療法（ES/IPC）を考慮してもよい</td><td><span class="pill care">IIb / C</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>J-SSCG 2024にはVTE予防のCQがない。</strong>日本の敗血症ガイドラインで予防を扱ったのは2020版（CQ16）のみで、根拠はexpert consensus（RCT 0件）。図としてのICUアルゴリズムが載っていたのもJ-SSCG 2020 Fig.15（敗血症限定）だけだった。</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>薬剤と用量（国内） <span class="sec-note">JCS 2025 本文・脚注。最終確認は添付文書で</span></h2>
+    <div class="card">
+      <div class="pad">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>薬剤</th><th>用法</th><th>対象・注意</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>低用量UFH</td>
+                <td><span class="dose">5,000単位 皮下注 8〜12時間ごと</span></td>
+                <td>APTTを延長させない用量。高リスクは単独可、最高リスクは理学的予防と併用。<b>5日以上でHITに注意</b>。内科の国内唯一の選択肢。ヘパリンCa皮下注の添付文書は「5,000単位を12時間ごとに7〜10日間」。<b>中枢神経系の手術・外傷から日が浅い患者には原則投与しない</b>（添付文書）。</td>
+              </tr>
+              <tr>
+                <td>用量調節UFH</td>
+                <td><span class="dose">約3,500単位で開始、8時間ごと前回±500単位</span></td>
+                <td>投与4時間後のAPTTを目標域に。最高リスクでは単独でも可。</td>
+              </tr>
+              <tr>
+                <td>エノキサパリン</td>
+                <td><span class="dose">2,000単位 1日2回 皮下注</span></td>
+                <td>術後24〜36時間、出血がないことを確認して開始。腎機能低下で1日1回を考慮。15日以上は未検討。<b>手術患者のみ</b>。</td>
+              </tr>
+              <tr>
+                <td>フォンダパリヌクス</td>
+                <td><span class="dose">2.5 mg 1日1回 皮下注</span><br>（腎機能低下 1.5 mg）</td>
+                <td>術後24時間以降。推奨最長は整形外科で術後2週間、腹部手術で術後8日。<b>手術患者のみ</b>。</td>
+              </tr>
+              <tr>
+                <td>エドキサバン</td>
+                <td><span class="dose">30 mg 1日1回 経口</span></td>
+                <td>術後12時間以降、11〜14日。<b>TKA・THA・股関節骨折手術のみ</b>。CCr&lt;30は禁忌、30〜50は15 mgを考慮。</td>
+              </tr>
+              <tr>
+                <td>ワルファリン</td>
+                <td><span class="dose">PT-INR 1.5〜2.5</span></td>
+                <td>整形外科で選択肢。効果発現に3〜5日。一般にVTE予防としては施行されていない（2025で追記）。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>特殊病態：開始時期の目安 <span class="sec-note">主に NCS 2016（Neurocrit Care）</span></h2>
+    <div class="card">
+      <div class="pad">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>病態</th><th>機械的予防</th><th>薬物予防の開始</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>脳出血（ICH）</td>
+                <td>入院時からIPC <span class="pill go">強</span><br>AHA 2022：歩けない患者に<b>診断当日から</b>IPC（COR 1/B-R）。<b>ESだけでは無効</b>（COR 3: No Benefit/B-R）</td>
+                <td>血腫安定・凝固異常なしで<b>48時間以内</b>にUFH/LMWH <span class="pill care">弱</span><br>AHA 2022：<b>発症から24〜48時間</b>で低用量UFH/LMWHを始めるのは妥当な場合がある（COR 2b/C-LD）。PEを減らすのに有用（COR 2a/C-LD）</td>
+              </tr>
+              <tr>
+                <td>外傷性脳損傷</td>
+                <td>24時間以内にIPC <span class="pill care">弱</span></td>
+                <td>ICH合併で24〜48時間後、開頭術後は24時間後 <span class="pill care">弱</span></td>
+              </tr>
+              <tr>
+                <td>くも膜下出血</td>
+                <td>―</td>
+                <td>UFHで。<b>動脈瘤処置の24時間後以降</b> <span class="pill go">強</span></td>
+              </tr>
+              <tr>
+                <td>脊髄損傷</td>
+                <td>機械的予防<b>単独は非推奨</b>。薬物不可ならIPC <span class="pill care">弱</span></td>
+                <td><b>72時間以内</b>、出血がコントロールされ次第LMWHまたは調整用量UFH <span class="pill go">強</span></td>
+              </tr>
+              <tr>
+                <td>急性虚血性脳卒中</td>
+                <td>移動能力低下でIPC（CLOTS-3、JCS I/A）</td>
+                <td>可及的早期に。<b>rt-PA後は24時間遅らせる</b> <span class="pill care">弱</span></td>
+              </tr>
+              <tr>
+                <td>脳腫瘍・開頭術後</td>
+                <td colspan="2">開頭術後24時間以内にIPC＋UFH/LMWH <span class="pill go">強</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fig-cap"><span class="pill go">強</span>＝strong、<span class="pill care">弱</span>＝weak（NCS 2016）。外傷全般はWestern Trauma Association 2020のアルゴリズム（外傷限定）がある。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>根拠になる3つのRCT</h2>
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">PROTECT（NEJM 2011, n=3,764）</div>
+        <div class="num">PE HR 0.51</div>
+        <div class="sub">重症患者でダルテパリン 5,000 IU/日 vs UFH 5,000 U×2/日。<b>近位DVTは差なし</b>（5.1% vs 5.8%、HR 0.92, 0.68–1.23）。PEは1.3% vs 2.3%（<b>0.30–0.88</b>）。大出血・死亡は差なし。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">PREVENT（NEJM 2019, n=2,003）</div>
+        <div class="num">上乗せ効果なし</div>
+        <div class="sub">薬物予防中のICU患者にIPC追加。近位DVT 3.9% vs 4.2%（<b>RR 0.93, 0.60–1.44</b>, p=0.74）。90日死亡も差なし。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">CLOTS-3（Lancet 2013, n=2,876）</div>
+        <div class="num">OR 0.65</div>
+        <div class="sub">動けない急性期脳卒中にIPC vs なし。近位DVT 8.5% vs 12.1%（<b>0.51–0.84</b>）。皮膚障害は3% vs 1%で増える。</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">◎</span>
+      <div><strong>CLOTS-3とPREVENTは矛盾しない。</strong>CLOTS-3は<b>IPC単独</b>が無予防より有効であることを、PREVENTは<b>薬物予防に足しても</b>上積みがないことを示した。IPCの出番は「薬物予防ができない患者」である。</div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>ICUの分岐（§2）は単一のガイドラインの図ではなく</b>、JCS 2025・SSC 2021・ESA 2018・ACCP 2012・ASH 2018・NICE NG89・NCS 2016 を並べ直したもの。推奨度の表記体系は文書ごとに異なる。</p>
+    <p><b>主要な出典</b>：日本循環器学会ほか 肺血栓塞栓症・深部静脈血栓症および肺高血圧症に関するガイドライン（2025年改訂版）／同 2017年改訂版／Evans L et al. Crit Care Med 2021;49:e1063-e1143（SSC 2021）／Duranteau J et al. Eur J Anaesthesiol 2018;35:142-146（ESA ICU）／Bounes F et al. Eur J Anaesthesiol 2024;41:582-588（ESAIC 2024 ICU）／Kahn SR et al. Chest 2012;141:e195S-e226S／Schünemann HJ et al. Blood Adv 2018;2:3198-3225／NICE NG89／Nyquist P et al. Neurocrit Care 2016;24:47-60／Greenberg SM et al. Stroke 2022;53:e282-e361／PROTECT Investigators. N Engl J Med 2011;364:1305-1314／Arabi YM et al. N Engl J Med 2019;380:1305-1315／CLOTS Trials Collaboration. Lancet 2013;382:516-524。</p>
+    <p id="unverified"><b>一次本文に当たれていない項目</b>：AHA 2022 ICHとESAIC 2024（Bounes F et al. Eur J Anaesthesiol 2024;41:582-588）は原文を逐語引用した二次資料で照合した（本文は有料で未取得）。ESAIC 2024のDOAC推奨の有無は未確認。日本集中治療医学会のICU患者VTE予防に特化した独自指針は見つからなかった（不存在の証明ではない）。ヘパリンCa皮下注の添付文書の文言はPMDA最新版で要再確認。JCS表の印字ページは±1頁ずれうる。</p>
+  </div>
+
+  <footer>
+    DVT（VTE）予防ポケットカード ／ 作成 2026-10-01<br>
+    最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
