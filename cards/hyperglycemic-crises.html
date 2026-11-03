@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>高血糖緊急症（DKA・HHS）の初期対応</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .ladder { display: flex; flex-direction: column; gap: 10px; }
+  .rung {
+    display: grid; grid-template-columns: 108px 1fr; gap: 0;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  }
+  @media (max-width: 560px) { .rung { grid-template-columns: 88px 1fr; } }
+  .rung-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    padding: 12px; color: #fff;
+  }
+  .rung-tag .sev-label { font-size: .64rem; letter-spacing: .09em; text-transform: uppercase; opacity: .9; }
+  .rung-tag .sev-name { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+  .rung.s1 .rung-tag { background: var(--mild); }
+  .rung.s2 .rung-tag { background: var(--accent); }
+  .rung.s3 .rung-tag { background: var(--mod); }
+  .rung.s4 .rung-tag { background: var(--sev); }
+  .rung-body { padding: 12px 15px; font-size: .88rem; color: var(--ink-2); }
+  .rung-body b { color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 620px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px;
+    border-bottom: 1px solid var(--line-strong); background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td b, tbody td strong { color: var(--ink); }
+  table.narrow { min-width: 420px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .kv { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+  .kv > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .kv .k { color: var(--ink-3); font-size: .76rem; font-weight: 700; letter-spacing: .04em; padding-top: 2px; }
+  .kv .v { color: var(--ink-2); }
+  .kv .v b { color: var(--ink); }
+
+  .formula {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 12px 15px; font-family: var(--mono); font-size: .88rem; color: var(--ink);
+    text-align: center; letter-spacing: .01em; overflow-x: auto; white-space: nowrap;
+  }
+  .formula + .formula { margin-top: 8px; }
+  .formula .em { color: var(--accent); font-weight: 700; }
+  .formula .no { color: var(--sev); text-decoration: line-through; }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .rung, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>高血糖緊急症（DKA・HHS）の初期対応</h1>
+    <div class="subtitle">ADA / EASD / JBDS-IP / AACE / DTS consensus report 2024 ／ 救急・集中治療 ／ 作成 2026-11-03</div>
+  </header>
+
+  <p class="lede">
+    2024年のコンセンサスで<strong>診断の入口が3か所変わった</strong>。<strong>①血糖の閾値は 250 → 200 mg/dL（あるいは糖尿病の既往だけでよい）</strong>、<strong>②ケトン体は尿ケトンでなく血中β-ヒドロキシ酪酸（β-OHB）≥3.0 mmol/L</strong>、<strong>③アニオンギャップを診断基準から外した</strong>。
+    治療の側では順序が全てで、<strong>輸液 → K の確認 → インスリン</strong>を崩さない。<strong>K &lt;3.5 mmol/L ならインスリンは保留</strong>し、<strong>血糖が 250 を切ったら「終了」ではなく「糖質を足してインスリンを続ける」</strong>。終わりを決めるのは血糖ではなく<strong>寛解基準（pH・HCO3⁻・β-OHB／浸透圧）</strong>である。
+  </p>
+
+  <div class="grid4">
+    <div class="stat">
+      <div class="lab">DKA 血糖の閾値（2024改訂）</div>
+      <div class="num tnum">≥200</div>
+      <div class="sub"><b>mg/dL、または糖尿病の既往</b>。従来の ≥250 から引き下げ。SGLT2阻害薬下の正常血糖DKAを取り落とさないため</div>
+    </div>
+    <div class="stat">
+      <div class="lab">ケトーシスの基準（血中β-OHB）</div>
+      <div class="num tnum">≥3.0</div>
+      <div class="sub"><b>mmol/L（=3000 μmol/L）</b>。尿ケトン ≥2+ は代替にすぎない。寛解の目標は <b>&lt;0.6 mmol/L</b></div>
+    </div>
+    <div class="stat">
+      <div class="lab">インスリンを保留するK</div>
+      <div class="num tnum">&lt;3.5</div>
+      <div class="sub"><b>mmol/L</b>。K を 3.5 超へ戻すまでインスリンを待つ。以後 <b>2時間ごと</b>にK を再検</div>
+    </div>
+    <div class="stat">
+      <div class="lab">降下速度の上限（HHS のみ）</div>
+      <div class="num tnum">90〜120</div>
+      <div class="sub"><b>mg/dL/h</b>（脳浮腫予防）。<b>DKA には上限の規定が無い</b>。よく言われる「50〜75」は2024年版に存在しない（→10節）</div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>DKA と HHS ― 同じ軸の両端 <span class="sec-note">1/3 は両者を併存する</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:150px">　</th><th>DKA</th><th>HHS</th></tr></thead>
+      <tbody>
+        <tr><td><b>インスリン</b></td>
+            <td><b>絶対的欠乏</b>（&lt;5〜10 μU/mL）。脂肪分解が止められずケトン体が産生される</td>
+            <td><b>相対的欠乏</b>（10〜20 μU/mL）。脂肪分解を抑える分は残るのでケトーシスにならない</td></tr>
+        <tr><td><b>発症の速さ</b></td>
+            <td><b>時間〜日</b>単位</td>
+            <td><b>日〜週</b>単位</td></tr>
+        <tr><td><b>意識</b></td>
+            <td>通常は<b>清明</b>（重症で昏迷〜昏睡）</td>
+            <td><b>意識障害が前景に出る</b>ことが多い</td></tr>
+        <tr><td><b>主な症状</b></td>
+            <td>嘔気・嘔吐・腹痛、<b>クスマウル呼吸</b></td>
+            <td>脱水所見。<b>ほかの急性疾患の併存が多い</b></td></tr>
+        <tr><td><b>背景と予後</b></td>
+            <td>相対的に若年。死亡率は低い</td>
+            <td><b>高齢者に多く、死亡率は DKA の 5〜10 倍</b></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout">
+      <span class="mk">！</span>
+      <div><strong>高血糖緊急症の約1/3 は DKA と HHS を併存する。</strong>「どちらか」に決めてしまうと、DKAとして治療してケトーシスだけ追い、浸透圧を見落とす（逆もある）。<strong>pH・HCO3⁻・β-OHB・有効血漿浸透圧の4つを全部そろえてから性格づけする。</strong></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>誘因 ― 探さないと見つからない <span class="sec-note">薬剤性が増えている</span></h2>
+
+    <div class="grid2">
+      <div class="card"><div class="pad">
+        <p class="mini-h">古典的な誘因</p>
+        <ul class="clean">
+          <li><strong>感染症</strong>（最多。発熱がなくても探す）</li>
+          <li><strong>インスリンの中断</strong>（自己中断・ポンプのトラブル・経済的理由）</li>
+          <li><strong>身体的ストレス</strong>（ACS・脳血管障害・外傷・手術・膵炎）</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <p class="mini-h">薬剤 <span class="tag">見落としやすい</span></p>
+        <ul class="clean">
+          <li><strong>SGLT2阻害薬</strong> ― <b>正常血糖DKA</b> の原因。血糖が 200 未満でも DKA が成立する</li>
+          <li><strong>ステロイド</strong></li>
+          <li><strong>免疫チェックポイント阻害薬</strong> ― ICI 関連の<b>劇症1型糖尿病</b>として DKA で初発しうる</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">病態 ― 分岐するのは「脂肪分解を抑えられるか」の一点</p>
+      <div class="formula">絶対的欠乏 → 脂肪分解↑・遊離脂肪酸↑ → <span class="em">ケトン体産生↑</span> → ケトーシス → <span class="em">ケトアシドーシス</span></div>
+      <div class="formula">相対的欠乏 → 糖質利用↓・糖新生↑ → <span class="em">高血糖</span> → 尿糖＋浸透圧利尿 → 脱水・電解質喪失 → <span class="em">高浸透圧</span></div>
+      <ul class="clean" style="margin-top:13px">
+        <li><strong>両者に共通する上流</strong>は、拮抗ホルモン（グルカゴン・カテコラミン・コルチゾール・GH）↑ による<strong>糖新生↑・グリコーゲン分解↑</strong>。脂肪分解で出るグリセロールとアミノ酸・乳酸がその基質になる。</li>
+        <li><strong>HHS で脱水が深くなる理由</strong>は時間軸。日〜週かけて浸透圧利尿が続くため、<strong>DKA より累積の水・電解質喪失がはるかに大きい</strong>。腎機能低下が加わると排泄が追いつかず高浸透圧が加速する。</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>診断基準 2024 <span class="sec-note">変わった3か所</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:120px">　</th><th style="width:130px">項目</th><th>基準</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3"><b>DKA</b><br><span style="font-size:.78rem;color:var(--ink-3)">3つすべて</span></td>
+            <td>糖尿病／高血糖</td>
+            <td>血糖 <b>≥200 mg/dL</b>、<b>または糖尿病の既往</b></td></tr>
+        <tr><td>ケトーシス</td>
+            <td><b>β-OHB ≥3.0 mmol/L（≥3000 μmol/L）</b>、または尿ケトン ≥2+</td></tr>
+        <tr><td>代謝性アシドーシス</td>
+            <td><b>pH &lt;7.3</b>、あるいは <b>HCO3⁻ &lt;18 mmol/L</b></td></tr>
+        <tr><td rowspan="4"><b>HHS</b><br><span style="font-size:.78rem;color:var(--ink-3)">4つすべて</span></td>
+            <td>高血糖</td>
+            <td>血糖 <b>≥600 mg/dL</b></td></tr>
+        <tr><td>高浸透圧</td>
+            <td><b>有効血漿浸透圧 &gt;300 mOsm/kg</b>、または <b>総血漿浸透圧 &gt;320 mOsm/kg</b></td></tr>
+        <tr><td>ケトーシスでない</td>
+            <td>β-OHB <b>&lt;3.0 mmol/L</b>、または尿ケトン &lt;2+</td></tr>
+        <tr><td>アシドーシスでない</td>
+            <td><b>pH ≥7.3 かつ HCO3⁻ ≥15 mmol/L</b>（Fig. 2B。本文に出てくる「HHS の多くは入院時 pH ≥7.30・HCO3⁻ ≥18」は<b>典型像であって基準ではない</b>ので混ぜない）</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">浸透圧の式 <span class="tag">実測Na を入れる</span></p>
+      <div class="formula">有効血漿浸透圧 ＝ <span class="em">2 × Na⁺</span> ＋ 血糖/18</div>
+      <div class="formula">総血漿浸透圧 ＝ 2 × Na⁺ ＋ 血糖/18 ＋ <span class="em">BUN/2.8</span></div>
+      <ul class="clean" style="margin-top:13px">
+        <li><strong>有効浸透圧には BUN を入れない</strong>。尿素は細胞膜を自由に通る ineffective osmole で、細胞外へ水を引く力を持たないため。閾値も <b>300</b>（有効）と <b>320</b>（総）で別。<strong>施設でどちらを使うか固定しておく</strong>。</li>
+        <li><strong>式に入れる Na は実測値</strong>。補正Naを代入するとグルコースを二重計上して過大評価になる（→ <strong>別カード「DKA・HHS 補正Naと浸透圧」</strong>）。</li>
+      </ul>
+    </div></div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">2024 で変わった3か所とその理由</p>
+      <div class="kv">
+        <div><div class="k">血糖</div><div class="v"><b>≥250 → ≥200 mg/dL、または糖尿病の既往</b>。SGLT2阻害薬による<b>正常血糖DKA</b>や、既知の1型糖尿病で血糖がさほど高くないDKAを基準から落とさないため。</div></div>
+        <div><div class="k">ケトン体</div><div class="v">尿ケトンではなく <b>血中β-OHB の POCT／生化学測定を推奨</b>。尿ケトン（ニトロプルシド法）はβ-OHBを拾わず、病勢と乖離する（→ 4節）。</div></div>
+        <div><div class="k">アニオン<br>ギャップ</div><div class="v"><b>第一選択の診断基準からも寛解基準からも除外</b>。ほかの酸塩基異常（乳酸アシドーシス・嘔吐による代謝性アルカローシス・腎不全）の影響を受け、<b>ケトン体の量と乖離する</b>ため。ただし原報は<b>「ケトン体測定ができない環境では依然として有用でありうる」</b>とも書いており、<b>全否定ではない</b>。</div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>ケトン体の測り方 <span class="sec-note">尿ケトンは診断時と治療中で誤る方向が逆</span></h2>
+
+    <div class="figure">
+      <p class="mini-h">模式図①　尿ケトン（ニトロプルシド法）が病勢とずれる理由</p>
+      <svg viewBox="0 0 380 205" style="max-width:560px;margin:0 auto" role="img" aria-label="ニトロプルシド法はアセト酢酸とアセトンを検出するがβ-ヒドロキシ酪酸を検出しない。診断時はNADH/NAD+比が高くβ-ヒドロキシ酪酸が優位なため尿ケトンは病勢を過小評価し、治療中はNADH/NAD+比が正常化してアセト酢酸が相対的に増えるため尿ケトンは病勢を過大評価する。">
+        <rect x="10" y="3" width="12" height="10" rx="2" fill="var(--sev-soft)" stroke="var(--sev)" stroke-dasharray="3 2"/>
+        <text x="28" y="12" font-size="9.5" fill="var(--ink-3)">尿ケトン（ニトロプルシド法）が検出する範囲</text>
+
+        <text x="10" y="34" font-size="10.5" font-weight="700" fill="var(--ink-2)">① 診断時 ― インスリン欠乏で NADH/NAD⁺ 比 ↑</text>
+        <rect x="132" y="42" width="188" height="46" rx="6" fill="var(--sev-soft)" stroke="var(--sev)" stroke-dasharray="4 3"/>
+        <rect x="10" y="48" width="92" height="34" rx="5" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="56" y="62" font-size="9.5" font-weight="700" fill="var(--accent)" text-anchor="middle">β-ヒドロキシ酪酸</text>
+        <text x="56" y="74" font-size="8.5" fill="var(--accent)" text-anchor="middle">AcAc の約10倍</text>
+        <rect x="138" y="48" width="84" height="34" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+        <text x="180" y="68" font-size="10" fill="var(--ink-2)" text-anchor="middle">アセト酢酸</text>
+        <rect x="248" y="48" width="66" height="34" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+        <text x="281" y="68" font-size="10" fill="var(--ink-2)" text-anchor="middle">アセトン</text>
+        <line x1="134" y1="58" x2="112" y2="58" stroke="var(--accent)" stroke-width="3.5"/>
+        <polygon points="104,58 113,53 113,63" fill="var(--accent)"/>
+        <line x1="106" y1="74" x2="130" y2="74" stroke="var(--ink-3)" stroke-width="1"/>
+        <polygon points="136,74 129,71.5 129,76.5" fill="var(--ink-3)"/>
+        <line x1="226" y1="65" x2="240" y2="65" stroke="var(--ink-3)" stroke-width="1"/>
+        <polygon points="246,65 239,62.5 239,67.5" fill="var(--ink-3)"/>
+        <text x="10" y="101" font-size="10" font-weight="700" fill="var(--sev)">→ 尿ケトンは弱陽性にとどまり、病勢を過小評価する</text>
+
+        <text x="10" y="126" font-size="10.5" font-weight="700" fill="var(--ink-2)">② 治療中 ― インスリンで NADH/NAD⁺ 比が正常化</text>
+        <rect x="132" y="134" width="188" height="46" rx="6" fill="var(--sev-soft)" stroke="var(--sev)" stroke-dasharray="4 3"/>
+        <rect x="10" y="140" width="92" height="34" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+        <text x="56" y="160" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">β-ヒドロキシ酪酸</text>
+        <rect x="138" y="140" width="84" height="34" rx="5" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="180" y="154" font-size="10" font-weight="700" fill="var(--accent)" text-anchor="middle">アセト酢酸</text>
+        <text x="180" y="166" font-size="8.5" fill="var(--accent)" text-anchor="middle">相対的に増える</text>
+        <rect x="248" y="140" width="66" height="34" rx="5" fill="var(--surface)" stroke="var(--line-strong)"/>
+        <text x="281" y="160" font-size="10" fill="var(--ink-2)" text-anchor="middle">アセトン</text>
+        <line x1="134" y1="150" x2="113" y2="150" stroke="var(--ink-3)" stroke-width="1"/>
+        <polygon points="107,150 114,147.5 114,152.5" fill="var(--ink-3)"/>
+        <line x1="106" y1="166" x2="128" y2="166" stroke="var(--accent)" stroke-width="3.5"/>
+        <polygon points="136,166 127,161 127,171" fill="var(--accent)"/>
+        <line x1="226" y1="157" x2="240" y2="157" stroke="var(--ink-3)" stroke-width="1"/>
+        <polygon points="246,157 239,154.5 239,159.5" fill="var(--ink-3)"/>
+        <text x="10" y="193" font-size="10" font-weight="700" fill="var(--sev)">→ 尿ケトンは陽性のまま／むしろ強まり、病勢を過大評価する</text>
+      </svg>
+      <p class="fig-cap">
+        ニトロプルシド法は<b>アルカリ条件下で試薬がケトン基（C=O）と結合して赤紫色を呈する</b>反応で、ケトン基を持つ<b>アセト酢酸とアセトン</b>しか拾わない。β-OHB はヒドロキシ基のため<b>原理的に検出されない</b>。
+        DKA 発症時は細胞内の還元状態（NADH/NAD⁺↑）がβ-OHB側に平衡を寄せているため、<b>最も量の多いケトン体が測定系の外にある</b>。インスリンを入れると平衡が戻ってβ-OHB がアセト酢酸へ変換されるので、<b>総ケトン体が減っているのに尿ケトンは濃くなりうる</b>。
+        <b>血中β-OHB で測れば、どちらの局面でもそのまま病勢を反映する。</b>
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">血中β-OHB をどう読むか <span class="tag">DKA でなくても上がる</span></p>
+      <p style="font-size:.78rem;color:var(--ink-3);margin:0 0 10px">下表のうち<b>診断閾値 3.0 mmol/L だけが原報の値</b>。基準値 0〜74 μmol/L と、絶食・シックデイ・飢餓の帯（600〜1500／1500〜3000）は<b>原報には記載が無く</b>、レクチャー演者が別ソース（検査室基準値・教科書）から補った数字。目安として使い、文献として引用しない。</p>
+      <div class="table-scroll"><table class="narrow">
+        <thead><tr><th style="width:230px">状況</th><th>β-OHB</th><th style="width:90px">判定</th></tr></thead>
+        <tbody>
+          <tr><td>基準値</td><td class="tnum"><b>0〜74 μmol/L</b>（または &lt;85）</td><td><span class="pill go">正常</span></td></tr>
+          <tr><td>一晩の絶食／シックデイ／激しい運動</td><td class="tnum">600〜1500 μmol/L</td><td><span class="pill mid">DKA でない</span></td></tr>
+          <tr><td>数日間の飢餓／重度のシックデイ</td><td class="tnum">1500〜3000 μmol/L</td><td><span class="pill care">DKA 未満</span></td></tr>
+          <tr><td><b>DKA の診断閾値</b></td><td class="tnum"><b>≥3000 μmol/L（≥3.0 mmol/L）</b></td><td><span class="pill stop">DKA</span></td></tr>
+        </tbody>
+      </table></div>
+      <ul class="clean" style="margin-top:12px">
+        <li><strong>「β-OHB が 1000〜2000 ある」だけでは DKA にならない</strong>。飢餓性ケトーシスと重なる帯であり、<strong>pH・HCO3⁻ がそろって初めて DKA</strong>。これが節10のピットフォール（高血糖＋軽度ケトーシスで DKA と決めてしまう）の正体。</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>DKA の重症度と置き場所 <span class="sec-note">重症度を決めるのは血糖ではない</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:150px">　</th><th>軽症</th><th>中等症</th><th>重症</th></tr></thead>
+      <tbody>
+        <tr><td><b>血糖（mg/dL）</b></td><td class="tnum">≥200</td><td class="tnum">≥200</td><td class="tnum">≥200</td></tr>
+        <tr><td><b>β-OHB（mmol/L）</b></td><td class="tnum">3.0〜6.0</td><td class="tnum">3.0〜6.0</td><td class="tnum"><b>&gt;6.0</b></td></tr>
+        <tr><td><b>pH</b><br><span style="font-size:.75rem;color:var(--ink-3)">HCO3⁻ とは <b>or</b></span></td><td class="tnum">&gt;7.25 〜 &lt;7.30</td><td class="tnum">7.0〜7.25</td><td class="tnum"><b>&lt;7.0</b></td></tr>
+        <tr><td><b>HCO3⁻（mmol/L）</b></td><td class="tnum">15〜18</td><td class="tnum">10 〜 &lt;15</td><td class="tnum"><b>&lt;10</b></td></tr>
+        <tr><td><b>意識</b></td><td>清明</td><td>清明〜傾眠</td><td><b>昏迷〜昏睡</b></td></tr>
+        <tr><td><b>置き場所</b></td><td><span class="pill go">一般病棟・観察室</span></td><td><span class="pill care">step-down／中間ケア</span></td><td><span class="pill stop">ICU</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout">
+      <span class="mk">！</span>
+      <div><strong>血糖の行は3列すべて ≥200 で同じ</strong> ― つまり<strong>重症度に血糖は一切寄与しない</strong>。重症度を決めるのは <strong>β-OHB・pH・HCO3⁻・意識</strong> の4つ。「血糖が 800 だから重症」という読み方は基準に無い。<strong>軽症と中等症の β-OHB は同じ 3.0〜6.0 mmol/L</strong> なので、この2つを分けるのは <strong>pH と HCO3⁻ だけ</strong>である。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">◆</span>
+      <div><strong>表の読み方（原報 Table 2 の注記）</strong>：<strong>pH と HCO3⁻ は「かつ」ではなく「または」</strong>。そして<strong>「軽症・中等症・重症のいずれと定義するにも、すべての変数を満たす必要はなく、入院先とケアのレベルは最終的に臨床判断である」</strong>と明記されている。表は分類の自動装置ではない。<br>
+      なお<strong>「IHCU」は原報の語ではない</strong>（原報は observation / step-down・intermediate care / ICU）。施設の病床名に読み替えて使う。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>初期治療① 輸液 <span class="sec-note">いちばん先に始めるもの</span></h2>
+
+    <p style="font-size:.82rem;color:var(--ink-3);margin:0 0 12px">以下は<b>原報 Fig. 4（アルゴリズム図）</b>の記載。<b>本文はこれと別の書き方</b>をしており、腎・心障害のない成人では <b>最初の2〜4時間を 500〜1000 mL/h</b>、<b>推定欠乏量は最初の24〜48時間で補正</b>とある。どちらに合わせるかは施設で決めておく。</p>
+
+    <div class="ladder">
+      <div class="rung s4">
+        <div class="rung-tag"><span class="sev-label">volume</span><span class="sev-name">重度の脱水</span></div>
+        <div class="rung-body">生理食塩水あるいはほかの細胞外液を <b>1.0 L/h</b>。</div>
+      </div>
+      <div class="rung s3">
+        <div class="rung-tag"><span class="sev-label">caution</span><span class="sev-name">心・腎疾患の既往</span></div>
+        <div class="rung-body"><b>体液量に応じて</b>輸液量を決める（固定レートで押さない）。</div>
+      </div>
+      <div class="rung s1">
+        <div class="rung-tag"><span class="sev-label">volume</span><span class="sev-name">軽度の脱水</span></div>
+        <div class="rung-body">生理食塩水あるいはほかの細胞外液で、<b>推定される脱水量の 50% を最初の 8〜12 時間で</b>投与する。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">糖質を足すタイミング</p>
+      <ul class="clean">
+        <li><strong>血糖 &lt;250 mg/dL まで下がったら、5〜10% の糖質を生食／細胞外液に追加</strong>する。インスリンを止めるのではなく、<strong>糖を足してインスリンを続ける</strong>のが要点。</li>
+        <li><strong>正常血糖DKA（血糖 &lt;200 mg/dL かつ β-OHB 陽性）では、インスリン開始と同時に 5〜10% の糖質を追加</strong>する。待っていると低血糖になる。</li>
+      </ul>
+      <div class="callout" style="margin-top:12px">
+        <span class="mk">◆</span>
+        <div><strong>モニタリング</strong>：<b>Fig. 4</b> は「電解質・腎機能・<b>静脈血</b>pH・浸透圧・血糖が安定するまで <strong>2〜4 時間ごと</strong>」。pH は動脈血でなく<strong>静脈血で足りる</strong>（反復採血の侵襲を避ける）。<br>
+        ただし<strong>本文と Table 3 は血糖だけ別扱いで「1〜2 時間ごと」</strong>とし、電解質・P・Cr・β-OHB・静脈血pH を 4 時間ごととしている。<strong>血糖を2〜4時間間隔で回すのは本文より粗い</strong>ので、実務では血糖 1〜2 時間ごとに寄せるほうが安全。</div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>初期治療② K ― インスリンの前に決める <span class="sec-note">順序を逆にすると致死的</span></h2>
+
+    <div class="card"><div class="pad"><div class="flow">
+      <div class="q">前提. <b>腎機能</b>と<b>尿量（&gt;0.5 mL/kg/h）</b>を確認する</div>
+
+      <div class="q">K⁺ &lt; 3.5 mmol/L</div>
+      <div class="a"><span class="yn no">保留</span><div><b>インスリンを開始しない。</b>K⁺ &gt;3.5 になるまで <b>10〜20 mmol/h</b> で補正する（<b>これより急速に入れるなら中心静脈から</b>）。</div></div>
+
+      <div class="q">K⁺ = 3.5〜5.0 mmol/L</div>
+      <div class="a"><span class="yn yes">開始</span><div><b>インスリンを開始してよい。</b>同時に、K⁺ が <b>4.0〜5.0 mmol/L</b> に収まるよう<b>輸液に 10〜20 mmol/L を混注</b>する。</div></div>
+
+      <div class="q">K⁺ &gt; 5.0 mmol/L</div>
+      <div class="a"><span class="yn yes">開始</span><div><b>インスリンを開始する。K は補充しない。</b>インスリン自体が K を細胞内へ移すため、まもなく下がってくる。</div></div>
+
+      <div class="q">以後</div>
+      <div class="a"><span class="yn yes">必ず</span><div><b>2 時間ごとに K 値を確認</b>する（Fig. 4）。治療開始後は細胞内シフトと尿中喪失で落ち続けるのが通常の経過。</div></div>
+    </div></div></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">◆</span>
+      <div><strong>この節は原報 Fig. 4 に準拠している。本文は3か所で数字が違う</strong>：混注濃度は<b>本文 20〜30 mmol/L</b>（図は 10〜20）、K が 3.5 未満のときの補正速度は<b>本文 10 mmol/h</b>（図は 10〜20）、再検間隔は<b>本文「インスリン開始の2時間後、以後は DKA 寛解まで4時間ごと」</b>（図は一律2時間ごと）。<strong>原報の内部不整合</strong>であり、どちらかが誤りというより施設でどちらに合わせるかを決める問題。</div>
+    </div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">！</span>
+      <div><strong>DKA の総K は欠乏している</strong>（浸透圧利尿と嘔吐で喪失）。初診時の血清K が正常〜高値なのは<strong>アシドーシスとインスリン欠乏による細胞外シフトの見かけ</strong>にすぎない。だからインスリンを入れると<strong>K は必ず下がる</strong>。<strong>K を見ずにインスリンを始めるのが、このカードで最も避けたい一手</strong>（節10）。</div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>初期治療③ インスリン <span class="sec-note">皮下注でよいのは軽症DKAだけ</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:140px">　</th><th>軽症 DKA</th><th>中等症〜重症 DKA</th><th>HHS</th></tr></thead>
+      <tbody>
+        <tr><td><b>経路</b></td>
+            <td><span class="pill mid">皮下注射</span></td>
+            <td><span class="pill stop">持続静注</span></td>
+            <td><span class="pill stop">持続静注</span></td></tr>
+        <tr><td><b>初回</b></td>
+            <td>速効型 <b>0.1 U/kg を皮下注</b></td>
+            <td><b>点滴ラインの確保・準備が遅れる場合に限り</b>、速効型 <b>0.1 U/kg を静注ボーラス</b></td>
+            <td>ボーラスなし</td></tr>
+        <tr><td><b>維持</b></td>
+            <td><b>0.1 U/kg を 1 時間ごと</b>、あるいは <b>0.2 U/kg を 2 時間ごと</b>に皮下注</td>
+            <td>速効型 <b>0.1 U/kg/h</b> の持続静注（固定レート）</td>
+            <td>速効型 <b>0.05 U/kg/h</b> の持続静注<br><span style="font-size:.8rem">ただし<b>β-OHB ≥3.0 mmol/L・尿ケトン ≥2+・pH &lt;7.3 または HCO3⁻ &lt;18</b> を伴う <b>mixed DKA/HHS は 0.1 U/kg/h</b></span></td></tr>
+        <tr><td><b>寛解までの<br>目標血糖</b></td>
+            <td class="tnum"><b>150〜200 mg/dL</b></td>
+            <td class="tnum"><b>150〜200 mg/dL</b></td>
+            <td class="tnum"><b>200〜250 mg/dL</b></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">◆</span>
+      <div><strong>血糖 &lt;250 mg/dL になったら、速効型インスリンを 0.05 U/kg/h に減量</strong>し、輸液に <strong>5〜10% の糖質を追加</strong>する（軽症 DKA の皮下注なら 0.05 U/kg を 1 時間ごと、または 0.1 U/kg を 2 時間ごと）。<strong>やめるのではなく、減らして続ける。</strong></div>
+    </div>
+
+    <div class="callout" style="margin-top:10px">
+      <span class="mk">！</span>
+      <div><strong>皮下注で回せるのは軽症〜中等症まで</strong>。原報は<strong>「重症 DKA および合併症を伴う DKA、ならびに HHS の治療には速効型インスリンの皮下注は推奨されない」</strong>と明記している。<strong>HHS に皮下注という選択肢は無い。</strong></div>
+    </div>
+
+    <div class="figure" style="margin-top:12px">
+      <p class="mini-h">模式図②　血糖の軌道とインスリンのやめどき</p>
+      <svg viewBox="0 0 380 178" style="max-width:560px;margin:0 auto" role="img" aria-label="治療開始からの血糖の軌道。250を切った時点で糖質を追加しインスリンを0.05 U/kg/hへ減量する。以後は寛解までDKAで150〜200、HHSで200〜250の帯を保ち、寛解基準を満たして食事摂取が可能になってから頻回皮下注へ切り替える。">
+        <text x="10" y="16" font-size="9" fill="var(--ink-3)">血糖 (mg/dL)</text>
+        <rect x="160" y="8" width="11" height="9" rx="2" fill="var(--mild-soft)" stroke="var(--mild)"/>
+        <text x="175" y="16" font-size="9" fill="var(--ink-3)">DKA 150〜200</text>
+        <rect x="262" y="8" width="11" height="9" rx="2" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="277" y="16" font-size="9" fill="var(--ink-3)">HHS 200〜250</text>
+
+        <line x1="44" y1="42" x2="368" y2="42" stroke="var(--line)" stroke-dasharray="3 3"/>
+        <line x1="44" y1="105" x2="368" y2="105" stroke="var(--line)" stroke-dasharray="3 3"/>
+        <text x="40" y="45" font-size="9" fill="var(--ink-3)" text-anchor="end">600</text>
+        <text x="40" y="108" font-size="9" fill="var(--ink-3)" text-anchor="end">250</text>
+        <text x="40" y="126" font-size="9" fill="var(--ink-3)" text-anchor="end">150</text>
+
+        <rect x="222" y="105" width="146" height="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width=".7"/>
+        <rect x="222" y="114" width="146" height="9" fill="var(--mild-soft)" stroke="var(--mild)" stroke-width=".7"/>
+
+        <line x1="44" y1="24" x2="44" y2="150" stroke="var(--line-strong)"/>
+        <line x1="44" y1="150" x2="368" y2="150" stroke="var(--line-strong)"/>
+        <text x="206" y="166" font-size="9" fill="var(--ink-3)" text-anchor="middle">治療開始からの時間 →</text>
+
+        <line x1="222" y1="24" x2="222" y2="150" stroke="var(--mod)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <path d="M44,42 L222,105 C240,112 260,118 368,118" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <text x="104" y="57" font-size="9" font-weight="700" fill="var(--ink-3)">HHS: ≤90〜120 mg/dL/h</text>
+
+        <text x="228" y="62" font-size="9" font-weight="700" fill="var(--mod)">血糖 &lt;250 mg/dL</text>
+        <text x="228" y="75" font-size="8.5" fill="var(--mod)">糖質 5〜10% を追加</text>
+        <text x="228" y="87" font-size="8.5" fill="var(--mod)">インスリン 0.05 U/kg/h へ</text>
+        <text x="368" y="140" font-size="8.5" fill="var(--ink-3)" text-anchor="end">寛解 → 頻回皮下注へ（1〜2h 重ねて静注を終了）</text>
+      </svg>
+      <p class="fig-cap">
+        血糖が 250 を切る点は<b>インスリンの終了点ではなく、組成を変える点</b>。ここから先は「血糖をさらに下げる」フェーズではなく、<b>糖を補いながらインスリンを続けてケトーシス（あるいは高浸透圧）を消すフェーズ</b>に入る。
+        <b>DKA・HHS が寛解し、食事摂取ができるようになったら、インスリン頻回皮下注射に切り替え、その 1〜2 時間後に持続静注を終了する</b>（重ねずに切ると反跳する）。
+        <b>降下速度に上限が定められているのは HHS だけ</b>で、8〜10時間での是正を見込みつつ <b>90〜120 mg/dL/h を超えない</b>（併せて Na 低下 ≤10 mmol/L/24h、浸透圧低下 3.0〜8.0 mOsm/kg/h）。<b>DKA の降下速度に上限の記載は無い</b>（→10節）。
+      </p>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">9</span>そのほかの補正と寛解基準 <span class="sec-note">やらないことが決まっている</span></h2>
+
+    <div class="grid2">
+      <div class="card"><div class="pad">
+        <p class="mini-h">リン（P）</p>
+        <ul class="clean">
+          <li><strong>補充するのは「P &lt;1.0 mmol/L」かつ「筋力低下（呼吸筋・心筋の障害など）がある」場合だけ。</strong>片方だけでは適応にならない。</li>
+          <li>つまり <strong>P が 1.0 未満でも、症状が無ければ補充しない</strong>。「&gt;1.0 なら補充しない」という覚え方だと条件が片側しか入らない。</li>
+          <li>補充するなら <strong>リン酸カリウムとして 20〜30 mmol</strong> を輸液に加える（K の投与量に算入する）。</li>
+        </ul>
+      </div></div>
+      <div class="card"><div class="pad">
+        <p class="mini-h">重炭酸（HCO3⁻）</p>
+        <ul class="clean">
+          <li><strong>ルーチン投与は推奨されない。</strong>投与を検討するのは <strong>pH &lt;7.0</strong> のときだけ。</li>
+          <li>投与するなら <strong>8.4% 炭酸水素ナトリウム 100 mmol を滅菌水 400 mL に溶かし、pH &gt;7.0 になるまで 2 時間ごと</strong>。</li>
+          <li>アシドーシスはインスリンと輸液で改善する。<strong>HCO3⁻ 投与は K のさらなる低下と脳脊髄液 pH の逆説的低下を招きうる</strong>。</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="table-scroll card" style="margin-top:12px"><table>
+      <thead><tr><th style="width:110px">寛解基準</th><th>満たすべき項目</th></tr></thead>
+      <tbody>
+        <tr><td><b>DKA</b></td>
+            <td><b>血中ケトン体 &lt;0.6 mmol/L</b>、かつ <b>静脈 pH ≥7.3</b> あるいは <b>HCO3⁻ ≥18 mmol/L</b>。<b>理想的には血糖も &lt;200 mg/dL</b>（本文）。<br><span style="font-size:.8rem;color:var(--ink-3)">Fig. 4 の脚注だけ「&gt;7.3／&gt;18」と書かれており、本文の「≥」と一致しない（原報内の不整合）。<b>尿ケトンでの判定は避けること</b>が明記されている。</span></td></tr>
+        <tr><td><b>HHS</b></td>
+            <td><b>血漿浸透圧（実測または計算）&lt;300 mOsm/kg</b>、<b>高血糖が是正されている</b>、<b>尿量 &gt;0.5 mL/kg/h</b>、<b>認知状態が改善している</b>、<b>血糖 &lt;250 mg/dL</b></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">！</span>
+      <div><strong>DKA の出口は血糖ではなく、ケトン体と酸塩基</strong>（血糖 &lt;200 は「理想的には」という添え物）。ケトン体の目標 <strong>&lt;0.6 mmol/L</strong> は、診断閾値 3.0 mmol/L よりはるかに低いところに置かれている。<br>
+      <strong>HHS については原報自身が「寛解の定義にコンセンサスは存在しない」と明記している</strong>。5項目は提案であって確立した基準ではなく、とくに<strong>「認知状態の改善」</strong>は数値化できないまま残されている。</div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">10</span>よくあるピットフォール <span class="sec-note">5つとも順序か指標の取り違え</span></h2>
+
+    <div class="table-scroll card"><table>
+      <thead><tr><th style="width:110px">場面</th><th style="width:250px">ピットフォール</th><th>正しい対応</th></tr></thead>
+      <tbody>
+        <tr><td><b>診断</b></td>
+            <td>高血糖と軽度のケトーシスで DKA と考える</td>
+            <td><b>pH・HCO3⁻・β-OHB・有効血漿浸透圧</b>で DKA／HHS を評価する。β-OHB 600〜3000 は飢餓性ケトーシスと重なる帯</td></tr>
+        <tr><td><b>初期対応</b></td>
+            <td>高血糖だからと <b>K を確認せずインスリンを開始</b>する</td>
+            <td><b>輸液を開始し、K を確認する。K &lt;3.5 ならインスリンは保留</b></td></tr>
+        <tr><td><b>血糖降下速度</b></td>
+            <td><b>「脳浮腫予防のため 50〜75 mg/dL/h に収める」</b>と覚えている</td>
+            <td><b>2024年版にこの数値は無い</b>。上限が定められているのは <b>HHS のみで 90〜120 mg/dL/h</b>（＋Na 低下 ≤10 mmol/L/24h、浸透圧低下 3.0〜8.0 mOsm/kg/h）。<b>DKA には上限の規定が無い</b></td></tr>
+        <tr><td><b>血糖低下時</b></td>
+            <td>血糖が 200 台になったのでインスリンを終了する</td>
+            <td><b>血糖 &lt;250 になったら 5〜10% の糖質を追加し、寛解までインスリンを継続</b>する</td></tr>
+        <tr><td><b>病勢の評価</b></td>
+            <td><b>尿ケトン</b>で病勢を過大／過小評価する</td>
+            <td><b>血中β-OHB と静脈血液ガス</b>で評価する</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout" style="margin-top:12px">
+      <span class="mk">◆</span>
+      <div><strong>5つを1本にまとめると</strong>：<strong>「輸液 → K → インスリン」の順序を守り、始まりも終わりも血糖では決めない</strong>。入口は pH・HCO3⁻・β-OHB・浸透圧、出口は寛解基準。DKA で血糖が担うのは<strong>糖質追加の合図（&lt;250）だけ</strong>である。</div>
+    </div>
+
+    <div class="card" style="margin-top:12px"><div class="pad">
+      <p class="mini-h">「50〜75 mg/dL/h」はどこから来たのか <span class="tag">上限ではなく下限だった</span></p>
+      <ul class="clean">
+        <li><strong>2024年版の全文（Diabetes Care 版・Diabetologia 版とも）に「50〜75 mg/dL/h」は一度も出てこない。</strong></li>
+        <li>原報が脳浮腫と結びつけて速度を述べているのは <strong>HHS の1か所だけ</strong>：「HHS で高血糖が是正されるまでの通常の時間は 8〜10 時間であり、脳浮腫を防ぐため<strong>低下は 90〜120 mg/dL/h（5〜6.7 mmol/L/h）を超えるべきでない</strong>」。出典は JBDS の HHS ガイドライン（Mustafa 2023）。</li>
+        <li>数字が近いのは<strong>まったく別の文脈</strong>：「インスリンを使わず輸液だけで血糖は <strong>およそ 50〜70 mg/dL/h</strong> 低下すると報告されている」。これは<strong>輸液だけで起きる低下の記述</strong>であって、速度の上限ではない。</li>
+        <li><strong>有力な出所は 2009年の旧 ADA コンセンサス（Kitabchi 2009）</strong>：「低用量インスリン持続投与プロトコルは血糖を <strong>50〜75 mg/dL/h</strong> の速度で低下させる。<strong>最初の1時間で 50〜75 mg 低下しなければ、安定した低下が得られるまで 1 時間ごとにインスリンを増量する</strong>」。<strong>つまり「これ以上速くするな」ではなく「これだけ下がらなければインスリンが足りない」という下限の目安</strong>であり、意味が正反対。</li>
+        <li><strong>2024年版はこの記述を引き継いでいない</strong>（全文検索で該当なし）。「50〜75 を超えたら危ない」という使い方は、<strong>旧版の下限が上限として反転したうえ、現行版から消えた数値を引用している</strong>二重のずれになる。</li>
+      </ul>
+      <div class="callout" style="margin-top:12px">
+        <span class="mk">◆</span>
+        <div>DKA の脳浮腫は原報 Table 3 で <strong>発生 &lt;0.1%・死亡率 約30%</strong> とされる<strong>成人ではまれな合併症</strong>。<strong>「DKA の脳浮腫」と「HHS の降下速度上限」は別の話なので混ぜない。</strong></div>
+      </div>
+    </div></div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質について</h3>
+    <p><b>このカードの内容は単一のコンセンサスレポートに由来する。</b>出典は ADA・EASD・JBDS-IP・AACE・DTS の5団体による <b>consensus report</b>（PubMed の publication type は Consensus Statement）であり、<b>RCT でもメタ解析でもない</b>。2001年の ADA コンセンサスステートメント（最終更新2009年）を、2009年以降の文献を系統的に検討して改訂したもので、位置づけは「ガイドライン級の専門家合意＋系統的文献検討」。<b>GRADE 等の形式的な推奨度は個々の推奨に付与されていない</b>。したがって本カードの数値（輸液速度、K の閾値、インスリン用量、HHS の降下速度上限、寛解基準）は、いずれも<b>RCT の裏付けを持つ数値ではなく、専門家合意による推奨値</b>として読むべきである。</p>
+    <p><b>照合の方法</b>：本カードの数値は<b>原報の全文（Diabetes Care 版＝PMC11272983、Diabetologia 版＝PMC11343900）を取得し、本文・Table 2・Table 3・Fig. 2・Fig. 4 と逐語照合した</b>。Fig. 2 と Fig. 4 は図版を直接読んでいる。対象とした項目について<b>両版の内容は一致</b>していた。照合の結果見つかったスライドとのずれは、すべて下の「スライドの記載との差分」に列挙してある。</p>
+    <p><b>主要な出典</b>：Umpierrez GE, Davis GM, ElSayed NA, Fadini GP, Galindo RJ, Hirsch IB, Klonoff DC, McCoy RG, Misra S, Gabbay RA, Bannuru RR, Dhatariya KK. <i>Hyperglycemic Crises in Adults With Diabetes: A Consensus Report.</i> Diabetes Care 2024;<b>47(8):1257-1275</b>（PMID <b>39052901</b>、doi 10.2337/dci24-0032）。同内容が Diabetologia 2024;<b>67(8):1455-1479</b>（PMID <b>38907161</b>、doi 10.1007/s00125-024-06183-8、英式綴り “Hyperglycaemic crises…”）にも並行して掲載されている。全文はいずれも PMC で公開（<b>Diabetes Care 版 = PMC11272983／Diabetologia 版 = PMC11343900</b>。この2つは取り違えやすい）。<br>
+    旧版は Kitabchi AE, et al. Diabetes Care 2009;32:1335-1343（PMID 19564476、全文 PMC2699725）。HHS の降下速度の根拠として引かれているのは Mustafa OG, et al. Diabet Med 2023;40:e15005（PMID 36370077、JBDS-IP HHS）。</p>
+    <p><b>引用の訂正</b>：もとのレクチャースライドは出典を「<b>Guillermo E, et al.</b> Diabetes Care. 2024; 47: 1257-1275.」と記載しているが、<b>Guillermo E. は筆頭著者の given name</b> であり、<b>姓は Umpierrez</b>。正しくは <b>Umpierrez GE, et al.</b> である（Crossref の author 欄で確認）。号 <b>(8)</b> も欠落している。学会発表・論文で再利用するときはここを直す。<br>
+    なお「Diabetes Care 2024;47:1257-1275」という文字列は、本報に対する<b>コメント・返信レター</b>のタイトルにも現れるため、文献管理ソフトで拾うと別論文に化ける：Umpierrez らの返信（PMID 39977638, 2025;48(3):e42-e43）／Cao S らのコメント（PMID 39977634, e40-e41）／Gosmanov AR らのコメント（PMID 39977630, e38-e39）。<b>本体は PMID 39052901</b>。</p>
+    <p><b>スライドの記載との差分（原報との照合で直したところ）</b>。元のレクチャースライドは全体として原報に忠実だが、次の8点が原報と異なっていたため本カードでは原報側に合わせた。<br>
+      <b>① 血糖降下速度 50〜75 mg/dL/h（最も大きいずれ）</b> ― <b>2024年版に存在しない数値</b>。上限が定められているのは HHS のみで 90〜120 mg/dL/h。50〜75 は 2009年旧版の「1時間でこれだけ下がらなければインスリンを増量する」という<b>下限の目安</b>で、意味が反転している（10節に詳述）。<br>
+      <b>② HHS 診断基準の不等号</b> ― スライドは「pH &gt;7.3 かつ HCO3⁻ &gt;15」。原報 Fig. 2B は <b>≥7.3 / ≥15</b>。<br>
+      <b>③ リンの条件</b> ― スライドは「&gt;1.0 mmol/L であれば筋力低下や呼吸障害がない限り補充しない」。原報は<b>「P &lt;1.0 mmol/L かつ筋力低下・呼吸/心機能障害がある場合にのみ補充」</b>で条件の構造が異なる（P &lt;1.0 でも無症状なら補充しない、が抜ける）。<br>
+      <b>④ 重症度表の境界</b> ― 軽症の pH は <b>&gt;7.25〜&lt;7.30</b>（下限は排他的）、中等症の HCO3⁻ は <b>10〜&lt;15</b>、重症の β-OHB は <b>&gt;6.0</b>（≥6.0 ではない）。pH と HCO3⁻ は <b>or</b> 関係で、<b>全変数を満たす必要はない</b>旨の注記が原報にある。<b>「IHCU」は原報の語ではない</b>。なおスライドは範囲を「7.30〜7.25」のように上限→下限の順で書いており、本カードは下限→上限に揃えた。<br>
+      <b>⑤ 静注ボーラスの条件</b> ― 原報は<b>「静脈路確保・点滴準備に遅れが見込まれる場合に限り」</b>検討、と条件付き。スライドは条件が落ちている。<br>
+      <b>⑥ HHS のインスリン量</b> ― 0.05 U/kg/h はケトン体が無い〜軽度（β-OHB ≥1.0〜&lt;3.0）で酸血症を伴わない場合。<b>有意なケトン血症を伴う mixed DKA/HHS は 0.1 U/kg/h</b> という本文の場合分けがスライドにない。<br>
+      <b>⑦ 寛解基準</b> ― DKA は本文で <b>血中ケトン &lt;0.6 mmol/L かつ 静脈 pH ≥7.3 または HCO3⁻ ≥18</b>、さらに「理想的には血糖 &lt;200 mg/dL」。HHS はスライドの3項目に加えて<b>「高血糖が是正されている」「認知状態が改善している」</b>が原報にあり、原報自身が<b>「HHS の寛解にコンセンサスはない」</b>と明記している。<br>
+      <b>⑧ アニオンギャップ</b> ― 「診断基準から除外」は言い切りすぎ。第一選択の診断・寛解基準から外す一方で<b>「ケトン体測定ができない環境では依然として有用でありうる」</b>という留保がある。</p>
+    <p><b>原報そのものに内部不整合がある箇所（本カードでは両方を併記した）</b>：<b>⒜ K の混注濃度</b>（Fig. 4 は 10〜20 mmol/L、本文は 20〜30 mmol/L）、<b>⒝ K &lt;3.5 のときの補正速度</b>（Fig. 4 は 10〜20 mmol/h、本文は 10 mmol/h）、<b>⒞ K の再検間隔</b>（Fig. 4 は一律2時間ごと、本文は「インスリン開始2時間後、以後4時間ごと」）、<b>⒟ モニタリング間隔</b>（Fig. 4 は血糖も含め2〜4時間ごと、本文と Table 3 は血糖のみ1〜2時間ごと）、<b>⒠ 輸液速度</b>（Fig. 4 は重度脱水 1.0 L/h、本文は腎・心障害のない成人で最初の2〜4時間 500〜1000 mL/h・欠乏は24〜48時間で補正）、<b>⒡ DKA 寛解の不等号</b>（本文 ≥、Fig. 4 脚注 &gt;）、<b>⒢ 正常血糖DKA の血糖閾値</b>（Fig. 4 は &lt;11.0 mmol/L、本文と Fig. 2 は 11.1 mmol/L＝200 mg/dL）。<b>スライドは一貫して Fig. 4 に準拠しており、図としては正しい。</b></p>
+    <p><b>原報の外にある数値（原報では裏が取れないもの）</b>：<b>β-ヒドロキシ酪酸の基準値 0〜74 μmol/L、絶食・シックデイ 600〜1500、飢餓 1500〜3000</b> は、両版の全文を検索しても該当する記載が無い（原報が示すのは診断閾値 3.0 mmol/L、HHS の軽度ケトン血症 1.0〜&lt;3.0、寛解の &lt;0.6 のみ。飢餓性ケトーシスは「500 kcal/日未満の摂取」という定性的記述だけ）。<b>演者が検査室基準値・教科書など別ソースから補った数字</b>と考えられ、<b>その妥当性自体はこのカードでは検証していない</b>。目安として使い、原報を出典として引用しないこと。<br>
+    同じく、<b>「50〜75」が 2009年版 Kitabchi コンセンサス由来であるという推定</b>は、数値と文脈の一致に基づく強い推定であって、<b>演者が実際にそこから引いたことを確認したものではない</b>。</p>
+    <p><b>関連カード</b>：補正Na と血漿浸透圧の使い分け（浸透圧式にどの Na を入れるか、Na 補正速度の上限）は<b>「DKA・HHS 補正Naと浸透圧」カード</b>に分けてある。本カードは初期対応の流れのみを扱う。</p>
+  </div>
+
+  <footer>
+    高血糖緊急症（DKA・HHS）初期対応ポケットカード ／ 作成 2026-11-03<br>
+    出典は ADA/EASD 2024 コンセンサスレポート（専門家合意）。最終判断は施設のプロトコルと最新の添付文書・ガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
