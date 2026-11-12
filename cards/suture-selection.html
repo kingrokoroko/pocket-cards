@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<link rel="manifest" href="../app.webmanifest">
+<meta name="theme-color" content="#0e7c86" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10141b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>裂創縫合 ― 糸の太さ・材質・抜糸</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --ink: #1a2230;
+    --ink-2: #45526a;
+    --ink-3: #6b7890;
+    --line: #dde3ec;
+    --line-strong: #c6cfdd;
+    --accent: #0e7c86;
+    --accent-soft: #d9edef;
+    --mild: #2f8f5b;
+    --mild-soft: #e3f3ea;
+    --mod: #b9791a;
+    --mod-soft: #f6ecd8;
+    --sev: #c0392b;
+    --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5;
+    --warn-line: #e7c48a;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(20,30,50,.05), 0 4px 16px rgba(20,30,50,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+      --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+      --line: #2a323f; --line-strong: #38424f;
+      --accent: #3fb3bd; --accent-soft: #123037;
+      --mild: #56c188; --mild-soft: #16311f;
+      --mod: #e0a94a; --mod-soft: #33290f;
+      --sev: #e8776a; --sev-soft: #38191a;
+      --warn-bg: #2c220f; --warn-line: #6b5121;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b; --surface: #191f29; --surface-2: #1f2732;
+    --ink: #e7ecf3; --ink-2: #aeb9ca; --ink-3: #7d8aa0;
+    --line: #2a323f; --line-strong: #38424f;
+    --accent: #3fb3bd; --accent-soft: #123037;
+    --mild: #56c188; --mild-soft: #16311f;
+    --mod: #e0a94a; --mod-soft: #33290f;
+    --sev: #e8776a; --sev-soft: #38191a;
+    --warn-bg: #2c220f; --warn-line: #6b5121;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #1a2230; --ink-2: #45526a; --ink-3: #6b7890;
+    --line: #dde3ec; --line-strong: #c6cfdd;
+    --accent: #0e7c86; --accent-soft: #d9edef;
+    --mild: #2f8f5b; --mild-soft: #e3f3ea;
+    --mod: #b9791a; --mod-soft: #f6ecd8;
+    --sev: #c0392b; --sev-soft: #f7e2df;
+    --warn-bg: #fdf3e5; --warn-line: #e7c48a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3vw, 34px);
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  header.card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 { font-size: clamp(1.35rem, 4vw, 1.95rem); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-3); font-size: .82rem; width: 100%; margin-top: 2px; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 13px 16px; margin: 18px 0 24px;
+    font-size: .92rem; color: var(--ink-2); box-shadow: var(--shadow);
+  }
+  .lede strong { color: var(--ink); }
+
+  section { margin: 26px 0; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
+    font-size: 1.06rem; letter-spacing: -.005em;
+  }
+  .sec-num {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .sec-num { color: #08171a; } }
+  :root[data-theme="dark"] .sec-num { color: #08171a; }
+  :root[data-theme="light"] .sec-num { color: #fff; }
+  .sec-note { font-size: .78rem; color: var(--ink-3); font-weight: 400; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card + .card { margin-top: 12px; }
+  .pad { padding: 15px 17px; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.clean li { position: relative; padding-left: 20px; font-size: .89rem; color: var(--ink-2); }
+  ul.clean li::before {
+    content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+  ul.clean li strong { color: var(--ink); font-weight: 600; }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 560px; }
+  table.narrow { min-width: 420px; }
+  thead th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 10px 13px; border-bottom: 1px solid var(--line-strong);
+    background: var(--surface-2);
+  }
+  tbody td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { color: var(--ink); font-weight: 600; }
+  td .dose { font-family: var(--mono); font-size: .82rem; color: var(--ink); }
+  tbody tr.hl td { background: var(--accent-soft); }
+  tbody tr.hl td, tbody tr.hl td:first-child { color: var(--ink); }
+
+  .pill {
+    display: inline-block; font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .pill.go { background: var(--mild-soft); color: var(--mild); }
+  .pill.mid { background: var(--accent-soft); color: var(--accent); }
+  .pill.care { background: var(--mod-soft); color: var(--mod); }
+  .pill.stop { background: var(--sev-soft); color: var(--sev); }
+
+  .callout {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--radius);
+    padding: 12px 15px; font-size: .86rem; color: var(--ink-2);
+  }
+  .callout + .callout { margin-top: 10px; }
+  .card + .callout, .figure + .callout, .callout + .card, .callout + .figure { margin-top: 12px; }
+  .callout .mk { flex: none; font-weight: 800; color: var(--mod); font-size: .95rem; }
+  .callout strong { color: var(--ink); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 13px 15px;
+  }
+  .stat .lab { font-size: .74rem; color: var(--ink-3); font-weight: 700; letter-spacing: .04em; }
+  .stat .num { font-size: 1.32rem; font-weight: 700; color: var(--ink); margin: 3px 0 4px; letter-spacing: -.01em; }
+  .stat .sub { font-size: .77rem; color: var(--ink-3); line-height: 1.55; }
+  .stat .sub b { color: var(--ink-2); }
+
+  .figure {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px 12px;
+  }
+  .figure + .figure, .card + .figure, .figure + .card { margin-top: 12px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure svg text { font-family: var(--sans); }
+  .fig-cap { font-size: .78rem; color: var(--ink-3); margin: 10px 0 0; line-height: 1.65; }
+  .fig-cap b { color: var(--ink-2); }
+
+  .mini-h { font-size: .8rem; font-weight: 700; color: var(--ink); margin: 0 0 9px; letter-spacing: .01em; }
+  .mini-h .tag {
+    font-size: .64rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px;
+    background: var(--accent-soft); color: var(--accent); letter-spacing: .04em;
+  }
+
+  .flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow .q {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 10px 13px; font-size: .87rem; color: var(--ink); font-weight: 600;
+  }
+  .flow .a {
+    display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start;
+    padding: 2px 0 2px 14px; font-size: .85rem; color: var(--ink-2);
+  }
+  .flow .a .yn {
+    font-size: .68rem; font-weight: 700; padding: 3px 0; border-radius: 999px; text-align: center;
+  }
+  .flow .a .yn.no { background: var(--sev-soft); color: var(--sev); }
+  .flow .a .yn.yes { background: var(--mild-soft); color: var(--mild); }
+  .flow .a b { color: var(--ink); }
+
+  .evidence {
+    margin-top: 30px; border-top: 1px dashed var(--line-strong); padding-top: 16px;
+    font-size: .81rem; color: var(--ink-3);
+  }
+  .evidence h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  .evidence p { margin: 7px 0; }
+  .evidence b { color: var(--ink-2); }
+
+  footer { margin-top: 22px; font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.7; }
+
+  @media print {
+    .wrap { max-width: none; padding: 0; }
+    .card, .callout, .figure, .stat { box-shadow: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+
+<style>
+  /* ポケットカード系は --surface / 臨床アプリ系は --panel を持つ。両方に効くよう連鎖させる */
+  .pc-backbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:8px;
+    padding:10px 14px;margin:0 0 4px;
+    background:var(--surface,var(--panel,#fff));border-bottom:1px solid var(--line,#dde3ec);
+    color:var(--accent,#0e7c86);font:600 14px/1.2 var(--sans,system-ui);
+    text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .pc-backbar:active{background:var(--surface-2,var(--panel2,#f5f7fa))}
+  .pc-backbar svg{flex:none}
+  @supports (padding-top: env(safe-area-inset-top)){
+    .pc-backbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+<a class="pc-backbar" href="../index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>ポケットカード一覧
+</a>
+
+
+<div class="wrap">
+  <header class="card-head">
+    <span class="eyebrow">臨床ポケットカード</span>
+    <h1>裂創縫合 ― 糸の太さ・材質・抜糸</h1>
+    <div class="subtitle">外傷外来／救急 ／ 作成 2026-11-12</div>
+  </header>
+
+  <p class="lede">
+    <strong>糸の太さを比較した臨床試験は事実上存在しない。</strong>
+    部位別のサイズ表の出所は AFP 2017 総説の本文だけで、その総説自身が
+    <strong>「適切な糸のサイズについて良質なエビデンスは欠如している」</strong>と明記し、
+    参照先は <strong>Ethicon の縫合マニュアルと形成外科の教科書</strong>（＝一次研究でない）。
+    唯一の原則は<strong>「十分な強度で寄せられる最小径を使う」</strong>。
+    以下の数字は検証された閾値ではなく、<strong>張力（厚い皮膚＝太く）と整容（顔＝細く）で演繹した先人の答案</strong>として使う。
+  </p>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">1</span>部位別の糸 <span class="sec-note">AFP 2017 本文（表ではなく本文に散在）</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>部位</th><th>表皮</th><th>深層</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>顔面</td><td><span class="dose">5-0 / 6-0</span> ナイロン（単層）</td><td>—</td></tr>
+            <tr><td>眼瞼</td><td><span class="dose">6-0</span> ナイロン</td><td>—</td></tr>
+            <tr><td>耳</td><td><span class="dose">6-0</span> ポリプロピレン。<b>1針で皮膚と軟骨膜を一緒に寄せる</b>（軟骨そのものに糸をかけない）</td><td>—</td></tr>
+            <tr><td>口唇<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">vermilion border を越える創</span></td><td>皮膚 <span class="dose">6-0 / 7-0</span> ナイロン</td><td>筋層・口腔粘膜 <span class="dose">3-0 / 4-0</span> 吸収糸</td></tr>
+            <tr><td>頭皮</td><td><span class="dose">3-0 / 4-0</span> ナイロン<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">ステープル・HAT も並列で挙げられている</span></td><td><b>帽状腱膜が 0.5 cm 超なら</b> <span class="dose">2-0 / 3-0</span> 吸収糸</td></tr>
+            <tr><td>その他の大部分</td><td><span class="dose">4-0</span></td><td>—</td></tr>
+            <tr><td>背部・手掌・足底<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">など厚い皮膚</span></td><td><span class="dose">3-0</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>AFP に載っていない部位は、一次文献が存在しない。</strong>
+      二次資料に流通する「手・指 4-0/5-0」「足底 3-0/4-0」「舌 4-0 吸収糸」「爪床 6-0/7-0 吸収糸」「関節部は 10〜14 日」は<strong>この総説を出所に引用できない</strong>。
+      手・前腕のサイズは本文で確認できず、<strong>舌・関節・爪床のサイズ記載はない</strong>（爪床は「手外科へ紹介」とだけ書かれている）。
+      <strong>足底・荷重部と手・指の糸の太さを述べた一次文献は、探しても見つからない。</strong></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">2</span>抜糸時期 <span class="sec-note">AFP 2017 Table 5 ／ 本文が expert opinion と明記</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table class="narrow">
+          <thead><tr><th>部位</th><th>日数</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td>顔面</td><td class="tnum"><b>3〜5</b></td><td>整容優先。最短</td></tr>
+            <tr><td>頭皮・腕</td><td class="tnum"><b>7〜10</b></td><td></td></tr>
+            <tr><td>体幹・脚</td><td class="tnum"><b>10〜14</b></td><td></td></tr>
+            <tr><td>手・足</td><td class="tnum"><b>10〜14</b></td><td></td></tr>
+            <tr class="hl"><td>手掌・足底</td><td class="tnum"><b>14〜21</b></td><td>最長。荷重・把持で張力が続く</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>部位別の抜糸日数を比較した RCT は存在しない。</strong>
+      本文が逐語で <em>"is based on expert opinion and experience"</em> と認めている。
+      唯一の RCT は <b>Richards 2024</b>（7日 vs 10日、n=60）だが <b>feasibility 試験</b>で、対象は待機的皮膚外科、結果は未読み出し。
+      → <strong>日数表は出発点にすぎず、早期抜糸（瘢痕を細く）と遅延抜糸（離開を避ける）を創ごとに秤にかけてよい。</strong></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">3</span>同じ「5-0」でもガットは1段階太い <span class="sec-note">USP の径の表は collagen と synthetic で別</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table class="narrow">
+          <thead><tr><th>USP</th><th>collagen（ガット系）</th><th>合成吸収糸・非吸収糸</th></tr></thead>
+          <tbody>
+            <tr><td>7-0</td><td><span class="dose">0.070–0.099 mm</span></td><td><span class="dose">0.050–0.069 mm</span></td></tr>
+            <tr><td>6-0</td><td><span class="dose">0.10–0.149 mm</span></td><td><span class="dose">0.070–0.099 mm</span></td></tr>
+            <tr class="hl"><td>5-0</td><td><span class="dose">0.15–0.199 mm</span></td><td><span class="dose">0.10–0.149 mm</span></td></tr>
+            <tr class="hl"><td>4-0</td><td><span class="dose">0.20–0.249 mm</span></td><td><span class="dose">0.15–0.199 mm</span></td></tr>
+            <tr><td>3-0</td><td><span class="dose">0.30–0.339 mm</span></td><td><span class="dose">0.20–0.249 mm</span></td></tr>
+            <tr><td>2-0</td><td><span class="dose">0.35–0.399 mm</span></td><td><span class="dose">0.30–0.339 mm</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pad" style="border-top:1px solid var(--line)">
+        <ul class="clean">
+          <li><strong>5-0 chromic gut ＝ 4-0 ナイロンと同径。</strong>同様に 6-0 ガット＝5-0 ナイロン、4-0 ガット＝3-0 ナイロン。</li>
+          <li><strong>合成吸収糸と非吸収糸は同一の表</strong>（この2者の間では USP 表記＝同じ径）。<b>ずれるのは collagen だけ</b>。</li>
+          <li>「顔面は 5-0/6-0」の慣習は<strong>ナイロン・プロリーンを念頭に書かれている</strong>。小児顔面に 5-0 速吸収ガットを使う運用は、径としては<b>4-0 ナイロン相当</b>を入れていることになる。</li>
+          <li>同一径でも<strong>素材で引張強度は違う</strong>（ナイロン／プロリーン／バイクリル／PDS／絹）。径が同じ＝強度が同じ、ではない。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div>USP 原文の区分は <b>collagen / synthetic</b> で、<b>plain gut / chromic gut という語は使われていない</b>。chromic gut が collagen 表に属することは規格文書上では直接確認していない（製品の実態としては collagen 系）。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">4</span>サイズのエビデンス <span class="sec-note">比較試験は1本だけ、しかも手術創</span></h2>
+
+    <div class="grid3">
+      <div class="stat">
+        <div class="lab">糸径を比較した研究</div>
+        <div class="num">0 件</div>
+        <div class="sub">4-0 vs 5-0、3-0 vs 4-0 を比較した皮膚裂創の研究は、2通りの検索式でも<b>ゼロ</b>。<b>Cochrane にもサイズ比較のレビューはない</b>。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">唯一近い RCT（Pourang 2019）</div>
+        <div class="num">P = .26</div>
+        <div class="sub">5-0 vs 6-0 速吸収ガット split-wound。<b>POSAS 13.11 vs 12.03</b>／観察者総合 2.64 vs 2.49（P=.54）／合併症 15 vs 10（P=.40）。<b>対象は頭頸部の手術創で外傷性裂創ではない</b>。</div>
+      </div>
+      <div class="stat">
+        <div class="lab">AFP 2017 の SORT 推奨度</div>
+        <div class="num">4 項目のみ</div>
+        <div class="sub">閉創の時間窓 B／<b>水道水洗浄 A</b>／<b>清潔な非滅菌手袋 A</b>／指へのアドレナリン B。<b>糸サイズと抜糸時期には SORT が付かない</b>。</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>「太い糸は異物量が増えて感染・瘢痕が悪化する」の一次根拠は見つからない。</strong>
+      よく引かれる <b>Edlich 1973</b>（Ann Surg）が比較したのは<strong>素材と編み構造</strong>であって<strong>糸径ではない</strong>。Edlich 関連18件を見ても糸径を変数にした実験は0件。
+      原則としては妥当だが、<strong>「エビデンスがある」とは言えない</strong>。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">+</span>
+      <div><strong>太さより縫合法のほうが仕上がりを動かす可能性がある。</strong>
+      Kwapnoski 2024（n=50 split-wound）で<b>連続皮内 vs 連続水平マットレス</b>は 患者総合 <b>4.71 vs 3.50（p=.02）</b>・評価者総合 <b>3.87 vs 3.29（p=.03）</b>で<b>皮内が良好</b>（小さいほど良好。POSAS 観察者合計 19.49 vs 17.76 は p=.14 で非有意）。
+      逆に <b>Singer 2005</b>（n=65）では軽症・低張力の顔面裂創に<b>真皮縫合を足しても 90日の瘢痕幅差 0.2 mm</b>（−0.05〜0.5）で、処置が7分延びるだけだった。</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">5</span>材質 ― 吸収糸でよい <span class="sec-note">3つのメタ解析が一貫して差なし</span></h2>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>研究</th><th>対象</th><th>結果</th></tr></thead>
+          <tbody>
+            <tr><td>Malhotra 2024<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">メタ解析 RCT 9件 804例</span></td><td>顔面</td><td>感染 <b>RR 0.68</b>（0.21–2.22）／離開 <b>RR 0.32</b>（0.09–1.15）／瘢痕肥厚 RR 0.76（0.27–2.12）／VAS MD 1.06（−4.06–6.22）<span class="pill mid">全て非有意</span></td></tr>
+            <tr><td>Xu 2016<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">メタ解析 RCT 19件 1,748例</span></td><td>皮膚閉鎖全般</td><td>感染・整容・瘢痕・離開・満足度すべて差なし <span class="pill mid">非有意</span></td></tr>
+            <tr><td>Tejani 2014<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">RCT 完遂73</span></td><td><b>四肢・体幹の外傷創</b></td><td>VAS 54.1 vs 54.5、差 0.5（−12.1–17.2）p=0.9 <span class="pill go">非劣性</span></td></tr>
+            <tr><td>Basyuni 2024 TORN Face<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">RCT n=200</span></td><td><b>成人顔面</b></td><td>Hamilton scar scale 中央値 <b>1 vs 1、p=0.21</b> <span class="pill mid">差なし</span></td></tr>
+            <tr><td>Karounis 2004<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">RCT n=95・小児</span></td><td>小児（plain gut）</td><td>4か月の最適 WES 36% vs 28%（RR 0.88, 0.62–1.26）／<b>離開 2% vs 11%（p=0.07）で吸収糸側に有利</b></td></tr>
+            <tr class="hl"><td>Luck 2013<br><span style="font-weight:400;font-size:.78rem;color:var(--ink-3)">RCT 解析61・小児顔面</span></td><td><b>唯一の反証</b></td><td><b>医師 VAS 57.6 vs 67.6、差 −10.0（−19.1〜−0.4）で非劣性不成立</b>／一方 <b>保護者 VAS 93.8 vs 86.6 で非劣性成立</b>、選好も <b>33/33 vs 26/36（p&lt;0.01）で吸収糸優位</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>小児顔面に吸収糸を使う判断は「同等だから」ではなく「保護者が好み、抜糸の侵襲を避けられるから」で正当化する。</strong>
+      Luck 2013 は<b>評価者を変えると結論が逆向きになる</b>ことを示した唯一のデータで、医師評価では非劣性を示せていない（メタ解析にプールすると消える）。
+      なお<strong>「抜糸不要」の利得そのものを主要評価項目にした RCT は存在しない</strong>（抜糸ストレス・再受診・費用を primary にした試験はない）。</div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>創縫合でのモノフィラメント vs マルチフィラメント（編み糸）の直接比較 RCT・メタ解析は存在が確認できない。</strong>
+      間接データは帝王切開の皮下縫合と開腹創の閉鎖法のみで、外傷創への外挿は推測になる。</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">6</span>そもそも縫わない選択 <span class="sec-note">頭皮・爪床・舌</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">頭皮 ― HAT が縫合に勝つ <span class="tag">RCT n=189</span></p>
+        <ul class="clean">
+          <li>毛髪をひねり合わせて組織接着剤で固定する。<strong>瘢痕 6.3% vs 20.4%／合併症 7.3% vs 21.5%（ともに p=.005）</strong>で縫合より有意に良好。処置時間 中央値 5 vs 15分、疼痛 2 vs 4（ともに p&lt;.001）。</li>
+          <li><strong>剃毛も局所麻酔も抜糸も不要</strong>。</li>
+          <li><strong>原著の除外基準＝そのまま適応の限界</strong>：<b>毛髪長 3 cm 未満</b>・持続する活動性出血・高度汚染創・血行動態不安定・10 cm 超／非線状の創。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">爪床 ― 接着剤で足り、爪甲は捨ててよい</p>
+        <ul class="clean">
+          <li><strong>Strauss 2008</strong>（唯一の RCT, n=40、縫合は <span class="dose">6-0 chromic</span>）：<strong>修復時間 9.5 vs 27.8分（p&lt;.0003）</strong>、1・3・6か月の整容性・疼痛・機能に<b>有意差なし</b>。</li>
+          <li><strong>NINJA trial</strong>（Jain 2023, 小児451例・英国20施設）：<strong>外した爪甲を戻す意味はない</strong>。7日 SSI・4か月整容性とも<b>群間差なし</b>で、廃棄群が<b>84ユーロ安い</b>（34–140, P&lt;0.001）。</li>
+          <li>小児（Chiche 2020, 後ろ向き74例・1年追跡）：10.2 vs 20.3分（p&lt;0.001）。<strong>爪ジストロフィーは手技によらず 14%</strong>（うち major 5%）に出るので、あらかじめ説明する。<b>ER での修復は早期感染が有意に多かった</b>（適応交絡は排除できない）。</li>
+          <li>⚠️「爪床は 6-0 または 7-0 吸収糸」のうち、<strong>原著で確認できるのは 6-0 chromic だけ</strong>（＝5-0 ナイロン相当の径）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">舌 ― 4分の3は縫われていない</p>
+        <ul class="clean">
+          <li><strong>Gonsalves 2022</strong>（系統的レビュー 11報142例）：<strong>縫合されたのは 35例（24.6%）のみ</strong>。縫合でも保存でも良好に治癒し、<b>感染の報告はない</b>。</li>
+          <li>閾値の候補は <strong>Zurich Tongue Scheme</strong>（Seiler 2018）：<strong>2 cm 未満で舌尖に及ばない gaping 創は縫合不要</strong>。</li>
+          <li>⚠️ Seiler 2018 の「縫合群は回復 13 vs 6.2日・合併症 25% vs 3.3%」を<strong>「舌は縫うと悪化する」と読むのは誤り</strong>。<b>創が 21 vs 10.8 mm と2倍大きい</b>ことによる適応交絡。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pad">
+        <p class="mini-h">接着剤 vs 縫合 ― トレードオフの数字 <span class="tag">Cochrane 8試験</span></p>
+        <ul class="clean">
+          <li>有利：<strong>疼痛 −15.7 mm</strong>（−21.9〜−9.5）・<strong>処置時間 −5.6分</strong>（−8.2〜−3.1）。</li>
+          <li>不利：<strong>離開 NNH 25</strong>（14–100）・<strong>紅斑 NNH 8</strong>（4–100）。</li>
+          <li><strong>整容性はどの時点でも差なし</strong>（Quinn 1997 でも 67 vs 68 mm, p=.65）。→ <b>接着剤を「仕上がりのため」に選ぶ理由はない。選ぶ理由は時間と疼痛</b>。</li>
+          <li>顔面での3法同時比較（Holger 2004, 9か月追跡）では<strong>評価者内の最大差 3.6 mm ＝ MCID（10〜15 mm）未満</strong>。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mk">!</span>
+      <div><strong>眼瞼で判断すべきは糸径ではなく涙小管損傷の有無。</strong>
+      AAO report（Wladis 2019）は monocanalicular stent の解剖学的成功 68–100%・機能的成功 79–100%・脱落 0–29% を示すが、<strong>組み入れ全15報が level III</strong>。
+      <strong>眼科紹介の閾値を明記したガイドラインは確認できない</strong>（内眼角寄り・眼瞼縁・脂肪脱出・挙筋損傷などは専門家意見）。</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">7</span>縫うときの予防抗菌薬 <span class="sec-note">単純創は不要。咬傷も2025年に後退した</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <div class="flow">
+          <div class="q">単純裂創（咬傷でない）</div>
+          <div class="a"><span class="yn no">出さない</span><div>Cummings 1995（RCT 7件 n=1,734）<b>感染 OR 1.16（0.77–1.78）＝無効で点推定は害側</b>。ペニシリナーゼ耐性薬に絞っても <b>OR 1.00（0.59–1.71）</b>。</div></div>
+
+          <div class="q">手の単純外傷</div>
+          <div class="a"><span class="yn no">出さない</span><div>Murphy 2016（13研究 n=2,578）<b>RR 0.89（0.65–1.23）p=0.49</b>。二重盲検 RCT 5件 n=864 でも RR 0.66（0.36–1.21）p=0.18。⚠️<b>咬傷・開放骨折・挫滅創は除外</b>されているので、そこへは外挿しない。</div></div>
+
+          <div class="q">咬傷 ― 顔面・頭部</div>
+          <div class="a"><span class="yn yes">出す</span><div>Cui 2025 の顔面/頭部サブグループで <b>OR 0.13（0.03–0.52）</b>。<b>一次閉鎖もしてよい</b>（RCT のみ RR 0.73, 0.51–1.06／サブグループ OR 0.49, 0.27–0.90）。</div></div>
+
+          <div class="q">咬傷 ― 手</div>
+          <div class="a"><span class="yn no">根拠は固くない</span><div>従来の根拠は Medeiros 2001 Cochrane の <b>OR 0.10（0.01–0.86）NNT 4（2–50）</b>だが <b>CI が 2〜50 と極端に広い</b>。<b>Cui 2025（26研究）では抗菌薬全体 OR 0.73（0.46–1.17）・RCT のみ RR 0.81（0.46–1.44）でいずれも非有意</b>＝「手の咬傷なら出す」は支持されなくなった。施設方針の問題として扱う。</div></div>
+
+          <div class="q">足底刺創</div>
+          <div class="a"><span class="yn no">エビデンスが無い</span><div>Harrison 2002 BET は<b>29本探して、問いに答える論文が0本</b>。慣習の根拠は Pennycook 1994 の<b>非ランダム化80例で24時間以内投与なら感染ゼロ</b>のみ。<b>刺創は洗浄・デブリドマンが届かず、単純裂創の陰性結果からも外挿できない</b>。</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="sec-title"><span class="sec-num">8</span>引用の取り違え <span class="sec-note">実際に流通している誤り</span></h2>
+
+    <div class="card">
+      <div class="pad">
+        <ul class="clean">
+          <li><strong>Malhotra 2024 は抄録と本文で p 値が食い違う</strong>（抄録 0.72 / 0.69 / 0.46 vs 本文 0.52 / 0.12 / 0.6、一致するのは離開 0.08 だけ）。さらに <strong>Discussion の「患者評価で吸収糸が有意に優れる（p=0.01）」は Results のどこにも根拠がない</strong>。→ <b>p 値は本文 Results を引き、Discussion の p=0.01 は引用しない</b>。</li>
+          <li><strong>Cui 2025 の「顔面・頭部で一次縫合が有利 OR 0.13（0.03–0.52）」は帰属が誤り</strong>。これは<b>「抗菌薬 vs なし」の顔面/頭部サブグループ</b>の値で、一次閉鎖のサブグループは <b>OR 0.49（0.27–0.90）</b>。比較対象も「遅延閉鎖」ではなく<b>「遅延または非閉鎖」</b>。筆頭著者は <b>Cui M</b>。</li>
+          <li><strong>NINJA trial が比較したのは「縫合 vs 接着剤」ではなく「爪甲を戻すか捨てるか」</strong>。掲載誌は <b>Br J Surg</b> で、Lancet Child Adolesc Health は誤り。</li>
+          <li><strong>Edlich 1973 を「太い糸が悪い」の根拠として引かない</strong>（比較軸は素材と編み構造）。</li>
+          <li><strong>Pourang 2019 の正式タイトルは「5-0 versus 6-0」</strong>（「6-0 vs 5-0」は語順が逆）。<strong>Richards 2024 は Richards E・49(4)</strong>（Richards A / 49(5) は誤り）。</li>
+          <li><strong>HAT study の筆頭著者は Ong MEH</strong>（Marcus Eng Hock Ong, Singapore General Hospital）。PubMed・Crossref の <b>"Hock MO" は姓名分割の索引エラー</b>で、XML が <span class="dose">LastName=Hock / ForeName="Marcus Ong Eng"</span> になっている。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="evidence">
+    <h3>エビデンスの質と、このカードの限界</h3>
+    <p><b>RCTが存在しない領域</b>：①糸の太さの比較（外傷性裂創では0件）、②部位別の抜糸日数、③創縫合でのモノフィラメント vs マルチフィラメント、④外傷創での縫合法（マットレス／皮内／結節）の使い分け、⑤高張力創での真皮縫合の価値、⑥頭皮の縫合 vs ステープル、⑦足底刺創の予防抗菌薬。このカードの数字の多くは、その空白の上に載った専門家意見である。</p>
+    <p><b>主要な出典</b>：Forsch RT et al. Am Fam Physician 2017;95(10):628-636（PMID 28671402）／USP 35–NF 30 &lt;861&gt; および Collagen・Synthetic Absorbable・Nonabsorbable Surgical Suture monographs／Pourang A et al. J Am Acad Dermatol 2019;81(1):213-218（PMID 30797848）／Malhotra K et al. Arch Plast Surg 2024;51(4):386-396（PMID 39034976）／Xu B et al. Ann Plast Surg 2016;76(5):598-606（PMID 25643187）／Karounis H et al. Acad Emerg Med 2004;11(7):730-735（PMID 15231459）／Luck RP et al. Pediatr Emerg Care 2008;24(3):137-142（PMID 18347489）／Luck R et al. Pediatr Emerg Care 2013;29(6):691-695（PMID 23714755）／Tejani C et al. Acad Emerg Med 2014;21(6):637-643（PMID 25039547）／Basyuni S et al. Br J Oral Maxillofac Surg 2024;62(7):642-650（PMID 38926072）／Singer AJ et al. Plast Reconstr Surg 2005;116(2):363-368（PMID 16079656）／Kwapnoski Z et al. J Am Acad Dermatol 2024;91(4):684-689（PMID 38945482）／Farion K et al. Cochrane 2002;(3):CD003326（PMID 12137689）／Quinn J et al. JAMA 1997;277(19):1527-1530（PMID 9153366）／Holger JS et al. Am J Emerg Med 2004;22(4):254-257（PMID 15258862）／Ong MEH et al. Ann Emerg Med 2002;40(1):19-26（PMID 12085068, HAT study）／Strauss EJ et al. J Hand Surg Am 2008;33(2):250-253（PMID 18294549）／Jain A et al. Br J Surg 2023;110(4):432-438（PMID 36946338, NINJA）／Chiche L et al. Hand Surg Rehabil 2020;39(6):550-555（PMID 32919084）／Gonsalves CL et al. Paediatr Child Health 2022;27(1):32-42（PMID 35273669）／Seiler M et al. Swiss Med Wkly 2018;148:w14683（PMID 30378089）／Wladis EJ et al. Ophthalmology 2019;126(9):1324-1329（PMID 30953742）／Cummings P, Del Beccaro MA. Am J Emerg Med 1995;13(4):396-400（PMID 7605521）／Murphy GRF et al. Br J Surg 2016;103(5):487-492（PMID 26928808）／Medeiros I, Saconato H. Cochrane 2001;(2):CD001738（PMID 11406003）／Cui M et al. World J Emerg Surg 2025;20(1):48（PMID 40462162）／Harrison M, Thomas M. Emerg Med J 2002;19(1):49（PMID 11777876）／Richards E et al. Clin Exp Dermatol 2024;49(4):394-397（PMID 37983174）／Edlich RF et al. Ann Surg 1973;177(6):679-688（PMID 4267743）。</p>
+    <p><b>未照合の項目（このカード作成時点で一次文献に当たれていないもの）</b>：Edlich 1973 の本文・抄録（PubMed が cookie 要求で取得できず、「素材と編み構造の比較である」という判定自体がタイトルと MeSH からの推定）／Singer 1997 NEJM 総説の本文（403）／Farion Cochrane の 2010 edited 版の識別子と結論の変更の有無（Cochrane Library が 403）／Xu 2016 の統合 RR の実数値（抄録に記載なし）／Pourang 2019 の症例数 n（抄録に記載なし）／素材別の引張強度の実数値／日本形成外科学会ガイドライン・JATEC・国内成書の記載。AFP 本文は要約を介した取得で、引用符付きの文も完全な逐語照合ではない。</p>
+    <p><b>意図的に載せなかったもの</b>：TORN Face の費用比較として流通する「277 vs 1,479 ポンド」は二次情報のみで原著に帰属できないため除外した。IDSA 2014 SSTI の咬傷への 3〜5 日予防投与も本文未確認のため載せていない。二次資料に広く出回る「手・指 4-0/5-0」「足底 3-0/4-0」「舌 4-0 吸収糸」「爪床 7-0 吸収糸」「関節部 10〜14 日」も、一次文献に辿り着けなかったため表に入れていない。</p>
+  </div>
+
+  <footer>
+    裂創縫合 糸の選択ポケットカード ／ 作成 2026-11-12<br>
+    最終判断は施設のプロトコルと最新のガイドラインに従うこと。
+  </footer>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', function () {
+    navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
